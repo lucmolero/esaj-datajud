@@ -9,7 +9,7 @@ from typing import Any, cast
 
 import requests
 
-from . import djen, esaj
+from . import datajud, djen, esaj, extraction
 from .cache import JsonFileCache
 from .config import EsajDatajudConfig
 from .models import Extrato, ResumoProcesso
@@ -148,6 +148,51 @@ class EsajDatajudClient:
         if self.cache:
             self.cache.set("djen", cache_key, resultado)
         return resultado
+
+    def consultar_datajud(
+        self,
+        numero: str,
+        *,
+        include_raw: bool = False,
+        api_key: str | None = None,
+    ) -> dict[str, Any]:
+        cache_key = f"{numero}|raw={include_raw}"
+        if self.cache and not include_raw:
+            cached = self.cache.get("datajud", cache_key)
+            if cached is not None:
+                self.logger.debug("Cache hit para DataJud %s", numero)
+                return cast(dict[str, Any], cached)
+        resultado = datajud.consultar_processo(
+            numero,
+            api_key=api_key or self.config.datajud_api_key,
+            include_raw=include_raw,
+            session=self.session,
+            timeout=self.config.timeout,
+        )
+        if self.cache and not include_raw:
+            self.cache.set("datajud", cache_key, resultado)
+        return cast(dict[str, Any], resultado)
+
+    def extract_process(
+        self,
+        numero: str,
+        *,
+        sources: list[str] | tuple[str, ...] = ("esaj", "datajud", "djen"),
+        include_raw: bool = False,
+        djen_data_inicio: str = "",
+    ) -> dict[str, Any]:
+        return cast(
+            dict[str, Any],
+            extraction.extract_process(
+                numero,
+                sources=sources,
+                include_raw=include_raw,
+                datajud_api_key=self.config.datajud_api_key,
+                djen_data_inicio=djen_data_inicio,
+                session=self.session,
+                timeout=self.config.timeout,
+            ),
+        )
 
     def baixar_pecas(
         self,

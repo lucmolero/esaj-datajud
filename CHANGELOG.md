@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0] - 2026-07-31
+
+### Adicionado
+
+- Adiciona cliente DataJud/CNJ como fonte separada do DJEN, com API key, retry, backoff, normalização e raw opcional.
+- Adiciona envelope versionado de extração por fonte em `esaj_datajud.extraction`.
+- Adiciona timeline cronológica em `esaj_datajud.timeline`, sem fase, relevância, risco ou interpretação jurídica.
+- Adiciona exportadores JSON, JSONL, CSV e SQLite em `esaj_datajud.exports`.
+- Adiciona módulos `sources`, `schemas` e `normalization` para contratos e normalização técnica.
+- Adiciona comandos CLI `datajud`, `extract` e `timeline`.
+- Adiciona documentação de fontes e extração agregada.
+
+### Alterado
+
+- Corrige posicionamento público para separar eSAJ/TJSP, DataJud/CNJ e DJEN.
+- Atualiza README, arquitetura, contratos, CLI e API Reference para remover ambiguidade entre DataJud e DJEN.
+
 ## [0.3.8] - 2026-07-31
 
 ### Corrigido

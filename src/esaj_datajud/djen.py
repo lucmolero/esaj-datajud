@@ -1,4 +1,4 @@
-"""Cliente DJEN/DataJud."""
+"""Cliente DJEN para comunicacoes e publicacoes."""
 
 from __future__ import annotations
 

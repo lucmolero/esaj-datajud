@@ -19,7 +19,8 @@ def test_cli_help():
         text=True,
     )
     assert result.returncode == 0
-    assert "Ferramenta profissional de linha de comando para eSAJ/TJSP e DJEN." in result.stdout
+    assert "datajud" in result.stdout
+    assert "timeline" in result.stdout
 
 
 def test_cli_search_imprime_json(monkeypatch, capsys):

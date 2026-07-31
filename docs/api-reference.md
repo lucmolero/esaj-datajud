@@ -31,7 +31,15 @@ Retorna texto curto para triagem, briefing ou e-mail.
 
 ## `api.consultar_djen(numero, data_inicio="")`
 
-Consulta comunicações do DJEN/DataJud para o número CNJ informado.
+Consulta comunicações do DJEN para o número CNJ informado.
+
+## `api.consultar_datajud(numero, api_key=None, include_raw=False)`
+
+Consulta dados processuais estruturados na API pública DataJud/CNJ.
+
+## `api.extract_process(numero, sources=("esaj", "datajud", "djen"), include_raw=False, datajud_api_key=None, djen_data_inicio="")`
+
+Extrai dados das fontes solicitadas em envelope versionado, preservando resultado, erros e timeline cronológica.
 
 ## `api.create_client(config=None)`
 
@@ -52,7 +60,9 @@ Métodos principais:
 - `search_processo(numero)`: retorna resumo estruturado.
 - `get_extrato(numero, ...)`: retorna extrato completo.
 - `get_partes(numero)`: retorna partes classificadas.
-- `consultar_djen(numero, data_inicio="")`: consulta comunicações DJEN/DataJud.
+- `consultar_datajud(numero, ...)`: consulta dados processuais DataJud/CNJ.
+- `consultar_djen(numero, data_inicio="")`: consulta comunicações DJEN.
+- `extract_process(numero, ...)`: retorna envelope de extração por fonte.
 - `baixar_pecas(extrato, destino, sobrescrever=False, limite=0)`: baixa peças públicas candidatas.
 
 ## `EsajDatajudConfig`
@@ -65,4 +75,5 @@ Campos principais:
 - `cache_dir`: diretório de cache.
 - `cache_ttl_seconds`: tempo de vida do cache.
 - `salvar_html`: salva HTML bruto quando suportado pelo fluxo.
+- `datajud_api_key`: API key do DataJud/CNJ para clientes configuráveis.
 - `user_agent`: modelo de `User-Agent` com suporte a `{version}`.

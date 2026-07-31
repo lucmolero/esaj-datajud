@@ -25,5 +25,9 @@ class AcessoRestrito(EsajDatajudError):
     """A fonte indicou bloqueio, captcha, autenticação, senha ou restrição de acesso."""
 
 
+class CredencialAusente(EsajDatajudError):
+    """Credencial necessária para uma fonte pública não foi informada."""
+
+
 class DownloadIndisponivel(EsajDatajudError):
     """Não foi possível baixar a peça pública solicitada."""

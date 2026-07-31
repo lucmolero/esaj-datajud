@@ -15,7 +15,7 @@ hide:
       <h1 id="legal-home-title">Dados judiciais públicos para agentes, automações e pesquisa jurídica confiável.</h1>
       <p class="legal-lede">
         Uma biblioteca Python para consultar, estruturar e auditar informações públicas do eSAJ/TJSP e comunicações
-        DJEN/DataJud com rastreabilidade, testes automatizados e governança documentada.
+        DataJud/CNJ e DJEN com rastreabilidade, testes automatizados e governança documentada.
       </p>
       <div class="legal-actions" aria-label="Ações principais">
         <a class="legal-button legal-button--primary" href="quickstart/">Começar pelo quickstart</a>

@@ -91,6 +91,42 @@ def test_client_consultar_djen_usa_cache(monkeypatch):
     assert chamadas["count"] == 1
 
 
+def test_client_consultar_datajud_usa_cache(monkeypatch):
+    chamadas = {"count": 0}
+
+    def fake_consultar(*args, **kwargs):
+        chamadas["count"] += 1
+        return {"status": "ok", "numero_cnj": args[0]}
+
+    monkeypatch.setattr("esaj_datajud.client.datajud.consultar_processo", fake_consultar)
+    client = EsajDatajudClient(
+        EsajDatajudConfig(cache_enabled=True, cache_dir=f".tmp/test-datajud-cache-{uuid4()}")
+    )
+
+    primeiro = client.consultar_datajud("1076539-20.2019.8.26.0100", api_key="abc")
+    segundo = client.consultar_datajud("1076539-20.2019.8.26.0100", api_key="abc")
+
+    assert primeiro == segundo
+    assert chamadas["count"] == 1
+
+
+def test_client_extract_process_delega(monkeypatch):
+    chamadas = {}
+
+    def fake_extract(numero, **kwargs):
+        chamadas["numero"] = numero
+        chamadas.update(kwargs)
+        return {"status": "ok", "timeline": []}
+
+    monkeypatch.setattr("esaj_datajud.client.extraction.extract_process", fake_extract)
+    client = EsajDatajudClient(EsajDatajudConfig(datajud_api_key="abc"))
+
+    resultado = client.extract_process("1076539-20.2019.8.26.0100", sources=("datajud",))
+
+    assert resultado["status"] == "ok"
+    assert chamadas["datajud_api_key"] == "abc"
+
+
 def test_client_baixar_pecas_delega(monkeypatch):
     chamadas = {}
 

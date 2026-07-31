@@ -5,7 +5,7 @@
 <h1 align="center">esaj-datajud</h1>
 
 <p align="center">
-  Toolkit Python para consulta responsável, estruturação e auditoria de dados públicos judiciais do eSAJ/TJSP e DJEN/DataJud.
+  Toolkit Python para extração responsável, normalização e exportação de dados públicos judiciais do eSAJ/TJSP, DataJud/CNJ e DJEN.
 </p>
 
 <p align="center">
@@ -49,7 +49,8 @@ O projeto também serve como vitrine técnica de engenharia legaltech: contratos
 - API Python de alto nível para scripts, notebooks e integrações.
 - CLI para consultas rápidas e geração de JSON.
 - Parser organizado para páginas públicas do eSAJ/TJSP, incluindo dados básicos, partes, movimentações, documentos vinculados, audiências, petições, incidentes e apensos.
-- Cliente DJEN/DataJud com paginação, retry, backoff e deduplicação.
+- Cliente DataJud/CNJ para dados processuais estruturados, com retry, backoff e normalização.
+- Cliente DJEN para comunicações e publicações, com paginação, retry, backoff e deduplicação.
 - Cliente configurável com timeout, rate limit, cache local opcional, logging e sessão injetável.
 - Contratos tipados, exceções públicas e testes com fixtures sanitizadas.
 - Pacote marcado como tipado (`py.typed`), com checagem `mypy` no CI.
@@ -95,6 +96,9 @@ print(extrato["dados_basicos"])
 
 comunicacoes = api.consultar_djen(numero)
 print(len(comunicacoes))
+
+datajud = api.consultar_datajud(numero, api_key="APIKey ...")
+print(datajud["classe"])
 ```
 
 ## Uso profissional com cliente configurável
@@ -123,6 +127,8 @@ esaj extrato 1076539-20.2019.8.26.0100 --out extrato.json
 esaj partes 1076539-20.2019.8.26.0100
 esaj baixar extrato.json --out pecas
 esaj djen 1076539-20.2019.8.26.0100 --out djen.json
+esaj datajud 1076539-20.2019.8.26.0100 --api-key "APIKey ..." --out datajud.json
+esaj timeline 1076539-20.2019.8.26.0100 --source esaj --source djen --out timeline.json
 ```
 
 Também é possível executar via módulo:
@@ -156,7 +162,11 @@ python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
 - `esaj_datajud.config` - configuração imutável de timeout, cache, rate limit e User-Agent.
 - `esaj_datajud.cache` - cache JSON simples, local e opcional.
 - `esaj_datajud.esaj` - montagem de URLs, carregamento HTTP e parsing do eSAJ/TJSP.
-- `esaj_datajud.djen` - cliente para comunicações do DJEN/DataJud.
+- `esaj_datajud.datajud` - cliente DataJud/CNJ para dados processuais estruturados.
+- `esaj_datajud.djen` - cliente para comunicações do DJEN.
+- `esaj_datajud.extraction` - envelope versionado de extração por fonte.
+- `esaj_datajud.timeline` - timeline cronológica sem interpretação jurídica.
+- `esaj_datajud.exports` - exportadores JSON, JSONL, CSV e SQLite.
 - `esaj_datajud.cli` - interface de linha de comando.
 - `esaj_datajud.utils` - normalização de texto, nomes de arquivo e classificação auxiliar.
 

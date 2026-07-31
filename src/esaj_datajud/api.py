@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, cast
 
-from . import djen, esaj
+from . import datajud, djen, esaj, extraction
 from .client import EsajDatajudClient
 from .config import EsajDatajudConfig
 from .models import Extrato, ResumoProcesso
@@ -99,6 +99,40 @@ def resumo_rapido(numero: str) -> str:
 def consultar_djen(numero: str, data_inicio: str = "") -> list[dict[str, Any]]:
     """Consulta comunicações do DJEN para um processo."""
     return djen.consultar_processo(numero, data_inicio=data_inicio)
+
+
+def consultar_datajud(
+    numero: str,
+    *,
+    api_key: str | None = None,
+    include_raw: bool = False,
+) -> dict[str, Any]:
+    """Consulta dados processuais estruturados na API publica DataJud/CNJ."""
+    return cast(
+        dict[str, Any],
+        datajud.consultar_processo(numero, api_key=api_key, include_raw=include_raw),
+    )
+
+
+def extract_process(
+    numero: str,
+    *,
+    sources: list[str] | tuple[str, ...] = ("esaj", "datajud", "djen"),
+    include_raw: bool = False,
+    datajud_api_key: str | None = None,
+    djen_data_inicio: str = "",
+) -> dict[str, Any]:
+    """Extrai dados das fontes solicitadas em envelope versionado."""
+    return cast(
+        dict[str, Any],
+        extraction.extract_process(
+            numero,
+            sources=sources,
+            include_raw=include_raw,
+            datajud_api_key=datajud_api_key,
+            djen_data_inicio=djen_data_inicio,
+        ),
+    )
 
 
 def create_client(config: EsajDatajudConfig | None = None) -> EsajDatajudClient:

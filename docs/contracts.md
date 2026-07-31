@@ -2,6 +2,8 @@
 
 Os retornos da API são dicionários Python simples, documentados por `TypedDict` em `esaj_datajud.models`.
 
+Contratos de extração agregada ficam em `esaj_datajud.schemas`.
+
 ## `api.search_processo`
 
 Retorna `ResumoProcesso`:
@@ -36,3 +38,27 @@ Retorna `Extrato` com:
 ## Estabilidade
 
 Campos novos podem ser adicionados em versões minor. Campos existentes só devem mudar formato em versão major ou com aviso explícito no changelog.
+
+## `api.extract_process`
+
+Retorna envelope versionado com dados separados por fonte:
+
+```json
+{
+  "schema_version": "1.0",
+  "package_version": "0.4.0",
+  "status": "ok",
+  "numero_cnj": "1076539-20.2019.8.26.0100",
+  "sources": ["esaj", "datajud", "djen"],
+  "data": {
+    "esaj": {},
+    "datajud": {},
+    "djen": []
+  },
+  "timeline": [],
+  "warnings": [],
+  "errors": []
+}
+```
+
+`timeline` é cronológica e não inclui fase, relevância, risco ou interpretação jurídica.

@@ -45,7 +45,31 @@ Imprime as partes classificadas por polo quando a estrutura da página permite.
 esaj djen 1076539-20.2019.8.26.0100 --data-inicio 2026-01-01 --out djen.json
 ```
 
-Salva comunicações encontradas no DJEN/DataJud em JSON.
+Salva comunicações encontradas no DJEN em JSON.
+
+## Consultar DataJud
+
+```bash
+esaj datajud 1076539-20.2019.8.26.0100 --api-key "APIKey ..." --out datajud.json
+```
+
+Salva dados processuais estruturados da API pública DataJud/CNJ em JSON.
+
+## Extração Agregada
+
+```bash
+esaj extract 1076539-20.2019.8.26.0100 --source datajud --source djen --out extraction.json
+```
+
+Gera envelope versionado por fonte.
+
+## Timeline
+
+```bash
+esaj timeline 1076539-20.2019.8.26.0100 --source esaj --source djen --out timeline.json
+```
+
+Gera timeline cronológica de registros extraídos, sem classificação de fase, risco ou relevância.
 
 ## Baixar peças públicas candidatas
 

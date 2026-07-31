@@ -52,6 +52,16 @@ def test_consultar_djen_signature():
     assert callable(resultado)
 
 
+def test_consultar_datajud_signature():
+    resultado = api.consultar_datajud
+    assert callable(resultado)
+
+
+def test_extract_process_signature():
+    resultado = api.extract_process
+    assert callable(resultado)
+
+
 def test_create_client_signature():
     resultado = api.create_client
     assert callable(resultado)
@@ -166,3 +176,41 @@ def test_consultar_djen_delega(monkeypatch):
 
     assert resultado == [{"id": "1"}]
     assert chamadas["data_inicio"] == "2026-07-01"
+
+
+def test_consultar_datajud_delega(monkeypatch):
+    chamadas = {}
+
+    def fake_consultar(numero, api_key=None, include_raw=False):
+        chamadas["numero"] = numero
+        chamadas["api_key"] = api_key
+        chamadas["include_raw"] = include_raw
+        return {"status": "ok"}
+
+    monkeypatch.setattr(api.datajud, "consultar_processo", fake_consultar)
+
+    resultado = api.consultar_datajud("1076539-20.2019.8.26.0100", api_key="abc", include_raw=True)
+
+    assert resultado == {"status": "ok"}
+    assert chamadas["api_key"] == "abc"
+    assert chamadas["include_raw"] is True
+
+
+def test_extract_process_delega(monkeypatch):
+    chamadas = {}
+
+    def fake_extract(numero, **kwargs):
+        chamadas["numero"] = numero
+        chamadas.update(kwargs)
+        return {"status": "ok", "timeline": []}
+
+    monkeypatch.setattr(api.extraction, "extract_process", fake_extract)
+
+    resultado = api.extract_process(
+        "1076539-20.2019.8.26.0100",
+        sources=("datajud",),
+        datajud_api_key="abc",
+    )
+
+    assert resultado["status"] == "ok"
+    assert chamadas["sources"] == ("datajud",)

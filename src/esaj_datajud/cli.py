@@ -28,7 +28,9 @@ def _erro_json(exc: Exception) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="esaj",
-        description="Ferramenta profissional de linha de comando para eSAJ/TJSP e DJEN.",
+        description=(
+            "Ferramenta profissional de linha de comando para eSAJ/TJSP, DataJud/CNJ e DJEN."
+        ),
     )
     sub = parser.add_subparsers(dest="command")
 
@@ -66,10 +68,47 @@ def main(argv: list[str] | None = None) -> int:
         "--sobrescrever", action="store_true", help="Sobrescrever arquivos existentes"
     )
 
-    djen_cmd = sub.add_parser("djen", help="Consultar comunicações DJEN/DataJud")
+    datajud_cmd = sub.add_parser("datajud", help="Consultar dados processuais no DataJud/CNJ")
+    datajud_cmd.add_argument("numero", help="Número CNJ do processo")
+    datajud_cmd.add_argument("--api-key", default=None, help="API key do DataJud/CNJ")
+    datajud_cmd.add_argument("--raw", action="store_true", help="Incluir payload bruto")
+    datajud_cmd.add_argument("--out", default="datajud.json", help="Arquivo de saída JSON")
+
+    djen_cmd = sub.add_parser("djen", help="Consultar comunicações DJEN")
     djen_cmd.add_argument("numero", help="Número CNJ do processo")
     djen_cmd.add_argument("--data-inicio", default="", help="Data inicial ISO yyyy-mm-dd")
     djen_cmd.add_argument("--out", default="djen.json", help="Arquivo de saída JSON")
+
+    extract_cmd = sub.add_parser("extract", help="Extrair dados em envelope versionado")
+    extract_cmd.add_argument("numero", help="Número CNJ do processo")
+    extract_cmd.add_argument(
+        "--source",
+        action="append",
+        choices=["esaj", "datajud", "djen"],
+        help="Fonte a consultar; repita para mais de uma. Padrão: todas.",
+    )
+    extract_cmd.add_argument("--datajud-api-key", default=None, help="API key do DataJud/CNJ")
+    extract_cmd.add_argument(
+        "--djen-data-inicio", default="", help="Data inicial DJEN ISO yyyy-mm-dd"
+    )
+    extract_cmd.add_argument(
+        "--raw", action="store_true", help="Incluir payload bruto quando disponível"
+    )
+    extract_cmd.add_argument("--out", default="extraction.json", help="Arquivo de saída JSON")
+
+    timeline_cmd = sub.add_parser("timeline", help="Gerar timeline cronológica de extração")
+    timeline_cmd.add_argument("numero", help="Número CNJ do processo")
+    timeline_cmd.add_argument(
+        "--source",
+        action="append",
+        choices=["esaj", "datajud", "djen"],
+        help="Fonte a consultar; repita para mais de uma. Padrão: todas.",
+    )
+    timeline_cmd.add_argument("--datajud-api-key", default=None, help="API key do DataJud/CNJ")
+    timeline_cmd.add_argument(
+        "--djen-data-inicio", default="", help="Data inicial DJEN ISO yyyy-mm-dd"
+    )
+    timeline_cmd.add_argument("--out", default="timeline.json", help="Arquivo de saída JSON")
 
     args = parser.parse_args(argv)
     try:
@@ -110,6 +149,44 @@ def main(argv: list[str] | None = None) -> int:
             djen_resultado = api.consultar_djen(args.numero, data_inicio=args.data_inicio)
             Path(args.out).write_text(_format_json(djen_resultado), encoding="utf-8")
             print(f"DJEN salvo em: {args.out}")
+            return 0
+
+        if args.command == "datajud":
+            datajud_resultado = api.consultar_datajud(
+                args.numero,
+                api_key=args.api_key,
+                include_raw=args.raw,
+            )
+            Path(args.out).write_text(
+                _format_json(cast(JsonPayload, datajud_resultado)), encoding="utf-8"
+            )
+            print(f"DataJud salvo em: {args.out}")
+            return 0
+
+        if args.command == "extract":
+            extracao = api.extract_process(
+                args.numero,
+                sources=args.source or ("esaj", "datajud", "djen"),
+                include_raw=args.raw,
+                datajud_api_key=args.datajud_api_key,
+                djen_data_inicio=args.djen_data_inicio,
+            )
+            Path(args.out).write_text(_format_json(cast(JsonPayload, extracao)), encoding="utf-8")
+            print(f"Extração salva em: {args.out}")
+            return 0
+
+        if args.command == "timeline":
+            extracao = api.extract_process(
+                args.numero,
+                sources=args.source or ("esaj", "datajud", "djen"),
+                datajud_api_key=args.datajud_api_key,
+                djen_data_inicio=args.djen_data_inicio,
+            )
+            timeline_resultado = cast(dict[str, Any], extracao).get("timeline", [])
+            Path(args.out).write_text(
+                _format_json(cast(JsonPayload, timeline_resultado)), encoding="utf-8"
+            )
+            print(f"Timeline salva em: {args.out}")
             return 0
 
         parser.print_help()
