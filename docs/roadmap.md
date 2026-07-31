@@ -23,21 +23,22 @@ Este roadmap organiza a evolução do projeto em entregas pequenas, verificávei
 - Pacote marcado como tipado com `py.typed`.
 - Checagem `mypy` no CI.
 - Site MkDocs Material.
+- GitHub Pages preparado para publicação da documentação.
+- CodeQL preparado para upload de resultados em Code Scanning.
 - Workflow de release para tags `v*`.
 - Documentos de metodologia, reprodutibilidade, LGPD, modelo de ameaças e governança.
 - Arquivo `CITATION.cff` para uso acadêmico e institucional.
+- Gate mínimo de cobertura elevado para 90%.
 
 ## Próximas prioridades
 
-- Publicar pacote no PyPI/TestPyPI.
+- Publicar pacote no PyPI/TestPyPI com Trusted Publishing.
 - Ampliar fixtures sanitizadas com cenários reais de falha do eSAJ.
 - Medir cobertura em badge público.
-- Publicar GitHub Pages a partir de `mkdocs.yml` quando o plano/configuração do repositório permitir Pages.
-- Habilitar upload de resultados CodeQL quando Code Scanning estiver disponível no repositório.
 - Adicionar pre-commit como check documentado no guia de contribuição.
 - Exportar CSV e integração opcional com pandas.
 - Adicionar matriz de compatibilidade por tribunal/fonte.
-- Aumentar cobertura para 90% com foco em branches críticos do parser.
+- Aumentar cobertura incrementalmente para 95% com foco em branches críticos do parser.
 
 ## Critério de qualidade
 

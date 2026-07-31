@@ -4,6 +4,15 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
+## [0.3.3] - 2026-07-31
+
+### Alterado
+
+- Repositório tornado público no GitHub.
+- Workflow de documentação volta a publicar GitHub Pages quando permitido.
+- CodeQL volta a enviar resultados para Code Scanning em repositório público.
+- Roadmap limpo para refletir o estado público atual.
+
 ## [0.3.2] - 2026-07-31
 
 ### Adicionado
