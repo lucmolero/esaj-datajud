@@ -30,14 +30,30 @@ Este roadmap organiza a evolução do projeto em entregas pequenas, verificávei
 - Arquivo `CITATION.cff` para uso acadêmico e institucional.
 - Gate mínimo de cobertura elevado para 90%.
 
+## Entregue em 0.4
+
+- Cliente DataJud/CNJ separado do DJEN, com chave pública fallback, retry, backoff e normalização.
+- Envelope versionado de extração por fonte.
+- Timeline cronológica sem interpretação jurídica.
+- Exportadores JSON, JSONL, CSV e SQLite.
+- Documentação de fontes, contratos e extração agregada.
+
+## Entregue em 0.5
+
+- Servidor MCP local por `stdio`.
+- Extra opcional `mcp`.
+- Entry point `esaj-datajud-mcp`.
+- Ferramentas MCP somente leitura para validação CNJ, eSAJ, DataJud, DJEN, extração agregada e timeline.
+- Testes reais manuais com eSAJ, DataJud, DJEN e MCP local.
+
 ## Próximas prioridades
 
-- Publicar pacote no PyPI/TestPyPI com Trusted Publishing.
+- Publicar pacote no PyPI com Trusted Publishing.
 - Ampliar fixtures sanitizadas com cenários reais de falha do eSAJ.
 - Medir cobertura em badge público.
-- Adicionar pre-commit como check documentado no guia de contribuição.
-- Exportar CSV e integração opcional com pandas.
 - Adicionar matriz de compatibilidade por tribunal/fonte.
+- Adicionar testes live opcionais para DataJud, DJEN e MCP local.
+- Reduzir gradualmente o `ignore_errors` do `mypy` no parser eSAJ.
 - Aumentar cobertura incrementalmente para 95% com foco em branches críticos do parser.
 
 ## Critério de qualidade

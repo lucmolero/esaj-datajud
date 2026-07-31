@@ -22,3 +22,9 @@ def test_imports():
     assert hasattr(exceptions, "EsajDatajudError")
     assert hasattr(models, "Extrato")
     assert hasattr(utils, "limpar")
+
+
+def test_import_mcp_server_opcional():
+    mcp_server = importlib.import_module("esaj_datajud.mcp_server")
+
+    assert hasattr(mcp_server, "create_server")

@@ -50,10 +50,12 @@ Salva comunicações encontradas no DJEN em JSON.
 ## Consultar DataJud
 
 ```bash
-esaj datajud 1076539-20.2019.8.26.0100 --api-key "APIKey ..." --out datajud.json
+esaj datajud 1076539-20.2019.8.26.0100 --out datajud.json
 ```
 
 Salva dados processuais estruturados da API pública DataJud/CNJ em JSON.
+
+A biblioteca usa a chave pública vigente documentada na Wiki oficial do DataJud/CNJ como fallback. Use `--api-key` apenas se o CNJ rotacionar a chave ou se você quiser informar outra explicitamente.
 
 ## Extração Agregada
 

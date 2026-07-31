@@ -1,7 +1,6 @@
 """Gera envelope versionado com dados extraidos de multiplas fontes."""
 
 import json
-import os
 
 from esaj_datajud import api
 
@@ -11,7 +10,6 @@ def main() -> None:
     envelope = api.extract_process(
         numero,
         sources=("datajud", "djen"),
-        datajud_api_key=os.getenv("DATAJUD_API_KEY"),
     )
 
     print(json.dumps(envelope, ensure_ascii=False, indent=2))

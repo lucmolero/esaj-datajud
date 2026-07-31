@@ -52,6 +52,7 @@ O projeto também serve como vitrine técnica de engenharia legaltech: contratos
 - Cliente DataJud/CNJ para dados processuais estruturados, com retry, backoff e normalização.
 - Cliente DJEN para comunicações e publicações, com paginação, retry, backoff e deduplicação.
 - Cliente configurável com timeout, rate limit, cache local opcional, logging e sessão injetável.
+- Servidor MCP local opcional por `stdio` para agentes e clientes compatíveis com MCP.
 - Contratos tipados, exceções públicas e testes com fixtures sanitizadas.
 - Pacote marcado como tipado (`py.typed`), com checagem `mypy` no CI.
 - Foco em uso jurídico responsável, com atenção a LGPD, dados sensíveis e limites das fontes consultadas.
@@ -72,6 +73,13 @@ Para desenvolvimento local:
 
 ```bash
 python -m pip install -e ".[dev]"
+```
+
+Para usar o servidor MCP local:
+
+```bash
+python -m pip install -e ".[mcp]"
+esaj-datajud-mcp
 ```
 
 Para uso direto a partir do repositório:
@@ -97,9 +105,11 @@ print(extrato["dados_basicos"])
 comunicacoes = api.consultar_djen(numero)
 print(len(comunicacoes))
 
-datajud = api.consultar_datajud(numero, api_key="APIKey ...")
+datajud = api.consultar_datajud(numero)
 print(datajud["classe"])
 ```
+
+A API pública do DataJud/CNJ usa chave pública documentada na Wiki oficial. A biblioteca inclui a chave vigente como fallback; se o CNJ rotacionar a chave, use `DATAJUD_API_KEY` ou passe `api_key` explicitamente.
 
 ## Uso profissional com cliente configurável
 
@@ -127,7 +137,7 @@ esaj extrato 1076539-20.2019.8.26.0100 --out extrato.json
 esaj partes 1076539-20.2019.8.26.0100
 esaj baixar extrato.json --out pecas
 esaj djen 1076539-20.2019.8.26.0100 --out djen.json
-esaj datajud 1076539-20.2019.8.26.0100 --api-key "APIKey ..." --out datajud.json
+esaj datajud 1076539-20.2019.8.26.0100 --out datajud.json
 esaj timeline 1076539-20.2019.8.26.0100 --source esaj --source djen --out timeline.json
 ```
 
@@ -136,6 +146,18 @@ Também é possível executar via módulo:
 ```bash
 python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
 ```
+
+## MCP Local
+
+O projeto inclui um servidor MCP local opcional por `stdio`, pensado para agentes que precisam consultar e estruturar dados judiciais sem expor endpoint público.
+
+```bash
+python -m esaj_datajud.mcp_server
+```
+
+As ferramentas MCP disponíveis validam CNJ, extraem números CNJ de texto, consultam eSAJ/TJSP, DataJud/CNJ e DJEN, geram envelope versionado e timeline cronológica.
+
+Consulte [docs/mcp-local.md](docs/mcp-local.md) para configuração em clientes MCP.
 
 ## Exemplo de saída
 
@@ -167,6 +189,7 @@ python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
 - `esaj_datajud.extraction` - envelope versionado de extração por fonte.
 - `esaj_datajud.timeline` - timeline cronológica sem interpretação jurídica.
 - `esaj_datajud.exports` - exportadores JSON, JSONL, CSV e SQLite.
+- `esaj_datajud.mcp_server` - servidor MCP local opcional por `stdio`.
 - `esaj_datajud.cli` - interface de linha de comando.
 - `esaj_datajud.utils` - normalização de texto, nomes de arquivo e classificação auxiliar.
 
@@ -215,6 +238,7 @@ python -m twine check dist/*
 ## Documentação
 
 - [Quickstart](docs/quickstart.md)
+- [MCP local](docs/mcp-local.md)
 - [Cliente configurável](docs/client.md)
 - [API Reference](docs/api-reference.md)
 - [Guia da CLI](docs/cli.md)

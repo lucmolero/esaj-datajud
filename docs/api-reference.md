@@ -37,6 +37,8 @@ Consulta comunicações do DJEN para o número CNJ informado.
 
 Consulta dados processuais estruturados na API pública DataJud/CNJ.
 
+Usa a chave pública vigente documentada na Wiki oficial do DataJud/CNJ como fallback. O parâmetro `api_key` existe para override explícito quando necessário.
+
 ## `api.extract_process(numero, sources=("esaj", "datajud", "djen"), include_raw=False, datajud_api_key=None, djen_data_inicio="")`
 
 Extrai dados das fontes solicitadas em envelope versionado, preservando resultado, erros e timeline cronológica.
@@ -75,5 +77,5 @@ Campos principais:
 - `cache_dir`: diretório de cache.
 - `cache_ttl_seconds`: tempo de vida do cache.
 - `salvar_html`: salva HTML bruto quando suportado pelo fluxo.
-- `datajud_api_key`: API key do DataJud/CNJ para clientes configuráveis.
+- `datajud_api_key`: override opcional da chave DataJud/CNJ para clientes configuráveis.
 - `user_agent`: modelo de `User-Agent` com suporte a `{version}`.

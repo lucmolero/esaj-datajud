@@ -7,7 +7,8 @@ Descreva objetivamente o que mudou e por quê.
 - [ ] API pública
 - [ ] CLI
 - [ ] Parser eSAJ
-- [ ] DJEN/DataJud
+- [ ] DataJud/CNJ
+- [ ] DJEN
 - [ ] Documentação
 - [ ] Testes/CI
 - [ ] Segurança/LGPD

@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from esaj_datajud import datajud
-from esaj_datajud.exceptions import AcessoRestrito, ConsultaIndisponivel, CredencialAusente
+from esaj_datajud.exceptions import AcessoRestrito, ConsultaIndisponivel
 
 
 class FakeResponse:
@@ -74,13 +74,12 @@ def test_indice_datajud_outros_segmentos(monkeypatch):
     assert datajud.indice_datajud("0000001-02.2020.2.00.0000") == "stj"
 
 
-def test_api_key_obrigatoria(monkeypatch):
+def test_api_key_usa_chave_publica_oficial(monkeypatch):
     monkeypatch.delenv("ESAJ_DATAJUD_DATAJUD_API_KEY", raising=False)
     monkeypatch.delenv("DATAJUD_API_KEY", raising=False)
     monkeypatch.delenv("CNJ_DATAJUD_API_KEY", raising=False)
 
-    with pytest.raises(CredencialAusente):
-        datajud.datajud_api_key()
+    assert datajud.datajud_api_key() == f"APIKey {datajud.PUBLIC_DATAJUD_API_KEY}"
 
 
 def test_api_key_usa_env(monkeypatch):

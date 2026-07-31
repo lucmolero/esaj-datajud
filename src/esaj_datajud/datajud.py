@@ -11,13 +11,15 @@ from typing import Any, cast
 
 import requests
 
-from .exceptions import AcessoRestrito, ConsultaIndisponivel, CredencialAusente
+from .exceptions import AcessoRestrito, ConsultaIndisponivel
 from .normalization import somente_digitos
 from .schemas import DataJudExtraction
 from .sources import DATAJUD
 from .utils import validar_numero_cnj
 
 API_TEMPLATE = "https://api-publica.datajud.cnj.jus.br/api_publica_{indice}/_search"
+DATAJUD_WIKI_ACESSO_URL = "https://datajud-wiki.cnj.jus.br/api-publica/acesso/"
+PUBLIC_DATAJUD_API_KEY = "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
 DEFAULT_SOURCE_FIELDS = [
     "numeroProcesso",
     "classe",
@@ -82,18 +84,23 @@ def indice_datajud(numero: str) -> str:
 
 
 def datajud_api_key(api_key: str | None = None) -> str:
-    """Resolve API key do DataJud aceitando valor explicito ou variaveis de ambiente."""
+    """Resolve API key do DataJud.
+
+    Ordem de precedencia:
+    1. valor explicito;
+    2. variaveis de ambiente;
+    3. chave publica vigente documentada na Wiki oficial do DataJud/CNJ.
+
+    A chave publica pode ser rotacionada pelo CNJ. Em caso de falha de autenticacao,
+    informe uma chave atualizada por argumento ou variavel de ambiente.
+    """
     chave = (
         api_key
         or os.getenv("ESAJ_DATAJUD_DATAJUD_API_KEY")
         or os.getenv("DATAJUD_API_KEY")
         or os.getenv("CNJ_DATAJUD_API_KEY")
-        or ""
+        or PUBLIC_DATAJUD_API_KEY
     ).strip()
-    if not chave:
-        raise CredencialAusente(
-            "DataJud exige API key. Configure ESAJ_DATAJUD_DATAJUD_API_KEY ou informe api_key."
-        )
     return chave if chave.startswith("APIKey ") else f"APIKey {chave}"
 
 

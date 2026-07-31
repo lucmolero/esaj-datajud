@@ -14,6 +14,7 @@
 - `esaj_datajud.extraction`: envelope versionado de extração por fonte.
 - `esaj_datajud.timeline`: timeline cronológica sem interpretação jurídica.
 - `esaj_datajud.exports`: exportadores JSON, JSONL, CSV e SQLite.
+- `esaj_datajud.mcp_server`: servidor MCP local opcional por `stdio`.
 - `esaj_datajud.models`: contratos tipados dos retornos.
 - `esaj_datajud.exceptions`: exceções públicas e previsíveis.
 - `esaj_datajud.utils`: normalização de texto, CNJ e classificação auxiliar.

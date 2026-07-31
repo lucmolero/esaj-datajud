@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "esaj-datajud"
-version = "0.4.0"
+version = "0.5.0"
 description = "Toolkit Python para extração responsável, normalização e exportação de dados públicos judiciais do eSAJ/TJSP, DataJud/CNJ e DJEN."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -56,6 +56,9 @@ dev = [
   "twine>=5.0",
   "wheel>=0.42",
 ]
+mcp = [
+  "mcp>=1.0,<2",
+]
 
 [project.urls]
 Homepage = "https://lucmolero.github.io/esaj-datajud/"
@@ -68,6 +71,7 @@ LinkedIn = "https://www.linkedin.com/in/luciano-molero/"
 
 [project.scripts]
 esaj = "esaj_datajud.cli:main"
+esaj-datajud-mcp = "esaj_datajud.mcp_server:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

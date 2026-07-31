@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.0] - 2026-07-31
+
+### Adicionado
+
+- Adiciona servidor MCP local por `stdio` em `esaj_datajud.mcp_server`.
+- Adiciona entrypoint `esaj-datajud-mcp` para clientes MCP locais.
+- Adiciona extra opcional `mcp` com dependência `mcp>=1.0,<2`.
+- Expõe ferramentas MCP somente leitura para validação CNJ, extração de CNJ em texto, consultas eSAJ/DataJud/DJEN, envelope agregado e timeline.
+- Adiciona documentação de instalação e configuração local do MCP.
+
 ## [0.4.0] - 2026-07-31
 
 ### Adicionado
