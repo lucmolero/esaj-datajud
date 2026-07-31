@@ -143,6 +143,13 @@ python -m ruff format --check src tests
 python -m mypy src
 ```
 
+Testes ao vivo ficam desativados por padrao. Para validar contra o eSAJ/TJSP real:
+
+```bash
+$env:ESAJ_DATAJUD_RUN_LIVE = "1"
+python -m pytest -m live
+```
+
 Antes de abrir um pull request, rode:
 
 ```bash
@@ -168,6 +175,7 @@ python -m twine check dist/*
 - [LGPD](docs/lgpd.md)
 - [Modelo de ameaças](docs/threat-model.md)
 - [Fixtures](docs/fixtures.md)
+- [Validacao real](docs/validacao-real.md)
 - [Uso responsável](docs/uso-responsavel.md)
 - [Governança](docs/governanca.md)
 - [Roadmap](docs/roadmap.md)

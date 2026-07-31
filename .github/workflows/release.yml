@@ -41,3 +41,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
+          body_path: docs/release-notes-${{ github.ref_name }}.md

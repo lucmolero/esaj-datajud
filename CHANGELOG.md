@@ -4,6 +4,23 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
+## [0.3.5] - 2026-07-31
+
+### Corrigido
+
+- Evita falso positivo de `AcessoRestrito` quando uma pagina publica do eSAJ contem o popup oculto `popupSenha`.
+
+### Adicionado
+
+- Teste automatizado para pagina publica com popup oculto de senha.
+- Teste `live` opcional para validacao controlada contra o eSAJ/TJSP real.
+- Guia de validacao real com corpus privado, sanitizacao e cenarios obrigatorios.
+- Release notes versionadas para `v0.3.5`.
+
+### Alterado
+
+- Workflow de release passa a usar arquivo de notas versionadas como corpo do GitHub Release.
+
 ## [0.3.4] - 2026-07-31
 
 ### Alterado

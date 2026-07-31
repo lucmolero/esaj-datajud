@@ -90,6 +90,25 @@ def test_detectar_estado_pagina_rejeita_resposta_sem_processo():
         raise AssertionError("Página sem processo deveria gerar ProcessoNaoEncontrado")
 
 
+def test_detectar_estado_pagina_aceita_processo_com_popup_senha_oculto():
+    soup = BeautifulSoup(
+        """
+        <html>
+          <body>
+            <span id="numeroProcesso">1076539-20.2019.8.26.0100</span>
+            <form id="popupSenha" style="display: none">
+              Se for uma parte ou interessado, digite a senha do processo
+            </form>
+          </body>
+        </html>
+        """,
+        "html.parser",
+    )
+    response = type("Response", (), {"url": "https://example.test"})()
+
+    esaj.detectar_estado_pagina(soup, response)
+
+
 class FakeResponse:
     status_code = 200
     url = "https://esaj.tjsp.jus.br/cpopg/show.do?processo.codigo=ABC"

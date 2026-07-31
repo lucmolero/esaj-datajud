@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "esaj-datajud"
-version = "0.3.4"
+version = "0.3.5"
 description = "Biblioteca Python para extração e consulta de processos eSAJ/TJSP e DJEN/DataJud."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -72,6 +72,9 @@ esaj = "esaj_datajud.cli:main"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra -p no:cacheprovider"
+markers = [
+  "live: testes opcionais que consultam fontes externas reais e ficam desativados por padrao"
+]
 
 [tool.ruff]
 line-length = 100

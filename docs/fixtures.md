@@ -21,3 +21,19 @@ Fixtures são amostras HTML ou JSON usadas para testar parsers sem depender de r
 - DJEN com paginação;
 - DJEN com HTTP 429 e retry;
 - DJEN com HTTP 403.
+
+## Corpus real privado
+
+Use corpus real apenas como referencia privada. Quando um caso real revelar um bug, reduza o HTML
+ao menor trecho sanitizado que reproduz o problema.
+
+Cenarios adicionais obrigatorios:
+
+- processo publico com `popupSenha` oculto;
+- processo realmente restrito sem `numeroProcesso` publico;
+- processo com muitas movimentacoes;
+- processo com muitas partes;
+- execucao fiscal;
+- falencia ou recuperacao judicial.
+
+Para validacoes com fonte real e corpus privado, veja [Validacao Real](validacao-real.md).

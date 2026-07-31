@@ -164,6 +164,9 @@ def carregar_pagina(
 
 
 def detectar_estado_pagina(soup: BeautifulSoup, response: requests.Response) -> None:
+    if texto_id(soup, "numeroProcesso"):
+        return
+
     texto = limpar(soup.get_text(" ", strip=True)).lower()
     if soup.find(id="captcha") or "captcha" in texto:
         raise AcessoRestrito("eSAJ retornou página com captcha.")
