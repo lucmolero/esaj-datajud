@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">eSAJ DataJud — símbolo</title>
+  <desc id="desc">Portal de justiça moderno com uma linha central de dados processuais.</desc>
+<g transform="translate(0 0) scale(1.0)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Institutional roof / legal portal -->
+  <path d="M92 192 L256 102 L420 192" stroke="#0B1F33" stroke-width="30"/>
+  <path d="M126 214 H386" stroke="#0B1F33" stroke-width="24"/>
+
+  <!-- Two stable pillars. The center pillar is intentionally replaced by data. -->
+  <path d="M156 244 V372" stroke="#0B1F33" stroke-width="42"/>
+  <path d="M356 244 V372" stroke="#0B1F33" stroke-width="42"/>
+
+  <!-- Structured judicial timeline -->
+  <path d="M256 232 V380" stroke="#18A999" stroke-width="18"/>
+  <circle cx="256" cy="246" r="20" fill="#18A999" stroke="none"/>
+  <circle cx="256" cy="306" r="20" fill="#18A999" stroke="none"/>
+  <circle cx="256" cy="366" r="20" fill="#18A999" stroke="none"/>
+
+  <!-- Ground / rule of law -->
+  <path d="M110 410 H402" stroke="#0B1F33" stroke-width="30"/>
+</g>
+</svg>

@@ -7,8 +7,8 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   language: pt-BR
-  logo: assets/logo.svg
-  favicon: assets/logo.svg
+  logo: assets/esaj-datajud-logo-primary.svg
+  favicon: assets/esaj-datajud-icon.svg
   palette:
     primary: blue grey
     accent: teal

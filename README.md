@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" alt="Marca esaj-datajud" width="160" />
+  <img src="docs/assets/esaj-datajud-logo-primary.svg" alt="Marca esaj-datajud" width="220" />
 </p>
 
 <h1 align="center">esaj-datajud</h1>
