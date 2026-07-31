@@ -42,3 +42,26 @@ def test_validar_numero_cnj_rejeita_digito_invalido():
         assert "Dígito" in str(exc)
     else:
         raise AssertionError("Dígito inválido deveria gerar FormatoCNJInvalido")
+
+
+def test_validar_numero_cnj_rejeita_segmento_e_tribunal():
+    numero = "1076539-20.2019.8.26.0100"
+
+    for kwargs in [{"segmento": "7"}, {"tribunal": "25"}]:
+        try:
+            validar_numero_cnj(numero, **kwargs)
+        except FormatoCNJInvalido:
+            pass
+        else:
+            raise AssertionError("Escopo incompatível deveria gerar FormatoCNJInvalido")
+
+
+def test_adicionar_unico():
+    from esaj_datajud.utils import adicionar_unico
+
+    valores = ["um"]
+    adicionar_unico(valores, "um")
+    adicionar_unico(valores, "dois")
+    adicionar_unico(valores, "")
+
+    assert valores == ["um", "dois"]

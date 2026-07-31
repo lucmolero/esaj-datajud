@@ -1,6 +1,6 @@
 ## Resumo
 
-Descreva a mudança em linguagem clara.
+Descreva objetivamente o que mudou e por quê.
 
 ## Impacto
 
@@ -9,11 +9,14 @@ Descreva a mudança em linguagem clara.
 - [ ] Parser eSAJ
 - [ ] DJEN/DataJud
 - [ ] Documentação
-- [ ] Testes
+- [ ] Testes/CI
+- [ ] Segurança/LGPD
 
 ## Checklist
 
-- [ ] Rodei `python -m pytest`
+- [ ] Rodei `python -m pytest --cov`
+- [ ] Rodei `python -m ruff check src tests`
+- [ ] Rodei `python -m ruff format --check src tests`
+- [ ] Rodei `python -m mypy src`
 - [ ] Atualizei documentação quando necessário
-- [ ] Não incluí dados pessoais ou fixtures não sanitizadas
-- [ ] Não adicionei comportamento para burlar restrições de acesso
+- [ ] Não incluí dados pessoais, peças, HTML bruto sensível ou informações sigilosas

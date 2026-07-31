@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Uso responsável
+    url: https://github.com/lucmolero/esaj-datajud/blob/main/docs/uso-responsavel.md
+    about: Leia antes de solicitar automações recorrentes ou coleta em escala.

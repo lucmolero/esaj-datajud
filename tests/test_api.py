@@ -100,3 +100,69 @@ def test_baixar_pecas_delega_para_esaj(monkeypatch):
     assert resultado == [{"status": "baixado"}]
     assert chamadas["movimentos"][0]["documentos"][0]["cd_documento"] == "123"
     assert chamadas["limite"] == 1
+
+
+def test_get_extrato_delega_parametros(monkeypatch):
+    chamadas = {}
+
+    def fake_montar(numero, **kwargs):
+        chamadas["numero"] = numero
+        chamadas.update(kwargs)
+        return _extrato()
+
+    monkeypatch.setattr(api.esaj, "montar_extrato", fake_montar)
+
+    resultado = api.get_extrato(
+        "1076539-20.2019.8.26.0100",
+        baixar_pecas=True,
+        limite_pecas=2,
+        inspecionar_pecas=True,
+        limite_inspecao_pecas=4,
+        salvar_html=True,
+    )
+
+    assert resultado["status"] == "ok"
+    assert chamadas["baixar_pecas"] is True
+    assert chamadas["limite_pecas"] == 2
+    assert chamadas["inspecionar_pecas"] is True
+    assert chamadas["limite_inspecao_pecas"] == 4
+    assert chamadas["salvar_html"] is True
+
+
+def test_get_partes_retorna_fallback(monkeypatch):
+    monkeypatch.setattr(api, "get_extrato", lambda numero: {"status": "ok"})
+
+    partes = api.get_partes("1076539-20.2019.8.26.0100")
+
+    assert partes["polo_ativo"] == []
+
+
+def test_baixar_pecas_usa_movimentacoes_quando_sem_documentos(monkeypatch):
+    chamadas = {}
+    monkeypatch.setattr(api.esaj, "criar_session", lambda: object())
+
+    def fake_baixar(session, movimentos, destino, limite, sobrescrever):
+        chamadas["movimentos"] = movimentos
+        return []
+
+    monkeypatch.setattr(api.esaj, "baixar_pecas_publicas", fake_baixar)
+
+    api.baixar_pecas({"documentos": {}, "movimentacoes": [{"documentos": []}]}, Path("pecas"))
+
+    assert chamadas["movimentos"] == [{"documentos": []}]
+
+
+def test_consultar_djen_delega(monkeypatch):
+    chamadas = {}
+
+    def fake_consultar(numero, data_inicio=""):
+        chamadas["numero"] = numero
+        chamadas["data_inicio"] = data_inicio
+        return [{"id": "1"}]
+
+    monkeypatch.setattr(api.djen, "consultar_processo", fake_consultar)
+
+    resultado = api.consultar_djen("1076539-20.2019.8.26.0100", data_inicio="2026-07-01")
+
+    assert resultado == [{"id": "1"}]
+    assert chamadas["data_inicio"] == "2026-07-01"

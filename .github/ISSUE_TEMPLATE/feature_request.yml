@@ -1,26 +1,24 @@
-name: Feature request
-description: Sugira uma melhoria ou nova capacidade.
+name: Solicitar Melhoria
+description: Sugira uma melhoria de API, CLI, documentação ou parser.
 title: "[Feature]: "
-labels: ["enhancement"]
+labels: ["enhancement", "triage"]
 body:
   - type: textarea
-    id: problem
+    id: problema
     attributes:
-      label: Problema
-      description: Qual problema jurídico ou técnico essa melhoria resolve?
+      label: Problema ou oportunidade
+      description: Qual dor jurídica, acadêmica ou técnica esta melhoria resolve?
     validations:
       required: true
   - type: textarea
-    id: solution
+    id: proposta
     attributes:
-      label: Solução desejada
-      description: Descreva o comportamento esperado.
+      label: Proposta
+      description: Descreva a solução desejada.
     validations:
       required: true
   - type: textarea
-    id: context
+    id: limites
     attributes:
-      label: Contexto adicional
-      description: Inclua exemplos sanitizados, quando útil.
-    validations:
-      required: false
+      label: Limites e cuidados
+      description: Há risco de LGPD, sigilo, volume de consultas ou compatibilidade?

@@ -4,6 +4,21 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
+## [0.3.2] - 2026-07-31
+
+### Adicionado
+
+- Templates profissionais para issues e pull requests.
+- Workflow manual de publicação PyPI com Trusted Publishing.
+- Release notes versionadas em `docs/release-notes-v0.3.1.md`.
+
+### Alterado
+
+- `SPECS.md` passa a refletir a arquitetura real do projeto.
+- GitHub Actions atualizados para versões mais recentes apontadas pelo Dependabot.
+- Cobertura ampliada para 91% com novos testes de API, cliente, cache, DJEN e eSAJ.
+- Gate mínimo de cobertura elevado para 90%.
+
 ## [0.3.1] - 2026-07-31
 
 ### Corrigido

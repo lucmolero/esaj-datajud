@@ -1,37 +1,44 @@
-name: Bug report
-description: Relate um comportamento inesperado.
+name: Relatar Bug
+description: Informe um comportamento inesperado com contexto técnico e jurídico suficiente.
 title: "[Bug]: "
-labels: ["bug"]
+labels: ["bug", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        Obrigado por reportar. Não inclua dados pessoais, documentos sigilosos ou HTML real sem sanitização.
+        Obrigado por ajudar a melhorar o `esaj-datajud`.
+        Não inclua dados pessoais, peças, HTML bruto ou informações sigilosas sem sanitização.
   - type: textarea
-    id: description
+    id: problema
     attributes:
-      label: Descrição
+      label: Problema
       description: O que aconteceu?
     validations:
       required: true
   - type: textarea
-    id: expected
+    id: esperado
     attributes:
       label: Comportamento esperado
-      description: O que você esperava que acontecesse?
+      description: O que deveria acontecer?
     validations:
       required: true
   - type: textarea
-    id: steps
+    id: reproduzir
     attributes:
       label: Como reproduzir
-      description: Liste comandos ou passos mínimos, sem dados sensíveis.
+      description: Liste comandos, versão e entrada sanitizada.
+      placeholder: |
+        1. python -m pip install -e ".[dev]"
+        2. esaj search 0000000-00.0000.0.00.0000
     validations:
-      required: false
+      required: true
   - type: input
-    id: python
+    id: versao
     attributes:
-      label: Versão do Python
-      placeholder: "3.12"
-    validations:
-      required: false
+      label: Versão
+      placeholder: "0.3.1"
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto adicional
+      description: Inclua logs sanitizados, sistema operacional e versão do Python.

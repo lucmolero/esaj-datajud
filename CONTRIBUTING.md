@@ -16,14 +16,18 @@ Este projeto busca ser uma biblioteca aberta, profissional e confiável para sol
 
 ```bash
 python -m pip install -e ".[dev]"
-python -m pytest
+python -m pytest --cov
 ```
 
 ## Antes de enviar um pull request
 
 ```bash
-python -m pytest
+python -m pytest --cov
+python -m ruff check src tests
+python -m ruff format --check src tests
+python -m mypy src
 python -m build
+python -m twine check dist/*
 ```
 
 ## Como contribuir

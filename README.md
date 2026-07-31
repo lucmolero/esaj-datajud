@@ -123,7 +123,7 @@ python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
 
 O projeto está em fase beta. A API, a CLI e o cliente configurável já existem, mas algumas capacidades planejadas ainda estão em evolução, especialmente cobertura ampla de cenários reais do eSAJ, exportadores analíticos e documentação publicada como site.
 
-Mesmo em beta, o projeto já possui validação CNJ, exceções públicas, contratos tipados, cache opcional, rate limit, CI, lint, type check, build de pacote e testes sem rede para cenários centrais.
+Mesmo em beta, o projeto já possui validação CNJ, exceções públicas, contratos tipados, cache opcional, rate limit, CI, lint, type check, build de pacote e testes sem rede para cenários centrais. O gate mínimo de cobertura é 90%.
 
 Para acompanhar a evolução, consulte [SPECS.md](SPECS.md), [CHANGELOG.md](CHANGELOG.md) e [docs/roadmap.md](docs/roadmap.md).
 

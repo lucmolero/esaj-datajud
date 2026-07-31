@@ -34,4 +34,7 @@ nav:
   - Fixtures: fixtures.md
   - Uso Responsável: uso-responsavel.md
   - Governança: governanca.md
+  - Release Notes:
+      - v0.3.2: release-notes-v0.3.2.md
+      - v0.3.1: release-notes-v0.3.1.md
   - Roadmap: roadmap.md

@@ -3,7 +3,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from esaj_datajud import esaj
-from esaj_datajud.exceptions import ProcessoNaoEncontrado
+from esaj_datajud.exceptions import AcessoRestrito, ProcessoNaoEncontrado
 
 FIXTURE = Path(__file__).parent / "fixtures" / "esaj_processo_basico.html"
 
@@ -120,3 +120,76 @@ def test_extrair_request_scope():
     texto = 'antes var requestScope = [{"data": {"title": "Doc"}, "children": []}]; depois'
 
     assert esaj.extrair_request_scope(texto) == '[{"data": {"title": "Doc"}, "children": []}]'
+
+
+def test_helpers_retornam_vazio_quando_elementos_ausentes():
+    soup = BeautifulSoup("<html><body></body></html>", "html.parser")
+
+    assert esaj.texto_id(soup, "ausente") == ""
+    assert esaj.processo_codigo("https://example.test") == ""
+    assert esaj.extrair_campos_rotulados(None) == {}
+    assert esaj.linhas_dados_tabela(None) == []
+    assert esaj.extrair_movimentacoes(soup) == []
+
+
+def test_detectar_estado_pagina_rejeita_captcha_e_senha():
+    response = type("Response", (), {"url": "https://example.test"})()
+
+    for html in [
+        '<html><body><div id="captcha"></div></body></html>',
+        "<html><body>Senha do processo obrigatória</body></html>",
+    ]:
+        try:
+            esaj.detectar_estado_pagina(BeautifulSoup(html, "html.parser"), response)
+        except AcessoRestrito:
+            pass
+        else:
+            raise AssertionError("Página restrita deveria gerar AcessoRestrito")
+
+
+def test_extrair_partes_usa_tabela_todas_partes_por_classe():
+    soup = BeautifulSoup(
+        """
+        <table class="todasPartes">
+          <tr><td class="tipoDeParticipacao">Requerente</td>
+          <td class="nomeParteEAdvogado">Pessoa Autora</td></tr>
+        </table>
+        """,
+        "html.parser",
+    )
+
+    partes = esaj.extrair_partes(soup)
+
+    assert partes["polo_ativo"][0]["nomes"] == ["Pessoa Autora"]
+
+
+def test_extrair_titulo_teor_movimentacao_sem_link():
+    tag = BeautifulSoup(
+        '<td class="descricaoMovimentacao">Despacho<br/>Texto do despacho</td>',
+        "html.parser",
+    ).td
+
+    titulo, teor, texto = esaj.extrair_titulo_teor_movimentacao(tag)
+
+    assert titulo == "Despacho"
+    assert teor == "Texto do despacho"
+    assert texto == "Despacho Texto do despacho"
+
+
+def test_extrair_request_scope_retorna_none_para_entradas_invalidas():
+    assert esaj.extrair_request_scope("sem marcador") is None
+    assert esaj.extrair_request_scope("var requestScope = sem lista") is None
+    assert esaj.extrair_request_scope('var requestScope = [{"aberto": true}') is None
+
+
+def test_classificar_documento_e_titulo_por_query():
+    html = (
+        '<a id="linkMovVincProc-999" href="abrirDocumentoVinculadoMovimentacao.do?'
+        'cdDocumento=999&nmRecursoAcessado=Decis%C3%A3o"></a>'
+    )
+    link = BeautifulSoup(html, "html.parser").a
+
+    assert esaj.classificar_documento("#liberarAutoPorSenha") == "restrito_por_senha"
+    assert esaj.classificar_documento("outro") == "outro"
+    assert esaj.extrair_cd_documento(link, link["href"]) == "999"
+    assert esaj.titulo_documento(link, link["href"]) == "Decisão"

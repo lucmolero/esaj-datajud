@@ -117,6 +117,21 @@ def test_inspecionar_pecas_publicas_respeita_limite(monkeypatch):
     assert resultado[0]["pasta_digital"]["cd_documento"] == "1"
 
 
+def test_inspecionar_pecas_publicas_registra_erro(monkeypatch):
+    def falha(session, doc):
+        raise RuntimeError("fonte indisponível")
+
+    monkeypatch.setattr(esaj, "obter_metadados_pasta_documento", falha)
+    movimentos = _movimentos(
+        {"cd_documento": "1", "titulo": "Decisão", "status_acesso": "publico_candidato"}
+    )
+
+    resultado = esaj.inspecionar_pecas_publicas(object(), movimentos, limite=0)
+
+    assert resultado[0]["pasta_digital"]["status"] == "erro"
+    assert "fonte indisponível" in resultado[0]["pasta_digital"]["mensagem"]
+
+
 def test_baixar_pecas_publicas_baixa_pdf(monkeypatch):
     monkeypatch.setattr(Path, "mkdir", lambda self, parents=False, exist_ok=False: None)
     escritos = {}
@@ -184,3 +199,27 @@ def test_baixar_pecas_publicas_marca_status_pasta_digital():
 
     assert resultado == []
     assert doc["download_status"] == "sem_request_scope"
+
+
+def test_baixar_pecas_publicas_respeita_limite_zero_com_multiplos_docs(monkeypatch):
+    monkeypatch.setattr(Path, "mkdir", lambda self, parents=False, exist_ok=False: None)
+    monkeypatch.setattr(Path, "write_bytes", lambda self, content: len(content))
+    session = FakeSession([FakeResponse(content=b"%PDF one"), FakeResponse(content=b"%PDF two")])
+    docs = [
+        {
+            "cd_documento": "1",
+            "titulo": "Um",
+            "status_acesso": "publico_candidato",
+            "pasta_digital": {"status": "ok", "paginas": [{"parametros_pdf": "id=1"}]},
+        },
+        {
+            "cd_documento": "2",
+            "titulo": "Dois",
+            "status_acesso": "publico_candidato",
+            "pasta_digital": {"status": "ok", "paginas": [{"parametros_pdf": "id=2"}]},
+        },
+    ]
+
+    resultado = esaj.baixar_pecas_publicas(session, [{"documentos": docs}], Path("pecas"), limite=0)
+
+    assert [item["cd_documento"] for item in resultado] == ["1", "2"]

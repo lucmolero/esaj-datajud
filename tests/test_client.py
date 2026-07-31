@@ -1,6 +1,8 @@
 import logging
 from uuid import uuid4
 
+import pytest
+
 from esaj_datajud.client import EsajDatajudClient, RateLimitedSession
 from esaj_datajud.config import EsajDatajudConfig
 
@@ -134,3 +136,36 @@ def test_rate_limited_session_request_usa_timeout(monkeypatch):
 
     assert response.status_code == 200
     assert chamadas["timeout"] == 7
+
+
+def test_rate_limited_session_aguarda_intervalo(monkeypatch):
+    sleeps = []
+    tempos = iter([10.2])
+    monkeypatch.setattr("esaj_datajud.client.time.monotonic", lambda: next(tempos))
+    monkeypatch.setattr("esaj_datajud.client.time.sleep", lambda segundos: sleeps.append(segundos))
+    session = RateLimitedSession(
+        timeout=7,
+        rate_limit_interval=1.0,
+        logger=logging.getLogger("test"),
+        user_agent="agent",
+    )
+    session._last_request_at = 10.0
+
+    session._wait_if_needed()
+
+    assert sleeps[0] == pytest.approx(0.8)
+
+
+def test_client_baixar_pecas_usa_movimentacoes_quando_sem_documentos(monkeypatch):
+    chamadas = {}
+
+    def fake_baixar(session, movimentos, destino, limite, sobrescrever):
+        chamadas["movimentos"] = movimentos
+        return []
+
+    monkeypatch.setattr("esaj_datajud.client.esaj.baixar_pecas_publicas", fake_baixar)
+    extrato = {"documentos": {}, "movimentacoes": [{"documentos": []}]}
+
+    EsajDatajudClient().baixar_pecas(extrato, destino=__import__("pathlib").Path("pecas"))
+
+    assert chamadas["movimentos"] == [{"documentos": []}]
