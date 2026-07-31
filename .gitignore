@@ -12,6 +12,8 @@ dist/
 /.mypy_cache/
 .ruff_cache/
 .tmp/
+.coverage
+htmlcov/
 *.log
 esaj_raw/
 extrato.json

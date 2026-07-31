@@ -9,6 +9,7 @@
 - Não contorna login, senha ou restrições técnicas.
 - Não garante que a fonte consultada esteja sempre disponível ou completa.
 - Não substitui conferência profissional no sistema oficial.
+- Não deve ser usado para volume agressivo de consultas.
 
 ## Recomendações
 
@@ -18,6 +19,7 @@
 - Use intervalos razoáveis em automações.
 - Registre a data da consulta quando usar dados em relatórios internos.
 - Valide informações relevantes diretamente na fonte oficial antes de tomar decisões processuais.
+- Use cache/rate limit em rotinas recorrentes quando disponível.
 
 ## LGPD e dados sensíveis
 

@@ -3,6 +3,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from esaj_datajud import esaj
+from esaj_datajud.exceptions import ProcessoNaoEncontrado
 
 FIXTURE = Path(__file__).parent / "fixtures" / "esaj_processo_basico.html"
 
@@ -32,8 +33,10 @@ def test_extrair_dados_basicos_da_fixture():
 
     assert dados["numero"] == "1076539-20.2019.8.26.0100"
     assert dados["classe"] == "Ação Civil Pública"
-    assert dados["campos_rotulados"]["assunto"] == "Meio Ambiente"
-    assert dados["campos_rotulados"]["foro"] == "Foro Central Cível"
+    assert dados["assunto"] == "Meio Ambiente"
+    assert dados["foro"] == "Foro Central Cível"
+    assert dados["vara"] == "2ª Vara Cível"
+    assert dados["juiz"] == "Dr. Juiz Exemplo"
 
 
 def test_extrair_partes_classifica_polos():
@@ -52,3 +55,68 @@ def test_extrair_movimentacoes_preserva_ordem_e_texto():
     assert movimentacoes[0]["data"] == "29/07/2026"
     assert movimentacoes[0]["titulo"] == "Publicação de intimação"
     assert movimentacoes[1]["texto"] == "Conclusos para decisão"
+
+
+def test_extrair_movimentacoes_com_documentos_e_metadados():
+    movimentacao = esaj.extrair_movimentacoes(_soup())[0]
+
+    assert movimentacao["metadados"]["data_disponibilizacao"] == "29/07/2026"
+    assert movimentacao["metadados"]["teor_do_ato"] == "Texto complementar da movimentação."
+    assert movimentacao["documentos"][0]["cd_documento"] == "123456"
+    assert movimentacao["documentos"][0]["status_acesso"] == "publico_candidato"
+    assert movimentacao["documentos"][0]["titulo"] == "Decisão"
+    assert movimentacao["documentos"][1]["status_acesso"] == "restrito_por_senha"
+
+
+def test_extrair_tabelas_complementares():
+    soup = _soup()
+
+    assert esaj.extrair_audiencias(soup)[0]["situacao"] == "Designada"
+    assert esaj.extrair_peticoes_diversas(soup)[0]["descricao"] == "Manifestação"
+    relacionados = esaj.extrair_relacionados(soup)
+    assert relacionados["incidentes"][0]["classe"] == "Cumprimento de Sentença"
+    assert relacionados["apensos"][0]["motivo"] == "Dependência"
+
+
+def test_detectar_estado_pagina_rejeita_resposta_sem_processo():
+    soup = BeautifulSoup("<html><body>Processo não encontrado</body></html>", "html.parser")
+    response = type("Response", (), {"url": "https://example.test"})()
+
+    try:
+        esaj.detectar_estado_pagina(soup, response)
+    except ProcessoNaoEncontrado:
+        pass
+    else:
+        raise AssertionError("Página sem processo deveria gerar ProcessoNaoEncontrado")
+
+
+class FakeResponse:
+    status_code = 200
+    url = "https://esaj.tjsp.jus.br/cpopg/show.do?processo.codigo=ABC"
+
+    def __init__(self, text: str):
+        self.text = text
+        self.content = text.encode("utf-8")
+
+
+class FakeSession:
+    headers = {}
+
+    def get(self, url, **kwargs):
+        return FakeResponse(FIXTURE.read_text(encoding="utf-8"))
+
+
+def test_montar_extrato_orquestra_parser_com_session_fake():
+    extrato = esaj.montar_extrato("1076539-20.2019.8.26.0100", session=FakeSession())
+
+    assert extrato["status"] == "ok"
+    assert extrato["dados_basicos"]["classe"] == "Ação Civil Pública"
+    assert len(extrato["movimentacoes"]) == 2
+    assert len(extrato["documentos"]["publicos_candidatos_unicos"]) == 1
+    assert len(extrato["documentos"]["restritos_por_senha_unicos"]) == 1
+
+
+def test_extrair_request_scope():
+    texto = 'antes var requestScope = [{"data": {"title": "Doc"}, "children": []}]; depois'
+
+    assert esaj.extrair_request_scope(texto) == '[{"data": {"title": "Doc"}, "children": []}]'

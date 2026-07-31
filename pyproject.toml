@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "esaj-datajud"
-version = "0.1.1"
+version = "0.2.0"
 description = "Biblioteca Python para extração e consulta de processos eSAJ/TJSP e DJEN/DataJud."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -36,9 +36,13 @@ packages = {find = {where = ["src"], include = ["esaj_datajud*"]}}
 [project.optional-dependencies]
 dev = [
   "build>=1.0",
+  "coverage>=7.0",
+  "pip-audit>=2.7",
   "pytest>=7.0",
+  "pytest-cov>=5.0",
   "ruff>=0.5",
   "setuptools>=77.0",
+  "twine>=5.0",
   "wheel>=0.42",
 ]
 
@@ -62,3 +66,13 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.coverage.run]
+branch = true
+source = ["esaj_datajud"]
+omit = ["src/esaj_datajud/cli.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80

@@ -1,186 +1,307 @@
-"""eSAJ extraction helpers organized into small functions.
-
-This module focuses on clean separation of responsibilities:
-- URL construction: `montar_url_busca`
-- HTTP loading: `carregar_pagina`
-- Parsing primitives: `extrair_dados_basicos`, `extrair_partes`, `extrair_movimentacoes`
-- Orchestration: `montar_extrato`
-
-The implementation is a compact, maintainable rework inspired by the reference
-scripts; it is suitable to be extended and unit-tested against saved HTML fixtures.
-"""
+"""Cliente e parser eSAJ/TJSP."""
 
 from __future__ import annotations
 
+import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlencode, urlparse
+from typing import Any
+from urllib.parse import parse_qs, unquote_plus, urlencode, urljoin, urlparse
 
 try:
     import requests
     from bs4 import BeautifulSoup
-except Exception:  # pragma: no cover - tests may run without network libs
+except Exception:  # pragma: no cover - ambientes de documentação podem não ter deps
     requests = None
     BeautifulSoup = None
 
-from .utils import classificar_polo, limpar, normalizar_chave
+from .exceptions import (
+    AcessoRestrito,
+    ConsultaIndisponivel,
+    DownloadIndisponivel,
+    ProcessoNaoEncontrado,
+    URLInvalida,
+)
+from .models import Documento, Extrato
+from .utils import (
+    classificar_polo,
+    limpar,
+    nome_arquivo_seguro,
+    normalizar_chave,
+    validar_numero_cnj,
+)
 
 ESAJ_BASE = "https://esaj.tjsp.jus.br/cpopg"
 PASTA_BASE = "https://esaj.tjsp.jus.br/pastadigital/"
-RAW_HTML_DIR = Path(__file__).parent.parent / "esaj_raw" / "tjsp" / "cpopg"
+RAW_HTML_DIR = Path.cwd() / "esaj_raw" / "tjsp" / "cpopg"
+USER_AGENT = (
+    "Mozilla/5.0 (compatible; esaj-datajud/0.2; +https://github.com/lucmolero/esaj-datajud)"
+)
 
-CNJ_RE = re.compile(r"^(\d{7})-(\d{2})\.(\d{4})\.8\.26\.(\d{4})$")
+
+def _garantir_dependencias() -> None:
+    if requests is None or BeautifulSoup is None:
+        raise ConsultaIndisponivel("requests/beautifulsoup4 não estão disponíveis no ambiente.")
+
+
+def criar_session() -> requests.Session:
+    """Cria sessão HTTP com cabeçalhos conservadores para consulta pública."""
+    _garantir_dependencias()
+    session = requests.Session()
+    session.headers.update(
+        {
+            "User-Agent": USER_AGENT,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Referer": f"{ESAJ_BASE}/open.do",
+        }
+    )
+    return session
+
+
+def texto_id(soup: BeautifulSoup, id_: str) -> str:
+    tag = soup.find(id=id_)
+    return limpar(tag.get_text(" ", strip=True)) if tag else ""
+
+
+def salvar_html_bruto(html: str, numero: str, pasta: Path = RAW_HTML_DIR) -> Path:
+    pasta.mkdir(parents=True, exist_ok=True)
+    arquivo = pasta / f"{nome_arquivo_seguro(numero)}.html"
+    arquivo.write_text(html, encoding="utf-8")
+    return arquivo
 
 
 def montar_url_busca(numero: str) -> str:
-    m = CNJ_RE.match(numero)
-    if not m:
-        raise ValueError("Número fora do formato CNJ esperado para eSAJ/TJSP")
+    numero = validar_numero_cnj(numero)
+    sequencial, dv_ano, foro = numero[:7], numero[8:15], numero[-4:]
     params = {
         "conversationId": "",
         "cbPesquisa": "NUMPROC",
-        "numeroDigitoAnoUnificado": f"{m.group(1)}-{m.group(2)}.{m.group(3)}",
-        "foroNumeroUnificado": m.group(4),
+        "numeroDigitoAnoUnificado": f"{sequencial}-{dv_ano}",
+        "foroNumeroUnificado": foro,
         "dadosConsulta.valorConsultaNuUnificado": numero,
+        "dadosConsulta.valorConsulta": "",
         "dadosConsulta.tipoNuProcesso": "UNIFICADO",
     }
     return f"{ESAJ_BASE}/search.do?{urlencode(params)}"
 
 
+def _validar_url_esaj(entrada: str) -> None:
+    parsed = urlparse(entrada)
+    if parsed.netloc != "esaj.tjsp.jus.br" or not parsed.path.startswith("/cpopg/"):
+        raise URLInvalida("URL deve ser do domínio esaj.tjsp.jus.br no caminho /cpopg/.")
+
+
+def _get(session: requests.Session, url: str, **kwargs: Any) -> requests.Response:
+    try:
+        response = session.get(url, **kwargs)
+    except requests.RequestException as exc:
+        raise ConsultaIndisponivel(f"Falha de comunicação com o eSAJ: {exc}") from exc
+
+    status_code = getattr(response, "status_code", 0)
+    if status_code in {401, 403}:
+        raise AcessoRestrito(f"eSAJ retornou HTTP {status_code}.")
+    if status_code >= 500:
+        raise ConsultaIndisponivel(f"eSAJ retornou HTTP {status_code}.")
+    if status_code == 404:
+        raise ProcessoNaoEncontrado("Página de processo não encontrada no eSAJ.")
+    return response
+
+
+def _seguir_lista_se_preciso(
+    session: requests.Session, response: requests.Response
+) -> requests.Response:
+    """Segue página de lista quando o eSAJ não redireciona direto ao detalhe."""
+    soup = BeautifulSoup(response.text, "html.parser")
+    if soup.find(id="numeroProcesso"):
+        return response
+
+    links = soup.select("a.linkProcesso")
+    if not links:
+        return response
+
+    match_foro = re.search(r"foroNumeroUnificado=(\d+)", response.url)
+    foro_pedido = match_foro.group(1).lstrip("0") if match_foro else ""
+    href = ""
+    for link in links:
+        candidato = link.get("href", "")
+        match = re.search(r"processo\.foro=(\d+)", candidato)
+        if foro_pedido and match and match.group(1).lstrip("0") == foro_pedido:
+            href = candidato
+            break
+    href = href or links[0].get("href", "")
+    return _get(session, urljoin(f"{ESAJ_BASE}/", href), timeout=30, allow_redirects=True)
+
+
 def carregar_pagina(session: requests.Session, entrada: str) -> requests.Response:
-    if not requests:
-        raise RuntimeError("requests/bs4 não disponíveis no ambiente")
+    """Carrega processo por CNJ ou URL pública do eSAJ/TJSP."""
     if entrada.lower().startswith(("http://", "https://")):
-        parsed = urlparse(entrada)
-        if parsed.netloc != "esaj.tjsp.jus.br" or not parsed.path.startswith("/cpopg/"):
-            raise ValueError("URL deve ser do eSAJ/TJSP cpopg.")
-        resp = session.get(entrada, timeout=30, allow_redirects=True)
-        return resp
-    # assume it's a CNJ number
-    session.get(f"{ESAJ_BASE}/open.do", timeout=20)
-    resp = session.get(montar_url_busca(entrada), timeout=30, allow_redirects=True)
-    return resp
+        _validar_url_esaj(entrada)
+        return _seguir_lista_se_preciso(
+            session, _get(session, entrada, timeout=30, allow_redirects=True)
+        )
+
+    numero = validar_numero_cnj(entrada)
+    _get(session, f"{ESAJ_BASE}/open.do", timeout=20)
+    response = _get(session, montar_url_busca(numero), timeout=30, allow_redirects=True)
+    return _seguir_lista_se_preciso(session, response)
 
 
-def extrair_dados_basicos(soup: BeautifulSoup, url_final: str) -> dict:
-    campos_rotulados = {}
-    for container_id in ("containerDadosPrincipaisProcesso", "maisDetalhes"):
-        cont = soup.find(id=container_id)
-        if cont:
-            for label in cont.find_all(class_=lambda c: c and "unj-label" in c):
-                chave = normalizar_chave(label.get_text(" ", strip=True))
-                if not chave:
+def detectar_estado_pagina(soup: BeautifulSoup, response: requests.Response) -> None:
+    texto = limpar(soup.get_text(" ", strip=True)).lower()
+    if soup.find(id="captcha") or "captcha" in texto:
+        raise AcessoRestrito("eSAJ retornou página com captcha.")
+    if "senha do processo" in texto or "liberar auto por senha" in texto:
+        raise AcessoRestrito("Processo ou documento exige senha/autorização.")
+    sinais_nao_encontrado = [
+        "não existem informações disponíveis",
+        "processo não encontrado",
+        "não foi encontrado nenhum processo",
+    ]
+    if any(sinal in texto for sinal in sinais_nao_encontrado):
+        raise ProcessoNaoEncontrado("Processo não encontrado no eSAJ/TJSP.")
+    if not soup.find(id="numeroProcesso"):
+        raise ProcessoNaoEncontrado(
+            f"Resposta do eSAJ não contém dados de processo. URL final: {response.url}"
+        )
+
+
+def processo_codigo(url: str) -> str:
+    match = re.search(r"processo\.codigo=([^&]+)", url)
+    return match.group(1) if match else ""
+
+
+def extrair_campos_rotulados(container: Any) -> dict[str, str]:
+    campos: dict[str, str] = {}
+    if not container:
+        return campos
+    for label in container.find_all(class_=lambda c: c and "unj-label" in c):
+        chave = normalizar_chave(label.get_text(" ", strip=True))
+        if not chave:
+            continue
+        parent = label.find_parent()
+        valor = ""
+        if parent:
+            partes = []
+            for child in parent.children:
+                if child is label:
                     continue
-                parent = label.find_parent()
-                valor = ""
-                if parent:
-                    partes = []
-                    for child in parent.children:
-                        if child is label:
-                            continue
-                        texto = (
-                            child.get_text(" ", strip=True)
-                            if hasattr(child, "get_text")
-                            else str(child)
-                        )
-                        texto = limpar(texto)
-                        if texto:
-                            partes.append(texto)
-                    valor = limpar(" ".join(partes))
-                if valor:
-                    campos_rotulados[chave] = valor
+                texto = (
+                    child.get_text(" ", strip=True) if hasattr(child, "get_text") else str(child)
+                )
+                texto = limpar(texto)
+                if texto:
+                    partes.append(texto)
+            valor = limpar(" ".join(partes))
+        if valor:
+            campos[chave] = valor
+    return campos
+
+
+def extrair_dados_basicos(soup: BeautifulSoup, url_final: str) -> dict[str, Any]:
+    campos_rotulados: dict[str, str] = {}
+    for container_id in ("containerDadosPrincipaisProcesso", "maisDetalhes"):
+        campos_rotulados.update(extrair_campos_rotulados(soup.find(id=container_id)))
+
     dados = {
-        "numero": (
-            soup.find(id="numeroProcesso").get_text(" ", strip=True)
-            if soup.find(id="numeroProcesso")
-            else ""
-        ),
-        "classe": (
-            soup.find(id="classeProcesso").get_text(" ", strip=True)
-            if soup.find(id="classeProcesso")
-            else ""
-        ),
+        "numero": texto_id(soup, "numeroProcesso"),
+        "codigo_esaj": processo_codigo(url_final),
+        "classe": texto_id(soup, "classeProcesso"),
+        "assunto": texto_id(soup, "assuntoProcesso") or campos_rotulados.get("assunto", ""),
+        "foro": texto_id(soup, "foroProcesso") or campos_rotulados.get("foro", ""),
+        "vara": texto_id(soup, "varaProcesso") or campos_rotulados.get("vara", ""),
+        "juiz": texto_id(soup, "juizProcesso") or campos_rotulados.get("juiz", ""),
+        "distribuicao": texto_id(soup, "dataHoraDistribuicaoProcesso"),
+        "controle": texto_id(soup, "numeroControleProcesso"),
+        "area": texto_id(soup, "areaProcesso") or campos_rotulados.get("area", ""),
+        "valor_acao": texto_id(soup, "valorAcaoProcesso"),
         "url": url_final,
         "campos_rotulados": campos_rotulados,
     }
+
+    dependencia = re.search(r"Depend[êe]ncia\s*\(([^)]+)\)", dados["distribuicao"], re.I)
+    if dependencia:
+        dados["processo_dependencia"] = dependencia.group(1)
+
+    outros_assuntos = []
+    for label in soup.find_all(string=re.compile(r"Outros assuntos", re.I)):
+        container = label.find_parent()
+        if container and container.parent:
+            for span in container.parent.find_all("span"):
+                texto = limpar(span.get_text(" ", strip=True))
+                if texto and texto.lower() != "outros assuntos":
+                    outros_assuntos.append(texto)
+    dados["outros_assuntos"] = sorted(set(outros_assuntos))
     return dados
 
 
-def extrair_partes(soup: BeautifulSoup) -> dict:
-    def extrair_tabela(tabela):
-        partes = []
-        if not tabela:
-            return partes
-        tipo_atual = ""
-        for row in tabela.find_all("tr"):
-            label_tag = row.find("span", {"class": "label"})
-            if label_tag:
-                tipo_atual = limpar(label_tag.get_text(" ", strip=True))
-                continue
-
-            tipo_tag = row.find(class_=lambda c: c and "tipoDeParticipacao" in c)
-            nome_tag = row.find(
-                "td",
-                class_=lambda c: c and ("nomeParteEAdvogado" in c or "nomeParteEAdvogados" in c),
-            )
-            if not nome_tag:
-                continue
-
-            tipo = limpar(tipo_tag.get_text(" ", strip=True)) if tipo_tag else tipo_atual
-            linhas = [
-                limpar(x) for x in nome_tag.get_text("\n", strip=True).splitlines() if limpar(x)
-            ]
-            nomes: list[str] = []
-            advogados: list[str] = []
-            proximo_adv = False
-            for item in linhas:
-                if re.match(r"^Advogad[oa]:", item, re.I):
-                    resto = limpar(re.sub(r"^Advogad[oa]:", "", item, flags=re.I))
-                    if resto:
-                        advogados.append(resto)
-                    proximo_adv = True
-                    continue
-                if proximo_adv:
-                    advogados.append(item)
-                    proximo_adv = False
-                    continue
-                if "OAB" in item.upper():
-                    advogados.append(item)
-                    continue
-                nomes.append(item)
-
-            if nomes or advogados or tipo:
-                partes.append(
-                    {
-                        "tipo": tipo,
-                        "nomes": nomes,
-                        "advogados": advogados,
-                    }
-                )
+def extrair_partes_tabela(tabela: Any) -> list[dict[str, Any]]:
+    partes = []
+    if not tabela:
         return partes
 
-    principais = extrair_tabela(soup.find("table", id="tablePartesPrincipais"))
-    todas = extrair_tabela(soup.find("table", id="tableTodasPartes"))
-    base = todas or principais
+    tipo_atual = ""
+    for row in tabela.find_all("tr"):
+        label_tag = row.find("span", {"class": "label"})
+        if label_tag:
+            tipo_atual = limpar(label_tag.get_text(" ", strip=True))
+            continue
+
+        tipo_tag = row.find(class_=lambda c: c and "tipoDeParticipacao" in c)
+        nome_tag = row.find(
+            "td",
+            class_=lambda c: c and ("nomeParteEAdvogado" in c or "nomeParteEAdvogados" in c),
+        )
+        if not nome_tag:
+            continue
+
+        tipo = limpar(tipo_tag.get_text(" ", strip=True)) if tipo_tag else tipo_atual
+        linhas = [limpar(x) for x in nome_tag.get_text("\n", strip=True).splitlines()]
+        linhas = [x for x in linhas if x]
+        nomes: list[str] = []
+        advogados: list[str] = []
+        proximo_e_advogado = False
+        for item in linhas:
+            if re.match(r"^Advogad[oa]:", item, re.I):
+                resto = limpar(re.sub(r"^Advogad[oa]:", "", item, flags=re.I))
+                if resto:
+                    advogados.append(resto)
+                    proximo_e_advogado = False
+                else:
+                    proximo_e_advogado = True
+                continue
+            if proximo_e_advogado:
+                advogados.append(item)
+                proximo_e_advogado = False
+            elif "OAB" in item.upper():
+                advogados.append(item)
+            else:
+                nomes.append(item)
+
+        if nomes or advogados or tipo:
+            partes.append({"tipo": tipo, "nomes": nomes, "advogados": advogados})
+    return partes
+
+
+def extrair_partes(soup: BeautifulSoup) -> dict[str, list[dict[str, Any]]]:
+    principais = extrair_partes_tabela(soup.find("table", id="tablePartesPrincipais"))
+    todas = extrair_partes_tabela(soup.find("table", id="tableTodasPartes"))
+    if not todas:
+        tabela_todas = soup.find("table", {"class": lambda c: c and "todasPartes" in c})
+        todas = extrair_partes_tabela(tabela_todas)
+
+    base_para_polos = todas or principais
     polo_ativo = []
     polo_passivo = []
     polo_desconhecido = []
-    for parte in base:
-        tipo = parte.get("tipo", "")
-        nomes = parte.get("nomes", []) or []
-        polo = classificar_polo(tipo or " ".join(nomes))
-        parte_saida = {
-            "tipo": tipo,
-            "nomes": nomes,
-            "advogados": parte.get("advogados", []),
-        }
+    for parte in base_para_polos:
+        polo = classificar_polo(parte.get("tipo", ""))
         if polo == "ativo":
-            polo_ativo.append(parte_saida)
+            polo_ativo.append(parte)
         elif polo == "passivo":
-            polo_passivo.append(parte_saida)
+            polo_passivo.append(parte)
         else:
-            polo_desconhecido.append(parte_saida)
+            polo_desconhecido.append(parte)
     return {
         "principais": principais,
         "todas": todas,
@@ -190,12 +311,132 @@ def extrair_partes(soup: BeautifulSoup) -> dict:
     }
 
 
-def extrair_movimentacoes(soup: BeautifulSoup) -> list:
+def classificar_documento(href: str) -> str:
+    if href == "#liberarAutoPorSenha":
+        return "restrito_por_senha"
+    if "abrirDocumentoVinculadoMovimentacao.do" in href:
+        return "publico_candidato"
+    return "outro"
+
+
+def extrair_sequencial_documento(link: Any) -> str:
+    onclick = link.get("onclick") or ""
+    match = re.search(r",\s*(\d+)\s*,\s*['\"]", onclick)
+    return match.group(1) if match else ""
+
+
+def extrair_cd_documento(link: Any, href: str) -> str:
+    match = re.search(r"cdDocumento=(\d+)", href)
+    if match:
+        return match.group(1)
+    id_ = link.get("id") or ""
+    match = re.search(r"linkMovVincProc(?:-2)?-(\d+)", id_)
+    return match.group(1) if match else ""
+
+
+def titulo_documento(link: Any, href: str) -> str:
+    texto = limpar(link.get_text(" ", strip=True))
+    title = limpar(link.get("title", ""))
+    if texto and texto.lower() != "visualizar documento em inteiro teor":
+        return texto
+    query = parse_qs(urlparse(href).query)
+    recurso = query.get("nmRecursoAcessado", [""])[0]
+    if recurso:
+        return limpar(unquote_plus(recurso))
+    return title or texto
+
+
+def extrair_documentos_da_movimentacao(tr: Any) -> list[Documento]:
+    docs: dict[str, Documento] = {}
+    for link in tr.select("a.linkMovVincProc"):
+        href = link.get("href") or ""
+        if not href:
+            continue
+        cd_documento = extrair_cd_documento(link, href)
+        key = cd_documento or href
+        doc = docs.setdefault(
+            key,
+            {
+                "cd_documento": cd_documento,
+                "sequencial_movimentacao": extrair_sequencial_documento(link),
+                "titulo": "",
+                "href": urljoin(f"{ESAJ_BASE}/", href),
+                "status_acesso": classificar_documento(href),
+            },
+        )
+        titulo = titulo_documento(link, href)
+        if titulo and (
+            not doc["titulo"] or doc["titulo"].lower() == "visualizar documento em inteiro teor"
+        ):
+            doc["titulo"] = titulo
+        if not doc["sequencial_movimentacao"]:
+            doc["sequencial_movimentacao"] = extrair_sequencial_documento(link)
+    return list(docs.values())
+
+
+def extrair_metadados_movimentacao(texto: str) -> dict[str, Any]:
+    metadados: dict[str, Any] = {}
+    padroes = {
+        "relacao": r"Rela[çc][ãa]o\s*:?\s*([^\n]+?)(?=\s+Data|\s+Teor|\s+Advogados|$)",
+        "data_disponibilizacao": r"Data da Disponibiliza[çc][ãa]o\s*:\s*(\d{2}/\d{2}/\d{4})",
+        "data_publicacao": r"Data da Publica[çc][ãa]o\s*:\s*(\d{2}/\d{2}/\d{4})",
+        "numero_diario": r"N[úu]mero do Di[áa]rio\s*:\s*([^\s]+)",
+        "pagina_diario": r"P[áa]gina\s*:\s*([^\s]+)",
+        "tipo_peticao": r"Tipo da Peti[çc][ãa]o\s*:\s*([^\n]+?)(?=\s+Data|\s+Advogados|$)",
+    }
+    for chave, padrao in padroes.items():
+        match = re.search(padrao, texto, re.I)
+        if match:
+            metadados[chave] = limpar(match.group(1))
+    teor = re.search(r"Teor do ato\s*:\s*(.+?)(?=\s+Advogados\(s\):|$)", texto, re.I)
+    if teor:
+        metadados["teor_do_ato"] = limpar(teor.group(1))
+    advogados = re.search(r"Advogados\(s\):\s*(.+)$", texto, re.I)
+    if advogados:
+        metadados["advogados_publicacao"] = [
+            limpar(item) for item in advogados.group(1).split(",") if limpar(item)
+        ]
+    metadados["folhas_citadas"] = sorted(
+        set(re.findall(r"(?:fls?\.?|folha(?:s)?)\s*(\d+(?:/\d+)*)", texto, re.I))
+    )
+    return metadados
+
+
+def extrair_titulo_teor_movimentacao(desc_tag: Any) -> tuple[str, str, str]:
+    primeiro_link = desc_tag.find("a")
+    texto_completo = limpar(desc_tag.get_text(" ", strip=True))
+    if primeiro_link:
+        titulo = limpar(primeiro_link.get_text(" ", strip=True))
+        teor = (
+            limpar(texto_completo[len(titulo) :])
+            if texto_completo.startswith(titulo)
+            else texto_completo
+        )
+        return titulo, teor, texto_completo
+
+    partes_titulo = []
+    for child in desc_tag.children:
+        if getattr(child, "name", None) in {"br", "span"}:
+            break
+        texto = child.get_text(" ", strip=True) if hasattr(child, "get_text") else str(child)
+        if limpar(texto):
+            partes_titulo.append(texto)
+    titulo = limpar(" ".join(partes_titulo))
+    teor = (
+        limpar(texto_completo[len(titulo) :])
+        if titulo and texto_completo.startswith(titulo)
+        else texto_completo
+    )
+    return titulo, teor, texto_completo
+
+
+def extrair_movimentacoes(soup: BeautifulSoup) -> list[dict[str, Any]]:
     tabela = soup.find(["table", "tbody"], id="tabelaTodasMovimentacoes") or soup.find(
         ["table", "tbody"], id="tabelaUltimasMovimentacoes"
     )
     if not tabela:
         return []
+
     movimentos = []
     for idx, tr in enumerate(
         tabela.find_all("tr", class_=lambda c: c and "containerMovimentacao" in c), 1
@@ -204,23 +445,277 @@ def extrair_movimentacoes(soup: BeautifulSoup) -> list:
         desc_tag = tr.find("td", class_=lambda c: c and "descricaoMovimentacao" in c)
         if not desc_tag:
             continue
-        titulo = (
-            desc_tag.find("a").get_text(" ", strip=True)
-            if desc_tag.find("a")
-            else limpar(desc_tag.get_text(" ", strip=True))
-        )
-        texto = limpar(desc_tag.get_text(" ", strip=True))
+        titulo, teor, texto_completo = extrair_titulo_teor_movimentacao(desc_tag)
         movimentos.append(
             {
                 "ordem": idx,
-                "data": (data_tag.get_text(" ", strip=True) if data_tag else ""),
+                "data": limpar(data_tag.get_text(" ", strip=True)) if data_tag else "",
                 "titulo": titulo,
-                "teor": texto,
-                "texto": texto,
-                "documentos": [],
+                "teor": teor,
+                "texto": texto_completo,
+                "metadados": extrair_metadados_movimentacao(texto_completo),
+                "documentos": extrair_documentos_da_movimentacao(tr),
             }
         )
     return movimentos
+
+
+def tabela_apos_titulo(soup: BeautifulSoup, titulo_regex: str) -> Any:
+    titulo = soup.find(["h2", "h3"], string=re.compile(titulo_regex, re.I))
+    if titulo:
+        return titulo.find_next("table")
+
+    titulo_esperado = normalizar_chave(titulo_regex)
+    for tag in soup.find_all(["h2", "h3"]):
+        titulo_atual = normalizar_chave(tag.get_text(" ", strip=True))
+        if titulo_esperado and titulo_esperado in titulo_atual:
+            return tag.find_next("table")
+    return None
+
+
+def linhas_dados_tabela(tabela: Any) -> list[list[Any]]:
+    if not tabela:
+        return []
+    linhas = []
+    for tr in tabela.find_all("tr"):
+        tds = tr.find_all("td")
+        if tds:
+            linhas.append(tds)
+    return linhas
+
+
+def extrair_tabela_data_descricao(tabela: Any) -> list[dict[str, str]]:
+    itens = []
+    for tds in linhas_dados_tabela(tabela):
+        if len(tds) < 2:
+            continue
+        itens.append(
+            {
+                "data": limpar(tds[0].get_text(" ", strip=True)),
+                "descricao": limpar(tds[1].get_text(" ", strip=True)),
+            }
+        )
+    return itens
+
+
+def extrair_relacionados(soup: BeautifulSoup) -> dict[str, list[dict[str, str]]]:
+    incidentes = []
+    tabela_incidentes = tabela_apos_titulo(soup, r"Incidentes")
+    for tds in linhas_dados_tabela(tabela_incidentes):
+        if len(tds) < 2:
+            continue
+        link = tds[1].find("a", class_="incidente")
+        texto = limpar(tds[1].get_text(" ", strip=True))
+        match = re.search(r"\((\d{7}-\d{2}\.\d{4}\.8\.26\.\d{4})\)", texto)
+        incidentes.append(
+            {
+                "recebido_em": limpar(tds[0].get_text(" ", strip=True)),
+                "classe": limpar(link.get_text(" ", strip=True)) if link else texto,
+                "numero": match.group(1) if match else "",
+                "href": urljoin(f"{ESAJ_BASE}/", link.get("href", "")) if link else "",
+            }
+        )
+
+    apensos = []
+    tabela_apensos = tabela_apos_titulo(soup, r"Apensos")
+    for tds in linhas_dados_tabela(tabela_apensos):
+        if len(tds) < 4:
+            continue
+        link = tds[0].find("a", class_="processoApensado")
+        apensos.append(
+            {
+                "numero": limpar(tds[0].get_text(" ", strip=True)),
+                "classe": limpar(tds[1].get_text(" ", strip=True)),
+                "apensamento": limpar(tds[2].get_text(" ", strip=True)),
+                "motivo": limpar(tds[3].get_text(" ", strip=True)),
+                "href": urljoin(f"{ESAJ_BASE}/", link.get("href", "")) if link else "",
+            }
+        )
+    return {"incidentes": incidentes, "apensos": apensos}
+
+
+def extrair_audiencias(soup: BeautifulSoup) -> list[dict[str, str]]:
+    audiencias = []
+    for tds in linhas_dados_tabela(tabela_apos_titulo(soup, "Audiencias")):
+        if len(tds) < 4:
+            continue
+        audiencias.append(
+            {
+                "data": limpar(tds[0].get_text(" ", strip=True)),
+                "audiencia": limpar(tds[1].get_text(" ", strip=True)),
+                "situacao": limpar(tds[2].get_text(" ", strip=True)),
+                "qt_pessoas": limpar(tds[3].get_text(" ", strip=True)),
+            }
+        )
+    return audiencias
+
+
+def extrair_peticoes_diversas(soup: BeautifulSoup) -> list[dict[str, str]]:
+    return extrair_tabela_data_descricao(tabela_apos_titulo(soup, "Peticoes diversas"))
+
+
+def extrair_request_scope(text: str) -> str | None:
+    marker = "var requestScope = "
+    start = text.find(marker)
+    if start < 0:
+        return None
+    index = text.find("[", start)
+    if index < 0:
+        return None
+    depth = 0
+    in_string = False
+    escape = False
+    for cursor in range(index, len(text)):
+        char = text[cursor]
+        if in_string:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == '"':
+                in_string = False
+        else:
+            if char == '"':
+                in_string = True
+            elif char == "[":
+                depth += 1
+            elif char == "]":
+                depth -= 1
+                if depth == 0:
+                    return text[index : cursor + 1]
+    return None
+
+
+def obter_metadados_pasta_documento(session: requests.Session, doc: Documento) -> dict[str, Any]:
+    viewer = _get(session, doc["href"], timeout=30, allow_redirects=True)
+    scope_json = extrair_request_scope(viewer.text)
+    if not scope_json:
+        return {"status": "sem_request_scope", "url_final": viewer.url}
+    scope = json.loads(scope_json)
+    raiz = scope[0] if scope else {}
+    data = raiz.get("data", {})
+    children = raiz.get("children") or []
+    paginas = []
+    for child in children:
+        pagina = child.get("data", {})
+        parametros_pdf = pagina.get("parametros", "")
+        parametros = parse_qs(parametros_pdf)
+        paginas.append(
+            {
+                "titulo": pagina.get("title", ""),
+                "indice_pagina": pagina.get("indicePagina"),
+                "nu_paginas": pagina.get("nuPaginas"),
+                "num_inicial": (parametros.get("numInicial") or [""])[0],
+                "num_final": (parametros.get("numFinal") or [""])[0],
+                "nu_pagina": (parametros.get("nuPagina") or [""])[0],
+                "id_documento": (parametros.get("idDocumento") or [""])[0],
+                "documento_sigiloso": pagina.get("documentoSigiloso"),
+                "sigilo_externo": (parametros.get("sigiloExterno") or [""])[0],
+                "cd_formato_doc": pagina.get("cdFormatoDoc")
+                or (parametros.get("cdFormatoDoc") or [""])[0],
+                "possui_documento_original": pagina.get("possuiDocumentoOriginal"),
+                "parametros_pdf": parametros_pdf,
+            }
+        )
+    return {
+        "status": "ok",
+        "url_final": viewer.url,
+        "titulo": data.get("title", ""),
+        "cd_documento": data.get("cdDocumento", ""),
+        "cd_formato_doc": data.get("cdFormatoDoc", ""),
+        "sigilo_absoluto": data.get("sigiloAbsoluto"),
+        "fl_peticao_inicial": data.get("flPeticaoInicial"),
+        "fl_protocolado": data.get("flProtocolado"),
+        "total_paginas_no_documento": len(paginas),
+        "paginas": paginas,
+    }
+
+
+def iterar_docs_publicos(movimentos: list[dict[str, Any]]):
+    vistos = set()
+    for movimento in movimentos:
+        for doc in movimento.get("documentos", []):
+            cd_documento = doc.get("cd_documento")
+            if doc.get("status_acesso") != "publico_candidato" or not cd_documento:
+                continue
+            if cd_documento in vistos:
+                continue
+            vistos.add(cd_documento)
+            yield doc
+
+
+def inspecionar_pecas_publicas(
+    session: requests.Session, movimentos: list[dict[str, Any]], limite: int
+) -> list[dict[str, Any]]:
+    inspecionados = []
+    for doc in iterar_docs_publicos(movimentos):
+        if limite and len(inspecionados) >= limite:
+            return inspecionados
+        try:
+            doc["pasta_digital"] = obter_metadados_pasta_documento(session, doc)
+        except Exception as exc:  # pragma: no cover - depende de fonte externa
+            doc["pasta_digital"] = {"status": "erro", "mensagem": str(exc)}
+        inspecionados.append(
+            {
+                "cd_documento": doc.get("cd_documento", ""),
+                "titulo": doc.get("titulo", ""),
+                "pasta_digital": doc.get("pasta_digital", {}),
+            }
+        )
+    return inspecionados
+
+
+def baixar_pecas_publicas(
+    session: requests.Session,
+    movimentos: list[dict[str, Any]],
+    pasta: Path,
+    limite: int,
+    sobrescrever: bool = False,
+) -> list[dict[str, Any]]:
+    pasta.mkdir(parents=True, exist_ok=True)
+    baixados = []
+    for doc in iterar_docs_publicos(movimentos):
+        if limite and len(baixados) >= limite:
+            return baixados
+        pasta_digital = doc.get("pasta_digital") or obter_metadados_pasta_documento(session, doc)
+        doc["pasta_digital"] = pasta_digital
+        if pasta_digital.get("status") != "ok":
+            doc["download_status"] = pasta_digital.get("status", "erro_pasta_digital")
+            continue
+        paginas = pasta_digital.get("paginas") or []
+        if not paginas:
+            doc["download_status"] = "sem_paginas"
+            continue
+        params = paginas[0].get("parametros_pdf", "")
+        response = _get(session, urljoin(PASTA_BASE, f"getPDF.do?{params}"), timeout=30)
+        if not response.content.startswith(b"%PDF"):
+            doc["download_status"] = "nao_pdf"
+            continue
+
+        titulo = nome_arquivo_seguro(doc.get("titulo", "documento"))
+        destino = pasta / f"peca_{doc.get('cd_documento') or 'sem-id'}_{titulo[:40]}.pdf"
+        if destino.exists() and not sobrescrever:
+            doc["download_status"] = "existente"
+            baixados.append(
+                {
+                    "cd_documento": doc.get("cd_documento", ""),
+                    "arquivo": str(destino),
+                    "status": "existente",
+                }
+            )
+            continue
+        destino.write_bytes(response.content)
+        doc["download_status"] = "baixado"
+        doc["arquivo"] = str(destino)
+        baixados.append(
+            {
+                "cd_documento": doc.get("cd_documento", ""),
+                "arquivo": str(destino),
+                "bytes": len(response.content),
+                "status": "baixado",
+            }
+        )
+    return baixados
 
 
 def montar_extrato(
@@ -229,34 +724,70 @@ def montar_extrato(
     limite_pecas: int = 3,
     inspecionar_pecas: bool = False,
     limite_inspecao_pecas: int = 10,
-    salvar_html: bool = True,
-) -> dict:
-    session = requests.Session() if requests else None
-    if session is None:
-        raise RuntimeError("requests/bs4 não disponíveis no ambiente")
-    session.headers.update(
-        {
-            "User-Agent": "Mozilla/5.0 (esaj-datajud)",
-            "Referer": f"{ESAJ_BASE}/open.do",
-        }
-    )
+    salvar_html: bool = False,
+    session: requests.Session | None = None,
+    pasta_pecas: Path | None = None,
+) -> Extrato:
+    session = session or criar_session()
     response = carregar_pagina(session, entrada)
     soup = BeautifulSoup(response.text, "html.parser")
+    detectar_estado_pagina(soup, response)
+
     dados_basicos = extrair_dados_basicos(soup, response.url)
+    html_bruto = ""
+    if salvar_html:
+        numero_html = dados_basicos.get("numero") or entrada
+        html_bruto = str(salvar_html_bruto(response.text, numero_html))
+
     movimentos = extrair_movimentacoes(soup)
-    partes = extrair_partes(soup)
-    extrato = {
+    documentos_unicos: dict[str, Documento] = {}
+    restritos_unicos: dict[str, Documento] = {}
+    for movimento in movimentos:
+        for doc in movimento.get("documentos", []):
+            doc.setdefault("data_documento", movimento.get("data", ""))
+            key = doc.get("cd_documento") or doc.get("href", "")
+            if doc.get("status_acesso") == "restrito_por_senha":
+                restritos_unicos.setdefault(key, doc)
+            elif doc.get("cd_documento"):
+                documentos_unicos.setdefault(doc["cd_documento"], doc)
+
+    documentos = {
+        "publicos_candidatos_unicos": list(documentos_unicos.values()),
+        "restritos_por_senha_unicos": list(restritos_unicos.values()),
+    }
+    if inspecionar_pecas:
+        documentos["pecas_publicas_inspecionadas"] = inspecionar_pecas_publicas(
+            session, movimentos, limite_inspecao_pecas
+        )
+    if baixar_pecas:
+        destino = pasta_pecas or Path.cwd() / "esaj_pecas"
+        try:
+            documentos["baixados"] = baixar_pecas_publicas(
+                session, movimentos, destino, limite_pecas
+            )
+        except DownloadIndisponivel:
+            raise
+        except Exception as exc:  # pragma: no cover - depende de fonte externa
+            raise DownloadIndisponivel(str(exc)) from exc
+
+    return {
+        "status": "ok",
+        "mensagem": "Extrato gerado com sucesso",
         "origem": {
             "sistema": "eSAJ",
             "tribunal": "TJSP",
+            "grau": "1g",
             "consulta": "cpopg",
             "entrada": entrada,
             "url_final": response.url,
+            "html_bruto": html_bruto,
             "data_coleta": datetime.now(timezone.utc).isoformat(),
         },
         "dados_basicos": dados_basicos,
-        "partes": partes,
+        "partes": extrair_partes(soup),
         "movimentacoes": movimentos,
-        "documentos": {},
+        "peticoes_diversas": extrair_peticoes_diversas(soup),
+        "audiencias": extrair_audiencias(soup),
+        "documentos": documentos,
+        "relacionados": extrair_relacionados(soup),
     }
-    return extrato

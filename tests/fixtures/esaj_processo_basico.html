@@ -9,8 +9,12 @@
       </div>
       <div>
         <span class="unj-label">Área:</span>
-        <span>Cível</span>
+        <span id="areaProcesso">Cível</span>
       </div>
+      <div id="assuntoProcesso">Meio Ambiente</div>
+      <div id="foroProcesso">Foro Central Cível</div>
+      <div id="varaProcesso">2ª Vara Cível</div>
+      <div id="juizProcesso">Dr. Juiz Exemplo</div>
     </div>
 
     <div id="maisDetalhes">
@@ -48,12 +52,62 @@
         <td class="dataMovimentacao">29/07/2026</td>
         <td class="descricaoMovimentacao">
           <a>Publicação de intimação</a>
-          Texto complementar da movimentação.
+          Relação: 1234/2026 Data da Disponibilização: 29/07/2026
+          Teor do ato: Texto complementar da movimentação.
+          Advogados(s): Dra. Ana Exemplo
+          <a
+            id="linkMovVincProc-123456"
+            class="linkMovVincProc"
+            href="/cpopg/abrirDocumentoVinculadoMovimentacao.do?cdDocumento=123456&nmRecursoAcessado=Decis%C3%A3o"
+            onclick="abrirDocumentoVinculadoMovimentacao('ABC', 12, 'x')"
+          >Visualizar documento em inteiro teor</a>
+          <a class="linkMovVincProc" href="#liberarAutoPorSenha">Documento restrito</a>
         </td>
       </tr>
       <tr class="containerMovimentacao">
         <td class="dataMovimentacao">30/07/2026</td>
         <td class="descricaoMovimentacao">Conclusos para decisão</td>
+      </tr>
+    </table>
+
+    <h2>Incidentes</h2>
+    <table>
+      <tr>
+        <td>01/01/2026</td>
+        <td>
+          <a class="incidente" href="/cpopg/show.do?processo.codigo=INC">Cumprimento de Sentença</a>
+          (1076539-20.2019.8.26.0100)
+        </td>
+      </tr>
+    </table>
+
+    <h2>Apensos</h2>
+    <table>
+      <tr>
+        <td>
+          <a class="processoApensado" href="/cpopg/show.do?processo.codigo=AP">0000001-91.2020.8.26.0100</a>
+        </td>
+        <td>Cartas</td>
+        <td>02/01/2026</td>
+        <td>Dependência</td>
+      </tr>
+    </table>
+
+    <h2>Audiências</h2>
+    <table>
+      <tr>
+        <td>03/01/2026</td>
+        <td>Conciliação</td>
+        <td>Designada</td>
+        <td>2</td>
+      </tr>
+    </table>
+
+    <h2>Petições diversas</h2>
+    <table>
+      <tr>
+        <td>04/01/2026</td>
+        <td>Manifestação</td>
       </tr>
     </table>
   </body>

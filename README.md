@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-orange.svg)](#status-do-projeto)
+[![CI](https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml/badge.svg)](https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml)
 
 Biblioteca Python e CLI para consultar, organizar e exportar informações públicas de processos do eSAJ/TJSP e comunicações do DJEN/DataJud.
 
@@ -16,9 +17,9 @@ Advogados e escritórios precisam transformar consultas repetitivas em dados est
 
 - API Python de alto nível para scripts, notebooks e integrações.
 - CLI para consultas rápidas e geração de JSON.
-- Parser organizado para páginas públicas do eSAJ/TJSP.
-- Cliente inicial para comunicações do DJEN/DataJud.
-- Estrutura preparada para testes com fixtures, documentação e evolução aberta.
+- Parser organizado para páginas públicas do eSAJ/TJSP, incluindo dados básicos, partes, movimentações, documentos vinculados, audiências, petições, incidentes e apensos.
+- Cliente DJEN/DataJud com paginação, retry, backoff e deduplicação.
+- Contratos tipados, exceções públicas e testes com fixtures sanitizadas.
 - Foco em uso jurídico responsável, com atenção a LGPD, dados sensíveis e limites das fontes consultadas.
 
 ## Instalação
@@ -59,6 +60,7 @@ print(len(comunicacoes))
 esaj search 1076539-20.2019.8.26.0100
 esaj extrato 1076539-20.2019.8.26.0100 --out extrato.json
 esaj partes 1076539-20.2019.8.26.0100
+esaj baixar extrato.json --out pecas
 esaj djen 1076539-20.2019.8.26.0100 --out djen.json
 ```
 
@@ -98,6 +100,8 @@ python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
 
 O projeto está em fase beta. A API e a CLI já existem, mas algumas capacidades planejadas ainda estão em evolução, especialmente download de peças, parsing avançado de documentos, cache e cobertura ampla de cenários reais do eSAJ.
 
+Mesmo em beta, o projeto já possui validação CNJ, exceções públicas, contratos tipados, CI, lint, build de pacote e testes sem rede para cenários centrais.
+
 Para acompanhar a evolução, consulte [SPECS.md](SPECS.md), [CHANGELOG.md](CHANGELOG.md) e [docs/roadmap.md](docs/roadmap.md).
 
 ## Uso responsável
@@ -110,22 +114,30 @@ Leia [docs/uso-responsavel.md](docs/uso-responsavel.md) antes de usar em rotinas
 
 ```bash
 python -m pip install -e ".[dev]"
-python -m pytest
+python -m pytest --cov
 python -m ruff check src tests
+python -m ruff format --check src tests
 ```
 
 Antes de abrir um pull request, rode:
 
 ```bash
-python -m pytest
+python -m pytest --cov
 python -m ruff check src tests
+python -m ruff format --check src tests
 python -m build
+python -m twine check dist/*
 ```
 
 ## Documentação
 
 - [Quickstart](docs/quickstart.md)
+- [API Reference](docs/api-reference.md)
 - [Guia da CLI](docs/cli.md)
+- [Contratos de dados](docs/contracts.md)
+- [Erros](docs/errors.md)
+- [Arquitetura](docs/architecture.md)
+- [Fixtures](docs/fixtures.md)
 - [Uso responsável](docs/uso-responsavel.md)
 - [Roadmap](docs/roadmap.md)
 - [Contribuindo](CONTRIBUTING.md)

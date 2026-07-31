@@ -31,11 +31,23 @@ print(extrato["dados_basicos"])
 print(len(extrato["movimentacoes"]))
 ```
 
+## Tratar erros previstos
+
+```python
+from esaj_datajud import api
+from esaj_datajud.exceptions import EsajDatajudError
+
+try:
+    extrato = api.get_extrato("1076539-20.2019.8.26.0100")
+except EsajDatajudError as exc:
+    print(type(exc).__name__, str(exc))
+```
+
 ## Consultar pelo terminal
 
 ```bash
 esaj search 1076539-20.2019.8.26.0100
-esaj extrato 1076539-20.2019.8.26.0100 --out extrato.json
+esaj extrato 1076539-20.2019.8.26.0100 --inspecionar-pecas --out extrato.json
 ```
 
 ## Próximo passo

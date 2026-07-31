@@ -3,6 +3,10 @@
 import re
 import unicodedata
 
+from .exceptions import FormatoCNJInvalido
+
+CNJ_RE = re.compile(r"^(\d{7})-(\d{2})\.(\d{4})\.(\d)\.(\d{2})\.(\d{4})$")
+
 
 def limpar(texto: str) -> str:
     return re.sub(r"\s+", " ", (texto or "")).strip()
@@ -12,6 +16,39 @@ def nome_arquivo_seguro(texto: str, fallback: str = "processo") -> str:
     nome = re.sub(r"[^A-Za-z0-9_.-]", "_", limpar(texto))
     nome = re.sub(r"_+", "_", nome).strip("_.")
     return nome or fallback
+
+
+def normalizar_numero_cnj(numero: str) -> str:
+    """Normaliza um CNJ aceitando entrada já pontuada ou apenas dígitos."""
+    valor = limpar(numero)
+    if CNJ_RE.match(valor):
+        return valor
+
+    digitos = re.sub(r"\D", "", valor)
+    if len(digitos) != 20:
+        raise FormatoCNJInvalido("Número CNJ deve ter 20 dígitos.")
+    return (
+        f"{digitos[:7]}-{digitos[7:9]}."
+        f"{digitos[9:13]}.{digitos[13]}.{digitos[14:16]}.{digitos[16:]}"
+    )
+
+
+def validar_numero_cnj(numero: str, segmento: str = "8", tribunal: str = "26") -> str:
+    """Valida formato, escopo TJSP e dígito verificador de número CNJ."""
+    normalizado = normalizar_numero_cnj(numero)
+    match = CNJ_RE.match(normalizado)
+    if not match:
+        raise FormatoCNJInvalido("Número fora do formato CNJ esperado.")
+
+    sequencial, dv, ano, seg, tr, origem = match.groups()
+    if seg != segmento or tr != tribunal:
+        raise FormatoCNJInvalido("Número CNJ não pertence ao escopo eSAJ/TJSP.")
+
+    base = f"{sequencial}{ano}{seg}{tr}{origem}"
+    calculado = 98 - (int(f"{base}00") % 97)
+    if f"{calculado:02d}" != dv:
+        raise FormatoCNJInvalido("Dígito verificador CNJ inválido.")
+    return normalizado
 
 
 def normalizar_chave(texto: str) -> str:

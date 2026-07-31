@@ -2,28 +2,26 @@
 
 Este roadmap organiza a evolução do projeto em entregas pequenas, verificáveis e úteis para usuários jurídicos.
 
-## Agora
+## Entregue em 0.2
 
-- Melhorar documentação pública do GitHub.
-- Criar governança básica de projeto aberto.
-- Garantir consistência de metadados do pacote.
-- Ampliar testes sem depender de rede.
+- Exceções públicas para erros previstos.
+- Contratos tipados com `TypedDict`.
+- Validação CNJ com dígito verificador.
+- Parser ampliado de eSAJ/TJSP.
+- DJEN com paginação, retry, backoff e testes sem rede.
+- CLI com erros em JSON, inspeção de peças e comando `baixar`.
+- Documentação de arquitetura, contratos, erros e fixtures.
+- CI com testes, cobertura, lint, formatação, build e validação de metadados.
 
-## Próxima versão
+## Próximas prioridades
 
-- Criar exceções próprias e mensagens de erro amigáveis.
-- Adicionar fixtures HTML sanitizadas do eSAJ.
-- Testar parsing de dados básicos, partes e movimentações.
-- Mockar respostas do DJEN em testes.
-- Melhorar contratos de retorno da API.
-
-## Depois
-
-- Extrair documentos vinculados das movimentações.
-- Implementar download responsável de peças públicas quando tecnicamente permitido.
-- Adicionar cache opcional.
+- Publicar pacote no PyPI/TestPyPI.
+- Adicionar documentação visual com site MkDocs Material.
+- Ampliar fixtures sanitizadas com cenários reais de falha do eSAJ.
+- Medir cobertura em badge público.
+- Adicionar pre-commit e guia de desenvolvimento local.
+- Implementar cache opcional e rate limit configurável.
 - Exportar CSV e integração opcional com pandas.
-- Criar documentação de referência da API.
 
 ## Critério de qualidade
 

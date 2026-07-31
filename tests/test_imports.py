@@ -6,7 +6,11 @@ def test_imports():
     assert pkg is not None
     esaj = importlib.import_module("esaj_datajud.esaj")
     djen = importlib.import_module("esaj_datajud.djen")
+    exceptions = importlib.import_module("esaj_datajud.exceptions")
+    models = importlib.import_module("esaj_datajud.models")
     utils = importlib.import_module("esaj_datajud.utils")
     assert hasattr(esaj, "montar_extrato")
     assert hasattr(djen, "consultar_processo")
+    assert hasattr(exceptions, "EsajDatajudError")
+    assert hasattr(models, "Extrato")
     assert hasattr(utils, "limpar")
