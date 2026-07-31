@@ -33,6 +33,7 @@ Este roadmap organiza a evolução do projeto em entregas pequenas, verificávei
 - Ampliar fixtures sanitizadas com cenários reais de falha do eSAJ.
 - Medir cobertura em badge público.
 - Publicar GitHub Pages a partir de `mkdocs.yml` quando o plano/configuração do repositório permitir Pages.
+- Habilitar upload de resultados CodeQL quando Code Scanning estiver disponível no repositório.
 - Adicionar pre-commit como check documentado no guia de contribuição.
 - Exportar CSV e integração opcional com pandas.
 - Adicionar matriz de compatibilidade por tribunal/fonte.
