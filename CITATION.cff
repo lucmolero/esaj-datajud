@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "Se este projeto ajudar sua pesquisa, produto ou rotina jurídica, cite o repositório."
+title: "esaj-datajud"
+version: "0.3.0"
+date-released: "2026-07-31"
+abstract: "Biblioteca Python e CLI para consultar, organizar e exportar informações públicas de processos eSAJ/TJSP e comunicações DJEN/DataJud."
+authors:
+  - family-names: "Molero"
+    given-names: "Luciano"
+    alias: "lucmolero"
+license: "MIT"
+repository-code: "https://github.com/lucmolero/esaj-datajud"
+url: "https://github.com/lucmolero/esaj-datajud"
+keywords:
+  - legaltech
+  - esaj
+  - datajud
+  - djen
+  - tjsp
+  - python

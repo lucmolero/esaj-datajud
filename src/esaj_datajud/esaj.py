@@ -31,12 +31,14 @@ from .utils import (
     normalizar_chave,
     validar_numero_cnj,
 )
+from .version import __version__
 
 ESAJ_BASE = "https://esaj.tjsp.jus.br/cpopg"
 PASTA_BASE = "https://esaj.tjsp.jus.br/pastadigital/"
 RAW_HTML_DIR = Path.cwd() / "esaj_raw" / "tjsp" / "cpopg"
 USER_AGENT = (
-    "Mozilla/5.0 (compatible; esaj-datajud/0.2; +https://github.com/lucmolero/esaj-datajud)"
+    f"Mozilla/5.0 (compatible; esaj-datajud/{__version__}; "
+    "+https://github.com/lucmolero/esaj-datajud)"
 )
 
 
@@ -45,10 +47,11 @@ def _garantir_dependencias() -> None:
         raise ConsultaIndisponivel("requests/beautifulsoup4 não estão disponíveis no ambiente.")
 
 
-def criar_session() -> requests.Session:
+def criar_session(timeout: float = 30.0) -> requests.Session:
     """Cria sessão HTTP com cabeçalhos conservadores para consulta pública."""
     _garantir_dependencias()
     session = requests.Session()
+    session.timeout = timeout
     session.headers.update(
         {
             "User-Agent": USER_AGENT,
@@ -93,6 +96,8 @@ def _validar_url_esaj(entrada: str) -> None:
 
 
 def _get(session: requests.Session, url: str, **kwargs: Any) -> requests.Response:
+    if "timeout" not in kwargs and hasattr(session, "timeout"):
+        kwargs["timeout"] = session.timeout
     try:
         response = session.get(url, **kwargs)
     except requests.RequestException as exc:
@@ -109,7 +114,7 @@ def _get(session: requests.Session, url: str, **kwargs: Any) -> requests.Respons
 
 
 def _seguir_lista_se_preciso(
-    session: requests.Session, response: requests.Response
+    session: requests.Session, response: requests.Response, timeout: float | None = None
 ) -> requests.Response:
     """Segue página de lista quando o eSAJ não redireciona direto ao detalhe."""
     soup = BeautifulSoup(response.text, "html.parser")
@@ -130,21 +135,32 @@ def _seguir_lista_se_preciso(
             href = candidato
             break
     href = href or links[0].get("href", "")
-    return _get(session, urljoin(f"{ESAJ_BASE}/", href), timeout=30, allow_redirects=True)
+    kwargs = {"allow_redirects": True}
+    if timeout is not None:
+        kwargs["timeout"] = timeout
+    return _get(session, urljoin(f"{ESAJ_BASE}/", href), **kwargs)
 
 
-def carregar_pagina(session: requests.Session, entrada: str) -> requests.Response:
+def carregar_pagina(
+    session: requests.Session, entrada: str, timeout: float | None = None
+) -> requests.Response:
     """Carrega processo por CNJ ou URL pública do eSAJ/TJSP."""
     if entrada.lower().startswith(("http://", "https://")):
         _validar_url_esaj(entrada)
-        return _seguir_lista_se_preciso(
-            session, _get(session, entrada, timeout=30, allow_redirects=True)
-        )
+        kwargs = {"allow_redirects": True}
+        if timeout is not None:
+            kwargs["timeout"] = timeout
+        return _seguir_lista_se_preciso(session, _get(session, entrada, **kwargs), timeout=timeout)
 
     numero = validar_numero_cnj(entrada)
-    _get(session, f"{ESAJ_BASE}/open.do", timeout=20)
-    response = _get(session, montar_url_busca(numero), timeout=30, allow_redirects=True)
-    return _seguir_lista_se_preciso(session, response)
+    open_kwargs = {}
+    search_kwargs = {"allow_redirects": True}
+    if timeout is not None:
+        open_kwargs["timeout"] = timeout
+        search_kwargs["timeout"] = timeout
+    _get(session, f"{ESAJ_BASE}/open.do", **open_kwargs)
+    response = _get(session, montar_url_busca(numero), **search_kwargs)
+    return _seguir_lista_se_preciso(session, response, timeout=timeout)
 
 
 def detectar_estado_pagina(soup: BeautifulSoup, response: requests.Response) -> None:
@@ -727,9 +743,10 @@ def montar_extrato(
     salvar_html: bool = False,
     session: requests.Session | None = None,
     pasta_pecas: Path | None = None,
+    timeout: float | None = None,
 ) -> Extrato:
-    session = session or criar_session()
-    response = carregar_pagina(session, entrada)
+    session = session or criar_session(timeout=timeout or 30.0)
+    response = carregar_pagina(session, entrada, timeout=timeout)
     soup = BeautifulSoup(response.text, "html.parser")
     detectar_estado_pagina(soup, response)
 

@@ -9,6 +9,7 @@ from typing import Any
 import requests
 
 from .exceptions import AcessoRestrito, ConsultaIndisponivel
+from .utils import validar_numero_cnj
 
 API_BASE = "https://comunicaapi.pje.jus.br/api/v1/comunicacao"
 PAGE_SIZE = 20
@@ -67,6 +68,7 @@ def consultar_processo(
     sleep: Callable[[float], None] = time.sleep,
 ) -> list[dict[str, Any]]:
     """Consulta comunicações do DJEN para um processo CNJ."""
+    numero = validar_numero_cnj(numero, segmento=None, tribunal=None)
     session = session or requests.Session()
     resultados: list[dict[str, Any]] = []
     ids_vistos = set()

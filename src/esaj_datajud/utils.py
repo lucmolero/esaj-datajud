@@ -33,7 +33,7 @@ def normalizar_numero_cnj(numero: str) -> str:
     )
 
 
-def validar_numero_cnj(numero: str, segmento: str = "8", tribunal: str = "26") -> str:
+def validar_numero_cnj(numero: str, segmento: str | None = "8", tribunal: str | None = "26") -> str:
     """Valida formato, escopo TJSP e dígito verificador de número CNJ."""
     normalizado = normalizar_numero_cnj(numero)
     match = CNJ_RE.match(normalizado)
@@ -41,7 +41,9 @@ def validar_numero_cnj(numero: str, segmento: str = "8", tribunal: str = "26") -
         raise FormatoCNJInvalido("Número fora do formato CNJ esperado.")
 
     sequencial, dv, ano, seg, tr, origem = match.groups()
-    if seg != segmento or tr != tribunal:
+    if segmento is not None and seg != segmento:
+        raise FormatoCNJInvalido("Número CNJ não pertence ao segmento esperado.")
+    if tribunal is not None and tr != tribunal:
         raise FormatoCNJInvalido("Número CNJ não pertence ao escopo eSAJ/TJSP.")
 
     base = f"{sequencial}{ano}{seg}{tr}{origem}"

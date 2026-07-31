@@ -4,7 +4,27 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
-## [0.2.0] - Em desenvolvimento
+## [0.3.0] - Em desenvolvimento
+
+### Adicionado
+
+- Cliente `EsajDatajudClient` para uso profissional com timeout, rate limit, cache opcional, logging e sessão injetável.
+- Configuração pública `EsajDatajudConfig`.
+- Cache JSON local e opt-in.
+- Marcador `py.typed` e checagem `mypy` no CI.
+- Workflow de release para tags `v*`, com build, validação de metadados e artefatos anexados ao GitHub Release.
+- Site MkDocs Material com navegação estruturada.
+- Documentos de metodologia, reprodutibilidade, LGPD, modelo de ameaças e governança.
+- Arquivo `CITATION.cff` para citação acadêmica e institucional.
+- Exemplo `examples/client_configurado.py`.
+
+### Alterado
+
+- Validação CNJ agora permite configurar escopo de segmento e tribunal, usada pelo DJEN sem restringir ao TJSP.
+- `User-Agent` passa a incluir a versão do pacote.
+- Roadmap reorganizado para separar entregas 0.2, 0.3 e próximas prioridades.
+
+## [0.2.0] - 2026-07-31
 
 ### Adicionado
 

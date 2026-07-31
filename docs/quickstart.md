@@ -31,6 +31,23 @@ print(extrato["dados_basicos"])
 print(len(extrato["movimentacoes"]))
 ```
 
+## Usar cliente configurável
+
+```python
+from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
+
+client = EsajDatajudClient(
+    EsajDatajudConfig(
+        timeout=20,
+        rate_limit_interval=1.0,
+        cache_enabled=True,
+    )
+)
+
+resumo = client.search_processo("1076539-20.2019.8.26.0100")
+print(resumo["classe"])
+```
+
 ## Tratar erros previstos
 
 ```python

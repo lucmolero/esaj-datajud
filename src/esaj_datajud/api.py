@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from . import djen, esaj
+from .client import EsajDatajudClient
+from .config import EsajDatajudConfig
 from .models import Extrato, ResumoProcesso
 
 
@@ -38,15 +40,18 @@ def get_extrato(
 def get_partes(numero: str) -> dict[str, Any]:
     """Retorna as partes classificadas do processo eSAJ/TJSP."""
     extrato = get_extrato(numero)
-    return extrato.get(
-        "partes",
-        {
-            "principais": [],
-            "todas": [],
-            "polo_ativo": [],
-            "polo_passivo": [],
-            "polo_desconhecido": [],
-        },
+    return cast(
+        dict[str, Any],
+        extrato.get(
+            "partes",
+            {
+                "principais": [],
+                "todas": [],
+                "polo_ativo": [],
+                "polo_passivo": [],
+                "polo_desconhecido": [],
+            },
+        ),
     )
 
 
@@ -96,6 +101,11 @@ def consultar_djen(numero: str, data_inicio: str = "") -> list[dict[str, Any]]:
     return djen.consultar_processo(numero, data_inicio=data_inicio)
 
 
+def create_client(config: EsajDatajudConfig | None = None) -> EsajDatajudClient:
+    """Cria cliente configurável para automações profissionais."""
+    return EsajDatajudClient(config=config)
+
+
 def _resumo_do_extrato(extrato: Extrato) -> ResumoProcesso:
     basicos = extrato.get("dados_basicos", {})
     movimentos = extrato.get("movimentacoes", [])
@@ -115,8 +125,9 @@ def _resumo_do_extrato(extrato: Extrato) -> ResumoProcesso:
     }
 
 
-def _nomes_polo(partes: list[dict[str, Any]]) -> str:
+def _nomes_polo(partes: list[Any]) -> str:
     nomes = []
     for parte in partes:
-        nomes.extend(parte.get("nomes", []))
+        if isinstance(parte, dict):
+            nomes.extend(parte.get("nomes", []))
     return ", ".join([nome for nome in nomes if nome])[:250]

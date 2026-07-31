@@ -5,16 +5,19 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from typing import Any, TypeAlias, cast
 
 from . import api
 from .exceptions import EsajDatajudError
 
+JsonPayload: TypeAlias = dict[str, Any] | list[Any]
 
-def _format_json(data: dict | list) -> str:
+
+def _format_json(data: JsonPayload) -> str:
     return json.dumps(data, ensure_ascii=False, indent=2)
 
 
-def _print_result(result: dict | list) -> None:
+def _print_result(result: JsonPayload) -> None:
     print(_format_json(result))
 
 
@@ -71,18 +74,20 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "search":
-            _print_result(api.search_processo(args.numero))
+            _print_result(cast(JsonPayload, api.search_processo(args.numero)))
             return 0
 
         if args.command == "extrato":
-            resultado = api.get_extrato(
+            extrato_resultado = api.get_extrato(
                 args.numero,
                 baixar_pecas=args.baixar_pecas,
                 limite_pecas=args.limite_pecas,
                 inspecionar_pecas=args.inspecionar_pecas,
                 salvar_html=args.salvar_html,
             )
-            Path(args.out).write_text(_format_json(resultado), encoding="utf-8")
+            Path(args.out).write_text(
+                _format_json(cast(JsonPayload, extrato_resultado)), encoding="utf-8"
+            )
             print(f"Extrato salvo em: {args.out}")
             return 0
 
@@ -92,18 +97,18 @@ def main(argv: list[str] | None = None) -> int:
 
         if args.command == "baixar":
             extrato_data = json.loads(Path(args.extrato_json).read_text(encoding="utf-8"))
-            resultado = api.baixar_pecas(
+            baixar_resultado = api.baixar_pecas(
                 extrato_data,
                 Path(args.out),
                 sobrescrever=args.sobrescrever,
                 limite=args.limite,
             )
-            _print_result(resultado)
+            _print_result(baixar_resultado)
             return 0
 
         if args.command == "djen":
-            resultado = api.consultar_djen(args.numero, data_inicio=args.data_inicio)
-            Path(args.out).write_text(_format_json(resultado), encoding="utf-8")
+            djen_resultado = api.consultar_djen(args.numero, data_inicio=args.data_inicio)
+            Path(args.out).write_text(_format_json(djen_resultado), encoding="utf-8")
             print(f"DJEN salvo em: {args.out}")
             return 0
 

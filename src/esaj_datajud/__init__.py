@@ -7,7 +7,22 @@ Expose main modules:
 - `utils`: helper utilities
 """
 
-from . import api, djen, esaj, exceptions, models, utils
+from . import api, cache, client, config, djen, esaj, exceptions, models, utils
+from .client import EsajDatajudClient
+from .config import EsajDatajudConfig
 from .version import __version__
 
-__all__ = ["api", "djen", "esaj", "exceptions", "models", "utils", "__version__"]
+__all__ = [
+    "EsajDatajudClient",
+    "EsajDatajudConfig",
+    "api",
+    "cache",
+    "client",
+    "config",
+    "djen",
+    "esaj",
+    "exceptions",
+    "models",
+    "utils",
+    "__version__",
+]

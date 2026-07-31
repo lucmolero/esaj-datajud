@@ -52,6 +52,18 @@ def test_consultar_djen_signature():
     assert callable(resultado)
 
 
+def test_create_client_signature():
+    resultado = api.create_client
+    assert callable(resultado)
+
+
+def test_create_client_retorna_cliente_configuravel():
+    client = api.create_client()
+
+    assert client.config.timeout == 30.0
+    assert client.cache is None
+
+
 def test_search_processo_resume_extrato(monkeypatch):
     monkeypatch.setattr(api, "get_extrato", lambda numero: _extrato())
 

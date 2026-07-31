@@ -19,7 +19,9 @@ Advogados e escritórios precisam transformar consultas repetitivas em dados est
 - CLI para consultas rápidas e geração de JSON.
 - Parser organizado para páginas públicas do eSAJ/TJSP, incluindo dados básicos, partes, movimentações, documentos vinculados, audiências, petições, incidentes e apensos.
 - Cliente DJEN/DataJud com paginação, retry, backoff e deduplicação.
+- Cliente configurável com timeout, rate limit, cache local opcional, logging e sessão injetável.
 - Contratos tipados, exceções públicas e testes com fixtures sanitizadas.
+- Pacote marcado como tipado (`py.typed`), com checagem `mypy` no CI.
 - Foco em uso jurídico responsável, com atenção a LGPD, dados sensíveis e limites das fontes consultadas.
 
 ## Instalação
@@ -52,6 +54,24 @@ print(extrato["dados_basicos"])
 
 comunicacoes = api.consultar_djen(numero)
 print(len(comunicacoes))
+```
+
+## Uso profissional com cliente configurável
+
+```python
+from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
+
+client = EsajDatajudClient(
+    EsajDatajudConfig(
+        timeout=20,
+        rate_limit_interval=1.0,
+        cache_enabled=True,
+        cache_ttl_seconds=6 * 60 * 60,
+    )
+)
+
+resumo = client.search_processo("1076539-20.2019.8.26.0100")
+print(resumo["classe"])
 ```
 
 ## CLI
@@ -91,6 +111,9 @@ python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
 ## Arquitetura
 
 - `esaj_datajud.api` - camada pública de alto nível, pensada para advogados, escritórios e sistemas.
+- `esaj_datajud.client` - cliente configurável para automações, jobs e integrações.
+- `esaj_datajud.config` - configuração imutável de timeout, cache, rate limit e User-Agent.
+- `esaj_datajud.cache` - cache JSON simples, local e opcional.
 - `esaj_datajud.esaj` - montagem de URLs, carregamento HTTP e parsing do eSAJ/TJSP.
 - `esaj_datajud.djen` - cliente para comunicações do DJEN/DataJud.
 - `esaj_datajud.cli` - interface de linha de comando.
@@ -98,9 +121,9 @@ python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
 
 ## Status do projeto
 
-O projeto está em fase beta. A API e a CLI já existem, mas algumas capacidades planejadas ainda estão em evolução, especialmente download de peças, parsing avançado de documentos, cache e cobertura ampla de cenários reais do eSAJ.
+O projeto está em fase beta. A API, a CLI e o cliente configurável já existem, mas algumas capacidades planejadas ainda estão em evolução, especialmente cobertura ampla de cenários reais do eSAJ, exportadores analíticos e documentação publicada como site.
 
-Mesmo em beta, o projeto já possui validação CNJ, exceções públicas, contratos tipados, CI, lint, build de pacote e testes sem rede para cenários centrais.
+Mesmo em beta, o projeto já possui validação CNJ, exceções públicas, contratos tipados, cache opcional, rate limit, CI, lint, type check, build de pacote e testes sem rede para cenários centrais.
 
 Para acompanhar a evolução, consulte [SPECS.md](SPECS.md), [CHANGELOG.md](CHANGELOG.md) e [docs/roadmap.md](docs/roadmap.md).
 
@@ -117,6 +140,7 @@ python -m pip install -e ".[dev]"
 python -m pytest --cov
 python -m ruff check src tests
 python -m ruff format --check src tests
+python -m mypy src
 ```
 
 Antes de abrir um pull request, rode:
@@ -125,6 +149,7 @@ Antes de abrir um pull request, rode:
 python -m pytest --cov
 python -m ruff check src tests
 python -m ruff format --check src tests
+python -m mypy src
 python -m build
 python -m twine check dist/*
 ```
@@ -132,16 +157,26 @@ python -m twine check dist/*
 ## Documentação
 
 - [Quickstart](docs/quickstart.md)
+- [Cliente configurável](docs/client.md)
 - [API Reference](docs/api-reference.md)
 - [Guia da CLI](docs/cli.md)
 - [Contratos de dados](docs/contracts.md)
 - [Erros](docs/errors.md)
 - [Arquitetura](docs/architecture.md)
+- [Metodologia](docs/metodologia.md)
+- [Reprodutibilidade](docs/reprodutibilidade.md)
+- [LGPD](docs/lgpd.md)
+- [Modelo de ameaças](docs/threat-model.md)
 - [Fixtures](docs/fixtures.md)
 - [Uso responsável](docs/uso-responsavel.md)
+- [Governança](docs/governanca.md)
 - [Roadmap](docs/roadmap.md)
 - [Contribuindo](CONTRIBUTING.md)
 - [Segurança](SECURITY.md)
+
+## Citação
+
+Para uso acadêmico, técnico ou institucional, cite o projeto pelo arquivo [CITATION.cff](CITATION.cff).
 
 ## Autor
 

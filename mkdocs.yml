@@ -1,0 +1,37 @@
+site_name: esaj-datajud
+site_description: Biblioteca Python profissional para eSAJ/TJSP e DJEN/DataJud.
+site_url: https://lucmolero.github.io/esaj-datajud/
+repo_url: https://github.com/lucmolero/esaj-datajud
+repo_name: lucmolero/esaj-datajud
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  language: pt-BR
+  features:
+    - navigation.sections
+    - navigation.tabs
+    - content.code.copy
+    - content.action.edit
+    - search.suggest
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+nav:
+  - Início: index.md
+  - Quickstart: quickstart.md
+  - Cliente Configurável: client.md
+  - CLI: cli.md
+  - API Reference: api-reference.md
+  - Contratos: contracts.md
+  - Erros: errors.md
+  - Arquitetura: architecture.md
+  - Metodologia: metodologia.md
+  - Reprodutibilidade: reprodutibilidade.md
+  - LGPD: lgpd.md
+  - Modelo de Ameaças: threat-model.md
+  - Fixtures: fixtures.md
+  - Uso Responsável: uso-responsavel.md
+  - Governança: governanca.md
+  - Roadmap: roadmap.md

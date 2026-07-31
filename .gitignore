@@ -8,10 +8,12 @@ venv/
 env/
 build/
 dist/
+site/
 *.egg-info/
 /.mypy_cache/
 .ruff_cache/
 .tmp/
+.esaj_datajud_cache/
 .coverage
 htmlcov/
 *.log

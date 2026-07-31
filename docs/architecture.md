@@ -5,6 +5,9 @@
 ## Camadas
 
 - `esaj_datajud.api`: fachada pública para scripts, notebooks, CLIs e integrações.
+- `esaj_datajud.client`: cliente configurável para automações profissionais.
+- `esaj_datajud.config`: configuração imutável de timeout, cache, rate limit e User-Agent.
+- `esaj_datajud.cache`: cache JSON local e opcional.
 - `esaj_datajud.esaj`: cliente e parser do eSAJ/TJSP.
 - `esaj_datajud.djen`: cliente do DJEN/DataJud.
 - `esaj_datajud.models`: contratos tipados dos retornos.
@@ -29,6 +32,17 @@
 5. Detecta captcha, senha, restrição ou processo não encontrado.
 6. Extrai dados básicos, partes, movimentações, documentos e tabelas complementares.
 7. Retorna dicionário estruturado com `status`, `mensagem`, `origem` e dados do processo.
+
+## Cliente configurável
+
+O `EsajDatajudClient` encapsula a sessão HTTP e aplica configuração operacional sem mudar os contratos principais:
+
+1. cria sessão com `User-Agent` versionado;
+2. aplica timeout padrão;
+3. respeita intervalo mínimo entre chamadas quando configurado;
+4. consulta cache local quando habilitado;
+5. delega parsing e download aos módulos especializados;
+6. retorna os mesmos contratos documentados da API pública.
 
 ## Fluxo DJEN
 

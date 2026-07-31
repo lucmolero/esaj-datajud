@@ -1,0 +1,136 @@
+import logging
+from uuid import uuid4
+
+from esaj_datajud.client import EsajDatajudClient, RateLimitedSession
+from esaj_datajud.config import EsajDatajudConfig
+
+
+def _extrato():
+    return {
+        "status": "ok",
+        "origem": {"url_final": "https://example.test"},
+        "dados_basicos": {"numero": "1076539-20.2019.8.26.0100", "classe": "Classe"},
+        "partes": {
+            "principais": [],
+            "todas": [],
+            "polo_ativo": [],
+            "polo_passivo": [],
+            "polo_desconhecido": [],
+        },
+        "movimentacoes": [{"titulo": "Mov", "data": "31/07/2026"}],
+        "documentos": {},
+    }
+
+
+def test_client_get_extrato_usa_cache(monkeypatch):
+    chamadas = {"count": 0}
+
+    def fake_montar(*args, **kwargs):
+        chamadas["count"] += 1
+        return _extrato()
+
+    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", fake_montar)
+    client = EsajDatajudClient(
+        EsajDatajudConfig(cache_enabled=True, cache_dir=f".tmp/test-client-cache-{uuid4()}")
+    )
+
+    primeiro = client.get_extrato("1076539-20.2019.8.26.0100")
+    segundo = client.get_extrato("1076539-20.2019.8.26.0100")
+
+    assert primeiro == segundo
+    assert chamadas["count"] == 1
+
+
+def test_client_search_processo_resume_extrato(monkeypatch):
+    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", lambda *a, **k: _extrato())
+
+    resumo = EsajDatajudClient().search_processo("1076539-20.2019.8.26.0100")
+
+    assert resumo["classe"] == "Classe"
+    assert resumo["ultima_movimentacao"] == "Mov"
+
+
+def test_rate_limited_session_define_user_agent():
+    session = RateLimitedSession(
+        timeout=10,
+        rate_limit_interval=0,
+        logger=logging.getLogger("test"),
+        user_agent="teste-agent",
+    )
+
+    assert session.timeout == 10
+    assert session.headers["User-Agent"] == "teste-agent"
+
+
+def test_client_get_partes(monkeypatch):
+    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", lambda *a, **k: _extrato())
+
+    partes = EsajDatajudClient().get_partes("1076539-20.2019.8.26.0100")
+
+    assert partes["principais"] == []
+
+
+def test_client_consultar_djen_usa_cache(monkeypatch):
+    chamadas = {"count": 0}
+
+    def fake_consultar(*args, **kwargs):
+        chamadas["count"] += 1
+        return [{"id": "1"}]
+
+    monkeypatch.setattr("esaj_datajud.client.djen.consultar_processo", fake_consultar)
+    client = EsajDatajudClient(
+        EsajDatajudConfig(cache_enabled=True, cache_dir=f".tmp/test-djen-cache-{uuid4()}")
+    )
+
+    primeiro = client.consultar_djen("1076539-20.2019.8.26.0100")
+    segundo = client.consultar_djen("1076539-20.2019.8.26.0100")
+
+    assert primeiro == segundo == [{"id": "1"}]
+    assert chamadas["count"] == 1
+
+
+def test_client_baixar_pecas_delega(monkeypatch):
+    chamadas = {}
+
+    def fake_baixar(session, movimentos, destino, limite, sobrescrever):
+        chamadas["movimentos"] = movimentos
+        chamadas["limite"] = limite
+        chamadas["sobrescrever"] = sobrescrever
+        return [{"status": "baixado"}]
+
+    monkeypatch.setattr("esaj_datajud.client.esaj.baixar_pecas_publicas", fake_baixar)
+    client = EsajDatajudClient()
+
+    resultado = client.baixar_pecas(
+        {"documentos": {"publicos_candidatos_unicos": [{"cd_documento": "1"}]}},
+        destino=__import__("pathlib").Path("pecas"),
+        sobrescrever=True,
+        limite=1,
+    )
+
+    assert resultado == [{"status": "baixado"}]
+    assert chamadas["movimentos"][0]["documentos"][0]["cd_documento"] == "1"
+    assert chamadas["sobrescrever"] is True
+
+
+def test_rate_limited_session_request_usa_timeout(monkeypatch):
+    chamadas = {}
+
+    def fake_request(self, method, url, **kwargs):
+        chamadas["method"] = method
+        chamadas["url"] = url
+        chamadas["timeout"] = kwargs["timeout"]
+        return type("Response", (), {"status_code": 200})()
+
+    monkeypatch.setattr("requests.Session.request", fake_request)
+    session = RateLimitedSession(
+        timeout=7,
+        rate_limit_interval=0,
+        logger=logging.getLogger("test"),
+        user_agent="agent",
+    )
+
+    response = session.request("GET", "https://example.test")
+
+    assert response.status_code == 200
+    assert chamadas["timeout"] == 7

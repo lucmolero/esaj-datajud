@@ -32,6 +32,7 @@ def test_normalizar_e_validar_numero_cnj():
 
     assert numero == "1076539-20.2019.8.26.0100"
     assert validar_numero_cnj(numero) == numero
+    assert validar_numero_cnj(numero, segmento=None, tribunal=None) == numero
 
 
 def test_validar_numero_cnj_rejeita_digito_invalido():

@@ -13,15 +13,30 @@ Este roadmap organiza a evolução do projeto em entregas pequenas, verificávei
 - Documentação de arquitetura, contratos, erros e fixtures.
 - CI com testes, cobertura, lint, formatação, build e validação de metadados.
 
+## Entregue em 0.3
+
+- Cliente configurável `EsajDatajudClient`.
+- Configuração pública `EsajDatajudConfig`.
+- Timeout padrão aplicado às chamadas HTTP.
+- Rate limit simples por sessão.
+- Cache JSON local, opt-in e com TTL.
+- Pacote marcado como tipado com `py.typed`.
+- Checagem `mypy` no CI.
+- Site MkDocs Material.
+- Workflow de release para tags `v*`.
+- Documentos de metodologia, reprodutibilidade, LGPD, modelo de ameaças e governança.
+- Arquivo `CITATION.cff` para uso acadêmico e institucional.
+
 ## Próximas prioridades
 
 - Publicar pacote no PyPI/TestPyPI.
-- Adicionar documentação visual com site MkDocs Material.
 - Ampliar fixtures sanitizadas com cenários reais de falha do eSAJ.
 - Medir cobertura em badge público.
-- Adicionar pre-commit e guia de desenvolvimento local.
-- Implementar cache opcional e rate limit configurável.
+- Publicar GitHub Pages a partir de `mkdocs.yml`.
+- Adicionar pre-commit como check documentado no guia de contribuição.
 - Exportar CSV e integração opcional com pandas.
+- Adicionar matriz de compatibilidade por tribunal/fonte.
+- Aumentar cobertura para 90% com foco em branches críticos do parser.
 
 ## Critério de qualidade
 

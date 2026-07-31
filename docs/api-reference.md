@@ -32,3 +32,37 @@ Retorna texto curto para triagem, briefing ou e-mail.
 ## `api.consultar_djen(numero, data_inicio="")`
 
 Consulta comunicações do DJEN/DataJud para o número CNJ informado.
+
+## `api.create_client(config=None)`
+
+Cria um `EsajDatajudClient` configurável para automações profissionais.
+
+```python
+from esaj_datajud import api, EsajDatajudConfig
+
+client = api.create_client(
+    EsajDatajudConfig(timeout=20, rate_limit_interval=1.0, cache_enabled=True)
+)
+```
+
+## `EsajDatajudClient`
+
+Métodos principais:
+
+- `search_processo(numero)`: retorna resumo estruturado.
+- `get_extrato(numero, ...)`: retorna extrato completo.
+- `get_partes(numero)`: retorna partes classificadas.
+- `consultar_djen(numero, data_inicio="")`: consulta comunicações DJEN/DataJud.
+- `baixar_pecas(extrato, destino, sobrescrever=False, limite=0)`: baixa peças públicas candidatas.
+
+## `EsajDatajudConfig`
+
+Campos principais:
+
+- `timeout`: timeout padrão das requisições HTTP.
+- `rate_limit_interval`: intervalo mínimo entre requisições da mesma sessão.
+- `cache_enabled`: habilita cache JSON local.
+- `cache_dir`: diretório de cache.
+- `cache_ttl_seconds`: tempo de vida do cache.
+- `salvar_html`: salva HTML bruto quando suportado pelo fluxo.
+- `user_agent`: modelo de `User-Agent` com suporte a `{version}`.
