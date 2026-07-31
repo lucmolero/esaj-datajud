@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.8] - 2026-07-31
+
+### Corrigido
+
+- Refaz a página inicial da documentação para evitar quebra incorreta do título em layouts do MkDocs Material.
+- Remove dependência de largura em caracteres no hero e adiciona breakpoints responsivos mais previsíveis.
+- Oculta navegação lateral e índice na home para apresentar a landing com largura adequada.
+
+### Alterado
+
+- Reposiciona a landing com narrativa mais premium, moderna e voltada a infraestrutura jurídica para agentes e automações.
+- Atualiza o visual do pipeline, métricas, cards de público-alvo, seções de engenharia verificável e CTA final.
+
 Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.

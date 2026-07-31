@@ -1,104 +1,138 @@
-<section class="agent-hero">
-  <div class="agent-hero__content">
-    <p class="agent-eyebrow">Legal data infrastructure for agentic workflows</p>
-    <h1>Dados judiciais públicos, prontos para automações jurídicas confiáveis.</h1>
-    <p class="agent-lede">
-      <strong>esaj-datajud</strong> é um toolkit Python para consultar, estruturar e auditar dados públicos do
-      eSAJ/TJSP e comunicações DJEN/DataJud com rastreabilidade, testes e governança.
-    </p>
-    <div class="agent-actions">
-      <a class="agent-button agent-button--primary" href="quickstart/">Começar agora</a>
-      <a class="agent-button" href="https://github.com/lucmolero/esaj-datajud">Ver no GitHub</a>
-    </div>
-  </div>
-  <div class="agent-hero__visual" aria-label="Fluxo visual de agentes jurídicos">
-    <div class="agent-console">
-      <div class="agent-console__bar">
-        <span></span><span></span><span></span>
+---
+hide:
+  - navigation
+  - toc
+---
+
+<main class="legal-home">
+  <section class="legal-hero" aria-labelledby="legal-home-title">
+    <div class="legal-hero__copy">
+      <div class="legal-brandline">
+        <img src="assets/logo.svg" alt="" />
+        <span>esaj-datajud</span>
       </div>
-      <div class="agent-console__body">
-        <div class="agent-step agent-step--active">
-          <strong>ingest</strong>
+      <p class="legal-kicker">Open source legal data infrastructure</p>
+      <h1 id="legal-home-title">Dados judiciais públicos para agentes, automações e pesquisa jurídica confiável.</h1>
+      <p class="legal-lede">
+        Uma biblioteca Python para consultar, estruturar e auditar informações públicas do eSAJ/TJSP e comunicações
+        DJEN/DataJud com rastreabilidade, testes automatizados e governança documentada.
+      </p>
+      <div class="legal-actions" aria-label="Ações principais">
+        <a class="legal-button legal-button--primary" href="quickstart/">Começar pelo quickstart</a>
+        <a class="legal-button" href="api-reference/">Explorar API</a>
+        <a class="legal-button legal-button--ghost" href="https://github.com/lucmolero/esaj-datajud">GitHub</a>
+      </div>
+    </div>
+
+    <div class="legal-hero__system" aria-label="Fluxo técnico de dados jurídicos">
+      <div class="legal-system__top">
+        <span class="legal-dot legal-dot--green"></span>
+        <span>agentic legal pipeline</span>
+      </div>
+      <div class="legal-flow">
+        <div class="legal-node">
+          <strong>01</strong>
           <span>CNJ validado</span>
         </div>
-        <div class="agent-path"></div>
-        <div class="agent-step">
-          <strong>parse</strong>
-          <span>partes + movimentos</span>
+        <div class="legal-connector"></div>
+        <div class="legal-node">
+          <strong>02</strong>
+          <span>Fonte pública</span>
         </div>
-        <div class="agent-path"></div>
-        <div class="agent-step">
-          <strong>audit</strong>
-          <span>JSON rastreável</span>
+        <div class="legal-connector"></div>
+        <div class="legal-node legal-node--active">
+          <strong>03</strong>
+          <span>JSON auditável</span>
         </div>
-        <pre><code>{
-  "status": "ok",
-  "fonte": "eSAJ/TJSP",
-  "movimentacoes": 10310,
-  "coverage": "90%+"
-}</code></pre>
       </div>
+      <pre><code>{
+  "tribunal": "TJSP",
+  "origem": "eSAJ",
+  "status": "estruturado",
+  "governanca": ["LGPD", "limites", "reprodutibilidade"],
+  "automacao": "pronta_para_agentes"
+}</code></pre>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="agent-trust-grid" aria-label="Indicadores de confiança">
-  <article>
-    <strong>90%+</strong>
-    <span>cobertura automatizada</span>
-  </article>
-  <article>
-    <strong>CI</strong>
-    <span>Python 3.10, 3.11 e 3.12</span>
-  </article>
-  <article>
-    <strong>CodeQL</strong>
-    <span>análise de segurança contínua</span>
-  </article>
-  <article>
-    <strong>LGPD</strong>
-    <span>uso responsável documentado</span>
-  </article>
-</section>
+  <section class="legal-signal-grid" aria-label="Sinais de confiança do projeto">
+    <article>
+      <strong>90%+</strong>
+      <span>cobertura automatizada</span>
+    </article>
+    <article>
+      <strong>Typed</strong>
+      <span>contratos públicos e <code>py.typed</code></span>
+    </article>
+    <article>
+      <strong>CI + CodeQL</strong>
+      <span>qualidade e segurança contínuas</span>
+    </article>
+    <article>
+      <strong>LGPD</strong>
+      <span>uso responsável documentado</span>
+    </article>
+  </section>
 
-## Para Quem É
+  <section class="legal-section legal-section--split">
+    <div>
+      <p class="legal-section__eyebrow">Para quem está construindo o futuro jurídico</p>
+      <h2>Base técnica para produtos, escritórios e pesquisa aplicada.</h2>
+    </div>
+    <p>
+      O projeto foi desenhado para unir engenharia de software, responsabilidade jurídica e abertura acadêmica. Ele
+      transforma consultas públicas em dados estruturados para fluxos verificáveis, sem prometer acesso privilegiado,
+      contornar barreiras ou substituir análise profissional.
+    </p>
+  </section>
 
-<div class="agent-card-grid">
-  <article>
-    <h3>Advocacia</h3>
-    <p>Estruture consultas públicas recorrentes sem perder rastreabilidade ou depender de planilhas manuais.</p>
-  </article>
-  <article>
-    <h3>Legaltech</h3>
-    <p>Use uma base aberta, tipada e testada para construir produtos jurídicos com dados oficiais.</p>
-  </article>
-  <article>
-    <h3>Pesquisa</h3>
-    <p>Trabalhe com metodologia, reprodutibilidade, limites declarados e fixtures sanitizadas.</p>
-  </article>
-</div>
+  <section class="legal-card-grid" aria-label="Casos de uso">
+    <article>
+      <span class="legal-card__label">Advocacia</span>
+      <h3>Rotinas repetíveis</h3>
+      <p>Consulta, estruturação e extração de informações públicas para reduzir retrabalho operacional.</p>
+    </article>
+    <article>
+      <span class="legal-card__label">Legaltech</span>
+      <h3>Produto sobre base aberta</h3>
+      <p>Contratos tipados, cliente configurável, cache opt-in e erros previsíveis para integração profissional.</p>
+    </article>
+    <article>
+      <span class="legal-card__label">Academia</span>
+      <h3>Metodologia explícita</h3>
+      <p>Documentação sobre reprodutibilidade, fixtures sanitizadas, limitações e validação controlada.</p>
+    </article>
+  </section>
 
-## Por Que Confiar
+  <section class="legal-section legal-section--accent">
+    <div>
+      <p class="legal-section__eyebrow">Engenharia verificável</p>
+      <h2>Um projeto open source que mostra senioridade no código e no cuidado institucional.</h2>
+      <p>
+        O repositório combina parser, cliente, CLI, documentação, testes sem rede, testes live opcionais, validação de
+        build, auditoria de dependências, changelog, governança, segurança e notas de release versionadas.
+      </p>
+    </div>
+    <div class="legal-checklist" aria-label="Camadas de qualidade">
+      <span>Testes automatizados</span>
+      <span>Type checking</span>
+      <span>Lint e formatação</span>
+      <span>Build validado</span>
+      <span>Threat model</span>
+      <span>Uso responsável</span>
+    </div>
+  </section>
 
-<div class="agent-proof">
-  <div>
-    <h3>Engenharia verificável</h3>
-    <p>Testes sem rede, testes live opcionais, lint, type check, build, <code>twine check</code>, <code>pip-audit</code> e releases com artefatos públicos.</p>
-  </div>
-  <div>
-    <h3>Domínio jurídico real</h3>
-    <p>O parser cobre dados básicos, partes, movimentações, documentos, audiências, petições, incidentes, apensos e comunicações DJEN/DataJud.</p>
-  </div>
-  <div>
-    <h3>Limites explícitos</h3>
-    <p>O projeto não burla autenticação, senha, captcha, segredo de justiça ou restrições técnicas das fontes consultadas.</p>
-  </div>
-</div>
-
-## Fluxo De Uso
-
-```python
-from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
+  <section class="legal-code-section" aria-labelledby="legal-code-title">
+    <div>
+      <p class="legal-section__eyebrow">Primeiro uso</p>
+      <h2 id="legal-code-title">Instale, consulte e trabalhe com dados estruturados.</h2>
+      <p>
+        A API favorece fluxos claros: configurar limites, consultar uma fonte pública e receber um extrato pronto para
+        auditoria, persistência ou integração com agentes internos.
+      </p>
+    </div>
+    <pre><code>from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
 
 client = EsajDatajudClient(
     EsajDatajudConfig(
@@ -110,17 +144,21 @@ client = EsajDatajudClient(
 
 extrato = client.get_extrato("1076539-20.2019.8.26.0100")
 print(extrato["dados_basicos"]["classe"])
-print(len(extrato["movimentacoes"]))
-```
+print(len(extrato["movimentacoes"]))</code></pre>
+  </section>
 
-## Projeto Independente
-
-`esaj-datajud` não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud. A biblioteca organiza consultas a fontes públicas ou legitimamente acessíveis pelo usuário e foi desenhada para uso técnico e jurídico responsável.
-
-<div class="agent-final-cta">
-  <div>
-    <h2>Comece pela rota curta.</h2>
-    <p>Instale localmente, rode uma consulta e avance para o cliente configurável quando precisar de cache, rate limit e logging.</p>
-  </div>
-  <a class="agent-button agent-button--primary" href="quickstart/">Abrir quickstart</a>
-</div>
+  <section class="legal-footer-cta">
+    <div>
+      <p class="legal-section__eyebrow">Projeto independente</p>
+      <h2>Pronto para avaliação técnica, uso responsável e evolução pública.</h2>
+      <p>
+        <strong>esaj-datajud</strong> não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud. A biblioteca organiza
+        consultas a fontes públicas ou legitimamente acessíveis pelo usuário.
+      </p>
+    </div>
+    <div class="legal-actions">
+      <a class="legal-button legal-button--primary" href="quickstart/">Abrir quickstart</a>
+      <a class="legal-button" href="governanca/">Ver governança</a>
+    </div>
+  </section>
+</main>
