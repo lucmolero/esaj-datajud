@@ -1,0 +1,26 @@
+name: Feature request
+description: Sugira uma melhoria ou nova capacidade.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema
+      description: Qual problema jurídico ou técnico essa melhoria resolve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solução desejada
+      description: Descreva o comportamento esperado.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto adicional
+      description: Inclua exemplos sanitizados, quando útil.
+    validations:
+      required: false

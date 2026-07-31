@@ -7,7 +7,7 @@ Expose main modules:
 - `utils`: helper utilities
 """
 
-from . import api, esaj, djen, utils
+from . import api, djen, esaj, utils
 from .version import __version__
 
 __all__ = ["api", "esaj", "djen", "utils", "__version__"]

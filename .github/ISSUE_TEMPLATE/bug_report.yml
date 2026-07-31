@@ -1,0 +1,37 @@
+name: Bug report
+description: Relate um comportamento inesperado.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar. Não inclua dados pessoais, documentos sigilosos ou HTML real sem sanitização.
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: O que aconteceu?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+      description: O que você esperava que acontecesse?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Como reproduzir
+      description: Liste comandos ou passos mínimos, sem dados sensíveis.
+    validations:
+      required: false
+  - type: input
+    id: python
+    attributes:
+      label: Versão do Python
+      placeholder: "3.12"
+    validations:
+      required: false

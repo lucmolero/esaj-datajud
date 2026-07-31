@@ -4,8 +4,9 @@ This implementation is intentionally small and focused on returning a list of
 communications for a given process number. It mirrors behavior of the reference
 `djen_coletar.py` but is structured into small functions for reuse and testing.
 """
-from datetime import datetime, timedelta
+
 import time
+
 import requests
 
 API_BASE = "https://comunicaapi.pje.jus.br/api/v1/comunicacao"
@@ -81,18 +82,20 @@ def consultar_processo(numero: str, data_inicio: str = "") -> list:
                 continue
             ids_vistos.add(iid)
             novos += 1
-            resultados.append({
-                "id": iid,
-                "tipoComunicacao": item.get("tipoComunicacao", item.get("tipoDocumento", "")),
-                "nomeOrgao": item.get("nomeOrgao", ""),
-                "dataDisponibilizacao": _parse_data(item),
-                "siglaTribunal": item.get("siglaTribunal", ""),
-                "nomeClasse": item.get("nomeClasse", ""),
-                "texto": str(item.get("texto", "")),
-                "destinatarios": item.get("destinatarios", []),
-                "link": item.get("link", ""),
-                "meio": item.get("meio", ""),
-            })
+            resultados.append(
+                {
+                    "id": iid,
+                    "tipoComunicacao": item.get("tipoComunicacao", item.get("tipoDocumento", "")),
+                    "nomeOrgao": item.get("nomeOrgao", ""),
+                    "dataDisponibilizacao": _parse_data(item),
+                    "siglaTribunal": item.get("siglaTribunal", ""),
+                    "nomeClasse": item.get("nomeClasse", ""),
+                    "texto": str(item.get("texto", "")),
+                    "destinatarios": item.get("destinatarios", []),
+                    "link": item.get("link", ""),
+                    "meio": item.get("meio", ""),
+                }
+            )
         if novos == 0 or len(items) < PAGE_SIZE:
             break
         time.sleep(0.2)

@@ -10,5 +10,9 @@ build/
 dist/
 *.egg-info/
 /.mypy_cache/
+.ruff_cache/
+.tmp/
 *.log
 esaj_raw/
+extrato.json
+djen.json

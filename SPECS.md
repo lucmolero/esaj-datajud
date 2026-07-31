@@ -255,7 +255,7 @@ Partes principais: Autor Empresa X / Ré Empresa Y
 
 ---
 
-# Arquitetura técnica
+## Arquitetura técnica
 
 ## 1. Diretórios e namespace
 

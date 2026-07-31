@@ -1,4 +1,5 @@
 """Utility helpers for esaj_datajud."""
+
 import re
 import unicodedata
 
@@ -17,6 +18,7 @@ def normalizar_chave(texto: str) -> str:
     chave = unicodedata.normalize("NFKD", limpar(texto))
     chave = "".join(ch for ch in chave if not unicodedata.combining(ch)).lower()
     return re.sub(r"[^a-z0-9]+", "_", chave).strip("_")
+
 
 POLOS_ATIVOS = {
     "autor",
