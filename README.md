@@ -1,105 +1,310 @@
 <p align="center">
-  <img src="docs/assets/esaj-datajud-logo-primary.svg" alt="Marca esaj-datajud" width="220" />
+  <img
+    src="docs/assets/esaj-datajud-logo-primary.svg"
+    alt="esaj-datajud"
+    width="260"
+  />
 </p>
 
 <h1 align="center">esaj-datajud</h1>
 
-<p align="center" style="max-width: 780px; margin: 0 auto 1rem; font-size: 1.05rem; color: #dce8ff;">
-  Repositório central para buscar dados processuais, jurisprudência e contexto público do Brasil com uma camada de IA para advogados, desenvolvedores e pesquisadores.
-</p>
-
-<div align="center" style="margin: 0 0 1.2rem;">
-  <div style="display: inline-block; padding: 0.7rem 1rem; border: 1px solid #244b6a; border-radius: 999px; background: linear-gradient(90deg, rgba(93,211,176,0.16), rgba(244,201,93,0.12)); color: #f6f9ff; font-size: 0.95rem; font-weight: 600;">
-    Busca processual • Jurisprudência • IA local • Dados públicos brasileiros
-  </div>
-</div>
-
 <p align="center">
-  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml"><img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/docs.yml"><img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/docs.yml/badge.svg" alt="Docs" /></a>
-  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/codeql.yml"><img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/codeql.yml/badge.svg" alt="CodeQL" /></a>
-  <a href="https://github.com/lucmolero/esaj-datajud/releases"><img src="https://img.shields.io/github/v/release/lucmolero/esaj-datajud" alt="Release" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT" /></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+" /></a>
+  <strong>Dados judiciais públicos, estruturados e rastreáveis.</strong>
 </p>
 
 <p align="center">
-  <a href="https://lucmolero.github.io/esaj-datajud/">Documentação</a> ·
-  <a href="https://github.com/lucmolero/esaj-datajud/releases">Releases</a> ·
-  <a href="docs/uso-responsavel.md">Uso responsável</a> ·
-  <a href="CHANGELOG.md">Changelog</a>
+  Consulte e organize informações públicas do eSAJ/TJSP, DataJud/CNJ e DJEN usando Python, linha de comando ou agentes de IA compatíveis com MCP.
 </p>
 
-`esaj-datajud` oferece uma base profissional para soluções jurídicas: simples para advogados, previsível para times técnicos e transparente sobre limites, riscos e uso responsável. O foco é transformar fontes públicas judiciais em dados estruturados, timelines e integrações locais para automação com agentes de IA.
+<p align="center">
+  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml">
+    <img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml/badge.svg" alt="CI" />
+  </a>
+  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/docs.yml">
+    <img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/docs.yml/badge.svg" alt="Docs" />
+  </a>
+  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/codeql.yml">
+    <img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/codeql.yml/badge.svg" alt="CodeQL" />
+  </a>
+  <a href="https://github.com/lucmolero/esaj-datajud/releases">
+    <img src="https://img.shields.io/github/v/release/lucmolero/esaj-datajud" alt="Release" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT" />
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+" />
+  </a>
+</p>
 
-> Projeto independente: não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud. A biblioteca não burla autenticação, senha, captcha, segredo de justiça ou restrições técnicas das fontes consultadas.
+<p align="center">
+  <a href="#comece-aqui">Comece aqui</a>
+  ·
+  <a href="https://lucmolero.github.io/esaj-datajud/">Documentação</a>
+  ·
+  <a href="#uso-com-agentes-de-ia">Uso com IA</a>
+  ·
+  <a href="#uso-responsável">Uso responsável</a>
+  ·
+  <a href="https://github.com/lucmolero/esaj-datajud/releases">Releases</a>
+</p>
 
-## Por que este projeto existe
+---
 
-Advogados e escritórios precisam transformar consultas repetitivas em dados estruturados, sem perder rastreabilidade. `esaj-datajud` nasceu para ser uma camada pequena, auditável e extensível entre fontes públicas judiciais e fluxos internos de análise, relatório e automação.
+> [!IMPORTANT]
+> **Status: beta público.**
+>
+> O projeto já oferece API Python, CLI, cliente configurável e servidor MCP local, mas continua em evolução. As fontes judiciais consultadas são externas e podem alterar páginas, contratos, disponibilidade ou limites sem aviso.
+>
+> Confirme informações relevantes nos sistemas oficiais antes de utilizá-las em atividades profissionais.
 
-O projeto também serve como vitrine técnica de engenharia legaltech: contratos tipados, testes automatizados, documentação de governança, cuidado com LGPD e releases verificáveis.
+> [!NOTE]
+> Este é um projeto independente. Não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud.
+>
+> A biblioteca não contorna autenticação, senha, captcha, segredo de justiça ou restrições técnicas das fontes consultadas.
 
-## Por que confiar
+## Visão geral
 
-- CI em Python 3.10, 3.11, 3.12 e 3.13.
-- Cobertura automatizada acima de 90%.
-- CodeQL, `pip-audit`, lint, type check, build e validação de pacote.
-- Testes sem rede com fixtures sanitizadas.
-- Testes `live` opcionais contra fonte real, fora do CI por estabilidade.
-- Documentação de LGPD, uso responsável, modelo de ameaças, governança e reprodutibilidade.
-- Releases versionadas com `wheel`, `sdist` e notas públicas.
+O `esaj-datajud` é uma camada local e auditável para consultar, estruturar e organizar dados judiciais públicos.
 
-## Recursos
+O projeto transforma informações dispersas em resultados adequados para:
 
-- API Python de alto nível para scripts, notebooks e integrações.
-- CLI para consultas rápidas e geração de JSON.
-- Parser organizado para páginas públicas do eSAJ/TJSP, incluindo dados básicos, partes, movimentações, documentos vinculados, audiências, petições, incidentes e apensos.
-- Cliente DataJud/CNJ para dados processuais estruturados, com retry, backoff e normalização.
-- Cliente DJEN para comunicações e publicações, com paginação, retry, backoff e deduplicação.
-- Cliente configurável com timeout, rate limit, cache local opcional, logging e sessão injetável.
-- Servidor MCP local opcional por `stdio` para agentes e clientes compatíveis com MCP.
-- Leitura best-effort de documentos públicos candidatos em memória, sem salvar PDF em disco.
-- Contratos tipados, exceções públicas e testes com fixtures sanitizadas.
-- Pacote marcado como tipado (`py.typed`), com checagem `mypy` no CI.
-- Foco em uso jurídico responsável, com atenção a LGPD, dados sensíveis e limites das fontes consultadas.
+* consultas jurídicas assistidas;
+* linhas do tempo processuais;
+* relatórios internos;
+* automações locais;
+* scripts e notebooks;
+* integrações com sistemas;
+* agentes de IA compatíveis com MCP;
+* exportações estruturadas para análise.
 
-## Para advogados e agentes de IA
+A proposta é permitir que profissionais do Direito e equipes técnicas utilizem fontes públicas judiciais sem perder a origem, o contexto e os limites de cada informação.
 
-Este projeto foi pensado para ser usado de forma simples, inclusive por quem não conhece programação.
+## Fontes integradas
 
-O fluxo recomendado é este:
+| Fonte           | Conteúdo consultado                                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **eSAJ/TJSP**   | Dados básicos, partes, movimentações, audiências, petições, incidentes, apensos e documentos públicos candidatos |
+| **DataJud/CNJ** | Dados processuais estruturados e normalizados                                                                    |
+| **DJEN**        | Comunicações e publicações judiciais                                                                             |
 
-1. Você escolhe um número CNJ público.
-2. A IA ou alguém com acesso ao computador usa uma forma simples de instalar o projeto.
-3. O ambiente é preparado com poucos comandos.
-4. O sistema consulta o processo e entrega um resultado organizado.
+A disponibilidade e a cobertura dependem das informações publicadas por cada fonte.
 
-### Caminho simples para advogados
+## Principais recursos
 
-Se você não usa GitHub nem sabe o que é `git clone`, a alternativa mais simples é:
+### Para profissionais do Direito
 
-1. abrir a página do repositório no GitHub;
-2. clicar em "Code" e depois em "Download ZIP";
-3. extrair a pasta em qualquer local do computador;
-4. abrir o terminal dentro dessa pasta e seguir os comandos abaixo.
+* Consulta de processos públicos por número CNJ.
+* Organização de dados básicos e movimentações.
+* Construção de timelines cronológicas.
+* Consolidação de informações provenientes de fontes diferentes.
+* Identificação da origem de cada conjunto de dados.
+* Exportação de resultados para arquivos estruturados.
+* Uso por meio de agentes de IA locais.
 
-Esse caminho é suficiente para usar a biblioteca, o CLI e o MCP local sem precisar entender Git.
+### Para integrações e automações
 
-### Passo 1: baixar o repositório
+* API Python de alto nível.
+* Cliente configurável para rotinas profissionais.
+* Interface de linha de comando.
+* Servidor MCP local por `stdio`.
+* Exportação para JSON, JSONL, CSV e SQLite.
+* Timeout, retry, backoff e rate limit.
+* Cache local opcional.
+* Logging e sessões HTTP injetáveis.
+* Contratos tipados e exceções públicas.
 
-No computador, abra o terminal e execute:
+### Para segurança e qualidade
+
+* Testes automatizados sem rede com fixtures sanitizadas.
+* Testes opcionais contra fontes reais.
+* Compatibilidade com Python 3.10, 3.11, 3.12 e 3.13.
+* Cobertura mínima de testes exigida pelo CI.
+* CodeQL, `pip-audit`, lint, type check e validação de pacote.
+* Pacote marcado como tipado com `py.typed`.
+* Documentação de LGPD, governança, ameaças e uso responsável.
+
+---
+
+# Comece aqui
+
+Escolha o caminho mais adequado ao seu perfil.
+
+| Perfil                                            | Caminho recomendado                               |
+| ------------------------------------------------- | ------------------------------------------------- |
+| Advogado usando Claude Code ou outro agente local | [Uso com agentes de IA](#uso-com-agentes-de-ia)   |
+| Usuário sem Git                                   | [Baixar o projeto como ZIP](#baixar-sem-usar-git) |
+| Desenvolvedor Python                              | [Instalação técnica](#instalação-técnica)         |
+| Usuário de terminal                               | [Uso pela CLI](#uso-pela-cli)                     |
+| Usuário de MCP                                    | [Servidor MCP local](#servidor-mcp-local)         |
+| Contribuidor                                      | [Desenvolvimento](#desenvolvimento)               |
+
+---
+
+# Uso com agentes de IA
+
+O projeto pode ser preparado e utilizado por agentes que tenham acesso à pasta local e ao terminal do computador, como Claude Code e outros agentes de desenvolvimento.
+
+Você não precisa conhecer Git, Python ou os comandos internos do projeto para seguir esse caminho.
+
+> [!WARNING]
+> Uma IA utilizada apenas pelo navegador, sem acesso aos arquivos e ao terminal do seu computador, não conseguirá instalar ou executar o projeto localmente.
+
+## Baixar sem usar Git
+
+1. Abra a página do repositório no GitHub.
+2. Clique em **Code**.
+3. Clique em **Download ZIP**.
+4. Extraia o arquivo para uma pasta do computador.
+5. Abra essa pasta no Claude Code ou em outro agente local.
+6. Envie ao agente a instrução abaixo.
+
+## Instrução para preparar o projeto
+
+Copie e cole esta mensagem no agente:
+
+```text
+Prepare este projeto para uso jurídico local.
+
+Leia primeiro o README.md e entenda a estrutura do projeto.
+
+Identifique meu sistema operacional e prepare o ambiente automaticamente.
+
+Crie um ambiente virtual isolado, atualize o pip, instale o projeto com os recursos de CLI e MCP e valide se a instalação está funcionando.
+
+Use o Python do ambiente virtual e não instale dependências globalmente quando isso puder ser evitado.
+
+Não altere o código-fonte durante a instalação.
+
+Se este agente aceitar servidores MCP, configure o servidor MCP local usando o ambiente virtual do projeto. Se não aceitar, mantenha a CLI disponível e explique de forma simples como utilizá-la.
+
+Não tente acessar processos sigilosos, contornar autenticação, senha, captcha ou qualquer restrição técnica. Não solicite credenciais judiciais.
+
+Ao terminar, informe:
+
+1. se a instalação foi concluída;
+2. se a biblioteca foi importada corretamente;
+3. se a CLI está funcionando;
+4. se o MCP foi configurado;
+5. quais fontes estão disponíveis;
+6. como abrir e usar o projeto novamente;
+7. e qual é o próximo passo para consultar um processo público.
+```
+
+O agente deverá executar as etapas necessárias e apresentar apenas as decisões que realmente dependam de você.
+
+## Resultado esperado
+
+Ao final da preparação, o agente deverá apresentar um resumo semelhante a este:
+
+```text
+Preparação concluída.
+
+- Biblioteca instalada: sim
+- CLI disponível: sim
+- MCP configurado: sim ou não
+- Ambiente utilizado: .venv
+- Código-fonte alterado: não
+
+Agora envie o número CNJ público do processo que deseja consultar.
+```
+
+## Consultar um processo com o agente
+
+Depois da instalação, envie uma instrução como:
+
+```text
+Consulte o processo público de número:
+
+0015020-23.2010.8.26.0053
+
+Apresente:
+
+- os dados básicos;
+- a última movimentação;
+- uma linha do tempo em ordem cronológica;
+- as informações encontradas no eSAJ, DataJud e DJEN;
+- eventuais diferenças entre as fontes;
+- a data e a origem de cada informação relevante.
+
+Separe claramente:
+
+1. dados obtidos diretamente das fontes;
+2. dados normalizados pelo projeto;
+3. explicações ou inferências produzidas pela IA.
+
+Não trate análises produzidas pela IA como informações oficiais do tribunal.
+```
+
+Substitua o número utilizado no exemplo pelo número CNJ público que deseja consultar.
+
+## Outros pedidos úteis
+
+```text
+Resuma as movimentações mais importantes deste processo.
+```
+
+```text
+Mostre apenas as movimentações dos últimos 90 dias.
+```
+
+```text
+Compare os dados encontrados no eSAJ, DataJud e DJEN.
+```
+
+```text
+Gere uma linha do tempo objetiva com data, evento e fonte.
+```
+
+```text
+Exporte os dados públicos deste processo para JSON.
+```
+
+```text
+Identifique divergências ou informações ausentes entre as fontes.
+```
+
+---
+
+# Demonstração pública
+
+Para demonstrações, tutoriais e testes manuais, o projeto utiliza o seguinte processo público:
+
+```text
+0015020-23.2010.8.26.0053
+```
+
+Trata-se de um Mandado de Segurança Cível envolvendo sindicato e Administração Pública estadual.
+
+Em uma validação manual realizada em 31 de julho de 2026, o projeto obteve dados do eSAJ/TJSP, DataJud/CNJ e DJEN e gerou uma timeline agregada sem falhas registradas naquela execução.
+
+Os resultados podem mudar, pois dependem de fontes externas atualizadas continuamente.
+
+Consulte a demonstração completa em:
+
+* [Demonstração pública](docs/demonstracao-publica.md)
+* [Exemplos seguros](docs/exemplos-seguros.md)
+
+---
+
+# Instalação técnica
+
+## Requisitos
+
+* Python 3.10 ou superior.
+* Acesso à internet para instalação e consultas.
+* Terminal ou agente local com acesso ao terminal.
+
+## Clonar o repositório
 
 ```bash
 git clone https://github.com/lucmolero/esaj-datajud.git
 cd esaj-datajud
 ```
 
-Se não tiver `git`, a IA pode baixar o projeto como arquivo ZIP pelo GitHub e extrair na pasta desejada.
+Também é possível baixar o projeto por **Code → Download ZIP**.
 
-### Passo 2: preparar o ambiente
-
-No Windows PowerShell:
+## Windows PowerShell
 
 ```powershell
 python -m venv .venv
@@ -108,7 +313,7 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[mcp]"
 ```
 
-No Linux/macOS:
+## Linux ou macOS
 
 ```bash
 python -m venv .venv
@@ -117,78 +322,86 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[mcp]"
 ```
 
-### Passo 3: usar o projeto
-
-Depois da instalação, você pode usar o comando simples abaixo para iniciar o servidor MCP:
+## Validar a instalação
 
 ```bash
-esaj-datajud-mcp
+python -c "import esaj_datajud; print('esaj-datajud instalado com sucesso')"
 ```
 
-Ou, se preferir, usar a CLI diretamente:
+```bash
+esaj --help
+```
+
+Também é possível executar a CLI pelo módulo:
+
+```bash
+python -m esaj_datajud.cli --help
+```
+
+---
+
+# Uso pela CLI
+
+## Consultar um processo
 
 ```bash
 esaj search 0015020-23.2010.8.26.0053
 ```
 
-### Passo 4: consultar um processo
-
-Use um número CNJ público, por exemplo:
-
-```text
-0015020-23.2010.8.26.0053
-```
-
-Se a pessoa estiver usando uma IA, ela pode seguir exatamente este roteiro sem precisar entender o código. Veja a jornada guiada em [docs/instalacao-com-ia.md](docs/instalacao-com-ia.md) e a visão jurídica em [docs/para-advogados.md](docs/para-advogados.md).
-
-## Demonstração pública recomendada
-
-Para demonstrações, tutoriais e vídeos, o projeto usa um processo público institucional previamente testado pelo MCP local:
-
-```text
-0015020-23.2010.8.26.0053
-```
-
-Trata-se de um Mandado de Segurança Cível envolvendo sindicato e Administração Pública estadual. Em validação manual realizada em 31/07/2026, o MCP retornou dados do eSAJ/TJSP, DJEN e DataJud/CNJ, com timeline agregada e sem erros. A demonstração completa está em [docs/demonstracao-publica.md](docs/demonstracao-publica.md).
-
-## Casos reais de robustez
-
-O projeto é validado com fixtures sanitizadas e também com corpus privado local, sem publicar HTMLs, PDFs, peças reais ou estudos de caso empresariais identificáveis no repositório. A validação mais recente confirmou:
-
-- 17 processos públicos extraídos em corpus privado de 32 HTMLs reais.
-- 10.310 movimentações parseadas.
-- 42 partes principais e 2.451 partes em tabelas completas.
-- 204 documentos públicos candidatos e 816 documentos restritos por senha.
-- Cobertura para página pública do eSAJ com `popupSenha` oculto.
-
-## Instalação
-
-Para desenvolvimento local:
+## Gerar um extrato em JSON
 
 ```bash
-python -m pip install -e ".[dev]"
+esaj extrato 0015020-23.2010.8.26.0053 --out extrato.json
 ```
 
-Para usar o servidor MCP local:
+## Consultar partes
 
 ```bash
-python -m pip install -e ".[mcp]"
-esaj-datajud-mcp
+esaj partes 0015020-23.2010.8.26.0053
 ```
 
-Para uso direto a partir do repositório:
+## Consultar o DJEN
 
 ```bash
-python -m pip install -r requirements.txt
-python -m pip install -e .
+esaj djen 0015020-23.2010.8.26.0053 --out djen.json
 ```
 
-## Uso rápido em Python
+## Consultar o DataJud
+
+```bash
+esaj datajud 0015020-23.2010.8.26.0053 --out datajud.json
+```
+
+## Gerar uma timeline consolidada
+
+```bash
+esaj timeline 0015020-23.2010.8.26.0053 \
+  --source esaj \
+  --source djen \
+  --source datajud \
+  --recent-first \
+  --limit 20 \
+  --out timeline.json
+```
+
+## Executar pela instalação Python
+
+```bash
+python -m esaj_datajud.cli search 0015020-23.2010.8.26.0053
+```
+
+Consulte o guia completo:
+
+* [Guia da CLI](docs/cli.md)
+
+---
+
+# Uso rápido em Python
 
 ```python
 from esaj_datajud import api
 
-numero = "0015020-23.2010.8.26.0053"  # demo pública institucional
+numero = "0015020-23.2010.8.26.0053"
 
 resumo = api.search_processo(numero)
 print(resumo["classe"])
@@ -203,9 +416,15 @@ datajud = api.consultar_datajud(numero)
 print(datajud["classe"])
 ```
 
-A API pública do DataJud/CNJ usa chave pública documentada na Wiki oficial. A biblioteca inclui a chave vigente como fallback; se o CNJ rotacionar a chave, use `DATAJUD_API_KEY` ou passe `api_key` explicitamente.
+A API pública do DataJud/CNJ utiliza uma chave pública documentada pelo próprio CNJ.
 
-## Uso profissional com cliente configurável
+A biblioteca inclui a chave vigente como fallback. Caso o CNJ altere essa chave, defina a variável `DATAJUD_API_KEY` ou informe `api_key` explicitamente.
+
+---
+
+# Cliente configurável
+
+Para automações, jobs e integrações profissionais, use o cliente configurável:
 
 ```python
 from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
@@ -219,44 +438,84 @@ client = EsajDatajudClient(
     )
 )
 
-resumo = client.search_processo("0015020-23.2010.8.26.0053")
+resumo = client.search_processo(
+    "0015020-23.2010.8.26.0053"
+)
+
 print(resumo["classe"])
 ```
 
-## CLI
+Consulte:
+
+* [Cliente configurável](docs/client.md)
+* [API Reference](docs/api-reference.md)
+* [Contratos de dados](docs/contracts.md)
+* [Tratamento de erros](docs/errors.md)
+
+---
+
+# Servidor MCP local
+
+O projeto inclui um servidor MCP local opcional por `stdio`.
+
+Ele permite que agentes e clientes compatíveis consultem e estruturem dados judiciais sem a necessidade de expor um endpoint público.
+
+## Instalação
 
 ```bash
-esaj search 0015020-23.2010.8.26.0053
-esaj extrato 0015020-23.2010.8.26.0053 --out extrato.json
-esaj partes 0015020-23.2010.8.26.0053
-esaj baixar extrato.json --out pecas
-esaj ler-pecas extrato.json --limite 3 --out pecas_texto.json
-esaj djen 0015020-23.2010.8.26.0053 --out djen.json
-esaj datajud 0015020-23.2010.8.26.0053 --out datajud.json
-esaj timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --recent-first --limit 20 --out timeline.json
+python -m pip install -e ".[mcp]"
 ```
 
-Também é possível executar via módulo:
+## Execução direta
 
 ```bash
-python -m esaj_datajud.cli search 0015020-23.2010.8.26.0053
+esaj-datajud-mcp
 ```
 
-## MCP Local
-
-O projeto inclui um servidor MCP local opcional por `stdio`, pensado para agentes que precisam consultar e estruturar dados judiciais sem expor endpoint público.
+Ou:
 
 ```bash
 python -m esaj_datajud.mcp_server
 ```
 
-As ferramentas MCP disponíveis validam CNJ, extraem números CNJ de texto, consultam eSAJ/TJSP, DataJud/CNJ e DJEN, geram envelope versionado, timeline cronológica e leitura em memória de documentos públicos candidatos quando tecnicamente possível.
+> [!NOTE]
+> Executar o servidor e configurá-lo em um cliente MCP são etapas diferentes.
+>
+> O cliente deve registrar o comando do servidor e, preferencialmente, utilizar o executável Python localizado dentro do ambiente virtual `.venv`.
 
-Sobre PDFs: a ferramenta `ler_documentos_publicos` não salva arquivos em disco. Quando a fonte retorna PDF público, os bytes são processados em memória e o texto é extraído com `pypdf`. Documentos com senha, captcha, sigilo ou restrição de acesso continuam fora do escopo.
+As ferramentas MCP disponíveis incluem:
 
-Consulte [docs/mcp-local.md](docs/mcp-local.md) para configuração em clientes MCP.
+* validação de números CNJ;
+* extração de números CNJ contidos em textos;
+* consulta ao eSAJ/TJSP;
+* consulta ao DataJud/CNJ;
+* consulta ao DJEN;
+* geração de envelopes versionados;
+* criação de timelines cronológicas;
+* leitura em memória de documentos públicos candidatos, quando tecnicamente possível.
 
-## Exemplo de saída
+## Documentos públicos
+
+A ferramenta de leitura de documentos não salva PDFs em disco.
+
+Quando a fonte fornece um PDF público, os bytes podem ser processados em memória e o texto extraído com `pypdf`.
+
+Continuam fora do escopo:
+
+* documentos protegidos por senha;
+* documentos dependentes de captcha;
+* processos sigilosos;
+* conteúdo sujeito a autenticação;
+* materiais com restrição de acesso.
+
+Consulte:
+
+* [MCP local](docs/mcp-local.md)
+* [Aprendizados MCP](docs/aprendizados-mcp.md)
+
+---
+
+# Exemplo de saída
 
 ```json
 {
@@ -273,56 +532,221 @@ Consulte [docs/mcp-local.md](docs/mcp-local.md) para configuração em clientes 
 }
 ```
 
-Em demonstrações públicas, mantenha outputs reduzidos e sanitize dados pessoais, nomes de advogados, documentos e trechos extensos. Para casos de clientes, use apenas processos escolhidos pelo próprio usuário.
+> [!CAUTION]
+> Em demonstrações públicas, reduza os resultados e sanitize nomes, documentos, dados pessoais e trechos extensos.
+>
+> Para trabalhos profissionais, consulte apenas processos escolhidos legitimamente pelo próprio usuário e confirme informações relevantes nas fontes oficiais.
 
-## Arquitetura
+---
 
-- `esaj_datajud.api` - camada pública de alto nível, pensada para advogados, escritórios e sistemas.
-- `esaj_datajud.client` - cliente configurável para automações, jobs e integrações.
-- `esaj_datajud.config` - configuração imutável de timeout, cache, rate limit e User-Agent.
-- `esaj_datajud.cache` - cache JSON simples, local e opcional.
-- `esaj_datajud.esaj` - montagem de URLs, carregamento HTTP e parsing do eSAJ/TJSP.
-- `esaj_datajud.datajud` - cliente DataJud/CNJ para dados processuais estruturados.
-- `esaj_datajud.djen` - cliente para comunicações do DJEN.
-- `esaj_datajud.extraction` - envelope versionado de extração por fonte.
-- `esaj_datajud.timeline` - timeline cronológica sem interpretação jurídica.
-- `esaj_datajud.exports` - exportadores JSON, JSONL, CSV e SQLite.
-- `esaj_datajud.mcp_server` - servidor MCP local opcional por `stdio`.
-- `esaj_datajud.cli` - interface de linha de comando.
-- `esaj_datajud.utils` - normalização de texto, nomes de arquivo e classificação auxiliar.
+# Arquitetura
 
-## Status do projeto
+O fluxo principal do projeto é:
 
-O projeto está em fase beta. A API, a CLI e o cliente configurável já existem, mas algumas capacidades planejadas ainda estão em evolução, especialmente cobertura ampla de cenários reais do eSAJ, exportadores analíticos e documentação publicada como site.
+```text
+eSAJ/TJSP ─┐
+DataJud/CNJ ├──> clientes e parsers ──> normalização ──> API / CLI / MCP
+DJEN ──────┘                                  │
+                                              └──> JSON / JSONL / CSV / SQLite
+```
 
-Mesmo em beta, o projeto já possui validação CNJ, exceções públicas, contratos tipados, cache opcional, rate limit, CI, lint, type check, build de pacote e testes sem rede para cenários centrais. O gate mínimo de cobertura é 90%.
+Principais módulos:
 
-Para acompanhar a evolução, consulte [SPECS.md](SPECS.md), [CHANGELOG.md](CHANGELOG.md) e [docs/roadmap.md](docs/roadmap.md).
+| Módulo                    | Responsabilidade                        |
+| ------------------------- | --------------------------------------- |
+| `esaj_datajud.api`        | API pública de alto nível               |
+| `esaj_datajud.client`     | Cliente configurável                    |
+| `esaj_datajud.config`     | Timeout, cache, rate limit e User-Agent |
+| `esaj_datajud.cache`      | Cache local JSON opcional               |
+| `esaj_datajud.esaj`       | Consulta e parsing do eSAJ/TJSP         |
+| `esaj_datajud.datajud`    | Cliente DataJud/CNJ                     |
+| `esaj_datajud.djen`       | Cliente de comunicações do DJEN         |
+| `esaj_datajud.extraction` | Envelopes versionados de extração       |
+| `esaj_datajud.timeline`   | Timeline cronológica                    |
+| `esaj_datajud.exports`    | Exportadores estruturados               |
+| `esaj_datajud.mcp_server` | Servidor MCP local                      |
+| `esaj_datajud.cli`        | Interface de linha de comando           |
+| `esaj_datajud.utils`      | Normalização e funções auxiliares       |
 
-## Uso responsável
+Consulte a documentação completa:
 
-Esta biblioteca deve ser usada apenas para consulta e organização de informações públicas ou legitimamente acessíveis pelo usuário. O projeto não tem como objetivo burlar autenticação, captcha, segredo de justiça, restrições de acesso, limites técnicos dos tribunais ou regras de uso das fontes consultadas.
+* [Arquitetura](docs/architecture.md)
+* [Metodologia](docs/metodologia.md)
+* [Reprodutibilidade](docs/reprodutibilidade.md)
 
-Leia [docs/uso-responsavel.md](docs/uso-responsavel.md) antes de usar em rotinas de escritório ou automações recorrentes.
+---
 
-## Desenvolvimento
+# Qualidade e confiabilidade
+
+O projeto utiliza práticas de engenharia voltadas a previsibilidade, manutenção e auditoria.
+
+## Controles automatizados
+
+* CI em Python 3.10, 3.11, 3.12 e 3.13.
+* Gate mínimo de cobertura de testes de 90%.
+* CodeQL.
+* Auditoria de dependências.
+* Lint e formatação.
+* Checagem de tipos com `mypy`.
+* Build e validação de pacote.
+* Testes sem rede com fixtures sanitizadas.
+* Testes ao vivo opcionais, separados do CI.
+* Releases versionadas com `wheel`, `sdist` e notas públicas.
+
+## Validação com cenários reais
+
+O projeto também é validado em um corpus interno não publicado, utilizado para ampliar a cobertura de layouts e cenários reais sem expor HTMLs, PDFs, peças processuais ou estudos empresariais identificáveis.
+
+Na validação mais recente, esse corpus continha:
+
+* 17 processos públicos;
+* 32 HTMLs reais;
+* 10.310 movimentações parseadas;
+* 42 partes principais;
+* 2.451 partes em tabelas completas;
+* 204 documentos públicos candidatos;
+* 816 documentos identificados como restritos por senha.
+
+Os documentos restritos foram identificados como indisponíveis. Seu conteúdo não integra o escopo público da biblioteca.
+
+Consulte:
+
+* [Validação real](docs/validacao-real.md)
+* [Fixtures](docs/fixtures.md)
+* [Modelo de ameaças](docs/threat-model.md)
+* [Segurança](SECURITY.md)
+
+---
+
+# Limitações conhecidas
+
+O projeto depende de fontes externas e, por isso, não pode garantir:
+
+* disponibilidade contínua dos portais;
+* estabilidade permanente do HTML;
+* presença das mesmas informações em todas as fontes;
+* cobertura idêntica entre tribunais;
+* atualização simultânea dos dados;
+* acesso a documentos protegidos ou sigilosos;
+* validade jurídica de análises produzidas por agentes de IA.
+
+Resultados incompletos ou divergentes devem ser apresentados de forma explícita, sem preenchimento inventado.
+
+A ausência de uma informação em uma consulta não significa necessariamente que ela não exista na fonte oficial.
+
+---
+
+# Uso responsável
+
+Esta biblioteca deve ser utilizada apenas para consulta e organização de informações públicas ou legitimamente acessíveis pelo usuário.
+
+O projeto não tem como objetivo:
+
+* burlar autenticação;
+* contornar captcha;
+* acessar processos sigilosos;
+* superar restrições técnicas;
+* contornar limites definidos pelos tribunais;
+* coletar dados pessoais sem finalidade legítima;
+* substituir a conferência nas fontes oficiais;
+* substituir orientação jurídica profissional.
+
+Ao utilizar agentes de IA:
+
+* diferencie dados obtidos das fontes e análises geradas pelo modelo;
+* não trate inferências como fatos oficiais;
+* não envie credenciais judiciais sem necessidade e autorização;
+* evite expor dados pessoais em logs ou demonstrações;
+* mantenha rastreabilidade da origem das informações;
+* revise resultados antes de utilizá-los profissionalmente.
+
+Leia antes de usar o projeto em rotinas recorrentes:
+
+* [Uso responsável](docs/uso-responsavel.md)
+* [LGPD](docs/lgpd.md)
+* [Modelo de ameaças](docs/threat-model.md)
+* [Governança](docs/governanca.md)
+
+---
+
+# Status e roadmap
+
+O projeto está em fase beta.
+
+Já estão disponíveis:
+
+* validação de número CNJ;
+* API pública;
+* CLI;
+* cliente configurável;
+* eSAJ/TJSP;
+* DataJud/CNJ;
+* DJEN;
+* cache opcional;
+* rate limit;
+* contratos tipados;
+* servidor MCP local;
+* testes automatizados;
+* build e releases.
+
+Continuam em evolução:
+
+* cobertura de cenários reais do eSAJ;
+* exportadores analíticos;
+* documentação publicada;
+* estabilidade dos contratos durante o beta;
+* ampliação dos exemplos profissionais.
+
+Acompanhe:
+
+* [SPECS.md](SPECS.md)
+* [CHANGELOG.md](CHANGELOG.md)
+* [Roadmap](docs/roadmap.md)
+* [Releases](https://github.com/lucmolero/esaj-datajud/releases)
+
+---
+
+# Desenvolvimento
+
+## Instalar dependências
 
 ```bash
 python -m pip install -e ".[dev]"
+```
+
+## Executar os testes
+
+```bash
 python -m pytest --cov
+```
+
+## Executar verificações de qualidade
+
+```bash
 python -m ruff check src tests
 python -m ruff format --check src tests
 python -m mypy src
 ```
 
-Testes ao vivo ficam desativados por padrão. Para validar contra o eSAJ/TJSP real:
+## Testes ao vivo
 
-```bash
+Os testes ao vivo ficam desativados por padrão.
+
+No Windows PowerShell:
+
+```powershell
 $env:ESAJ_DATAJUD_RUN_LIVE = "1"
 python -m pytest -m live
 ```
 
-Antes de abrir um pull request, rode:
+No Linux ou macOS:
+
+```bash
+export ESAJ_DATAJUD_RUN_LIVE=1
+python -m pytest -m live
+```
+
+## Antes de abrir um pull request
 
 ```bash
 python -m pytest --cov
@@ -333,39 +757,86 @@ python -m build
 python -m twine check dist/*
 ```
 
-## Documentação
+Consulte:
 
-- [Quickstart](docs/quickstart.md)
-- [Instalação com IA](docs/instalacao-com-ia.md)
-- [Para advogados](docs/para-advogados.md)
-- [Demonstração pública](docs/demonstracao-publica.md)
-- [Aprendizados MCP](docs/aprendizados-mcp.md)
-- [Exemplos seguros](docs/exemplos-seguros.md)
-- [MCP local](docs/mcp-local.md)
-- [Cliente configurável](docs/client.md)
-- [API Reference](docs/api-reference.md)
-- [Guia da CLI](docs/cli.md)
-- [Contratos de dados](docs/contracts.md)
-- [Erros](docs/errors.md)
-- [Arquitetura](docs/architecture.md)
-- [Metodologia](docs/metodologia.md)
-- [Reprodutibilidade](docs/reprodutibilidade.md)
-- [LGPD](docs/lgpd.md)
-- [Modelo de ameaças](docs/threat-model.md)
-- [Fixtures](docs/fixtures.md)
-- [Validação real](docs/validacao-real.md)
-- [Uso responsável](docs/uso-responsavel.md)
-- [Governança](docs/governanca.md)
-- [Roadmap](docs/roadmap.md)
-- [Contribuindo](CONTRIBUTING.md)
-- [Segurança](SECURITY.md)
+* [Contribuindo](CONTRIBUTING.md)
+* [Governança](docs/governanca.md)
+* [Segurança](SECURITY.md)
 
-## Citação
+---
 
-Para uso acadêmico, técnico ou institucional, cite o projeto pelo arquivo [CITATION.cff](CITATION.cff).
+# Documentação
 
-## Autor
+## Para começar
 
-Luciano Molero (`lucmolero`) - [LinkedIn](https://www.linkedin.com/in/luciano-molero/)
+* [Quickstart](docs/quickstart.md)
+* [Instalação com IA](docs/instalacao-com-ia.md)
+* [Para advogados](docs/para-advogados.md)
+* [Demonstração pública](docs/demonstracao-publica.md)
+* [Exemplos seguros](docs/exemplos-seguros.md)
 
-Luciano atua na intersecção entre Direito, tecnologia e automação jurídica. O projeto reflete essa combinação: rigor jurídico, engenharia reprodutível, experiência de usuário e responsabilidade no uso de dados públicos.
+## Para utilizar e integrar
+
+* [MCP local](docs/mcp-local.md)
+* [Aprendizados MCP](docs/aprendizados-mcp.md)
+* [Cliente configurável](docs/client.md)
+* [API Reference](docs/api-reference.md)
+* [Guia da CLI](docs/cli.md)
+* [Contratos de dados](docs/contracts.md)
+* [Erros](docs/errors.md)
+
+## Para entender o projeto
+
+* [Arquitetura](docs/architecture.md)
+* [Metodologia](docs/metodologia.md)
+* [Reprodutibilidade](docs/reprodutibilidade.md)
+* [Fixtures](docs/fixtures.md)
+* [Validação real](docs/validacao-real.md)
+
+## Segurança, governança e responsabilidade
+
+* [Uso responsável](docs/uso-responsavel.md)
+* [LGPD](docs/lgpd.md)
+* [Modelo de ameaças](docs/threat-model.md)
+* [Governança](docs/governanca.md)
+* [Segurança](SECURITY.md)
+
+## Evolução e contribuição
+
+* [Roadmap](docs/roadmap.md)
+* [Contribuindo](CONTRIBUTING.md)
+* [Changelog](CHANGELOG.md)
+
+---
+
+# Citação
+
+Para uso acadêmico, técnico ou institucional, utilize o arquivo:
+
+* [CITATION.cff](CITATION.cff)
+
+---
+
+# Licença
+
+Distribuído sob a licença MIT.
+
+Consulte:
+
+* [LICENSE](LICENSE)
+
+---
+
+# Autor
+
+**Luciano Molero** · `lucmolero`
+
+Atuação na intersecção entre Direito, engenharia de software e automação jurídica.
+
+* [LinkedIn](https://www.linkedin.com/in/luciano-molero/)
+
+---
+
+<p align="center">
+  <strong>Infraestrutura aberta para dados judiciais públicos, com rastreabilidade, responsabilidade e integração local.</strong>
+</p>
