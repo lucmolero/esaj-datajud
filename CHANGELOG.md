@@ -4,6 +4,14 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
+## [0.3.7] - 2026-07-31
+
+### Alterado
+
+- Redesenha a página inicial da documentação com hero moderno, visual de pipeline agentico, métricas de confiança e CTA.
+- Adiciona CSS dedicado para a landing pública do MkDocs.
+- Inclui assets `.css` e `.svg` da documentação no `sdist`.
+
 ## [0.3.6] - 2026-07-31
 
 ### Alterado
