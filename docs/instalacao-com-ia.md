@@ -19,9 +19,20 @@ Use esta jornada quando você quer:
 Se o usuário não sabe codar, a IA deve assumir o papel operacional. O fluxo ideal é:
 
 1. Baixar o repositório inteiro do GitHub, não parar na primeira página.
-2. Ler o README, este guia e a documentação de uso responsável antes de instalar qualquer coisa.
-3. Criar um ambiente virtual local e instalar o pacote com suporte a MCP.
-4. Iniciar o servidor MCP local por `stdio` e confirmar que ele ficou pronto para uso.
+2. Se o usuário não tem GitHub nem sabe usar `git clone`, a IA pode baixar o projeto como ZIP e extrair a pasta localmente.
+3. Ler o README, este guia e a documentação de uso responsável antes de instalar qualquer coisa.
+4. Criar um ambiente virtual local e instalar o pacote com suporte a MCP.
+5. Iniciar o servidor MCP local por `stdio` e confirmar que ele ficou pronto para uso.
+
+### Alternativa sem GitHub nem git clone
+
+Se o usuário for advogado ou não tiver familiaridade com Git, o agente pode seguir este roteiro:
+
+1. abrir o repositório no navegador;
+2. clicar em "Code" → "Download ZIP";
+3. extrair a pasta em um diretório simples, como `C:\esaj-datajud` ou `/Users/usuario/esaj-datajud`;
+4. abrir o terminal nessa pasta;
+5. seguir os comandos abaixo.
 
 Comandos simples recomendados para a IA:
 

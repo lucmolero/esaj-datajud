@@ -71,9 +71,20 @@ Este projeto foi pensado para ser usado de forma simples, inclusive por quem nã
 O fluxo recomendado é este:
 
 1. Você escolhe um número CNJ público.
-2. A IA ou alguém com acesso ao computador baixa o repositório do GitHub.
+2. A IA ou alguém com acesso ao computador usa uma forma simples de instalar o projeto.
 3. O ambiente é preparado com poucos comandos.
 4. O sistema consulta o processo e entrega um resultado organizado.
+
+### Caminho simples para advogados
+
+Se você não usa GitHub nem sabe o que é `git clone`, a alternativa mais simples é:
+
+1. abrir a página do repositório no GitHub;
+2. clicar em "Code" e depois em "Download ZIP";
+3. extrair a pasta em qualquer local do computador;
+4. abrir o terminal dentro dessa pasta e seguir os comandos abaixo.
+
+Esse caminho é suficiente para usar a biblioteca, o CLI e o MCP local sem precisar entender Git.
 
 ### Passo 1: baixar o repositório
 
