@@ -44,11 +44,19 @@ Para testar sem escolher um caso próprio, use a [Demonstração Pública](demon
 
 ## Como pedir para um agente
 
+Se você não sabe codar, peça à IA para fazer o trabalho operacional por você. O pedido pode ser assim:
+
 ```text
-Use o MCP local esaj-datajud para consultar <NUMERO_CNJ_PUBLICO>.
-Quero uma linha do tempo objetiva, com fonte, data e resumo de cada evento.
-Não invente informações e separe fatos extraídos de hipóteses.
+Baixe o repositório esaj-datajud do GitHub, instale o pacote localmente com suporte a MCP e configure o servidor MCP local em meu computador. Depois consulte o processo <NUMERO_CNJ_PUBLICO> e me entregue uma linha do tempo objetiva, com fonte, data e resumo de cada evento. Não invente informações e separe fatos extraídos de hipóteses.
 ```
+
+Em termos práticos, a IA precisa:
+
+1. clonar o repositório inteiro;
+2. criar um ambiente virtual local;
+3. instalar o pacote com um comando simples como `python -m pip install -e ".[mcp]"`;
+4. iniciar o servidor MCP local sem expor endpoint público;
+5. usar um comando simples para consultar o processo, como `esaj search <NUMERO_CNJ_PUBLICO>`.
 
 Exemplo de CNJ público institucional para demonstração:
 

@@ -66,6 +66,29 @@ def test_build_timeline_payload_e_datas_ausentes():
     assert any("payload_origem" in item for item in resultado)
 
 
+def test_compactar_timeline_para_agentes():
+    registros = [
+        {"data": "2020-01-01", "fonte": "esaj", "texto": "a" * 20},
+        {"data": "2026-07-31", "fonte": "djen", "texto": "b" * 20},
+    ]
+
+    resultado = timeline.compactar_timeline(
+        registros,
+        limit=1,
+        recent_first=True,
+        max_text_chars=5,
+    )
+
+    assert resultado == [
+        {
+            "data": "2026-07-31",
+            "fonte": "djen",
+            "texto": "bbbbb",
+            "texto_truncado": True,
+        }
+    ]
+
+
 def test_extract_process_preserva_falha_isolada(monkeypatch):
     monkeypatch.setattr(
         extraction.esaj,
@@ -88,6 +111,7 @@ def test_extract_process_preserva_falha_isolada(monkeypatch):
     assert envelope["data"]["esaj"]["movimentacoes"][0]["titulo"] == "Movimento eSAJ"
     assert envelope["errors"][0]["source"] == "datajud"
     assert envelope["timeline"][0]["fonte"] == "esaj"
+    assert envelope["source_status"]["datajud"]["status"] == "error"
 
 
 def test_extract_process_error_e_raw(monkeypatch):
@@ -127,6 +151,28 @@ def test_extract_process_datajud_only_ok(monkeypatch):
 
     assert envelope["status"] == "ok"
     assert envelope["raw"]["datajud"] == {"ok": True}
+    assert envelope["source_status"]["datajud"]["records"] == 1
+
+
+def test_extract_process_datajud_nao_encontrado_vira_partial(monkeypatch):
+    monkeypatch.setattr(
+        extraction.datajud,
+        "consultar_processo",
+        lambda *a, **k: {
+            "status": "nao_encontrado",
+            "numero_cnj": "1076539-20.2019.8.26.0100",
+            "movimentos": [],
+        },
+    )
+
+    envelope = extraction.extract_process(
+        "1076539-20.2019.8.26.0100",
+        sources=("datajud",),
+    )
+
+    assert envelope["status"] == "partial"
+    assert envelope["warnings"]
+    assert envelope["source_status"]["datajud"]["status"] == "nao_encontrado"
 
 
 def test_exportadores_jsonl_csv_sqlite():

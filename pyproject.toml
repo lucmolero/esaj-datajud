@@ -58,6 +58,10 @@ dev = [
 ]
 mcp = [
   "mcp>=1.0,<2",
+  "pypdf>=5,<7",
+]
+pdf = [
+  "pypdf>=5,<7",
 ]
 
 [project.urls]

@@ -83,6 +83,20 @@ def test_search_processo_resume_extrato(monkeypatch):
     assert resumo["ultima_movimentacao"] == "Conclusos"
 
 
+def test_search_processo_usa_movimentacao_mais_recente_por_data(monkeypatch):
+    extrato = _extrato()
+    extrato["movimentacoes"] = [
+        {"titulo": "Mais recente", "data": "31/07/2026"},
+        {"titulo": "Mais antiga", "data": "01/01/2020"},
+    ]
+    monkeypatch.setattr(api, "get_extrato", lambda numero: extrato)
+
+    resumo = api.search_processo("1076539-20.2019.8.26.0100")
+
+    assert resumo["ultima_movimentacao"] == "Mais recente"
+    assert resumo["ultima_data"] == "31/07/2026"
+
+
 def test_resumo_rapido_usa_partes_do_extrato(monkeypatch):
     monkeypatch.setattr(api, "get_extrato", lambda numero: _extrato())
 
@@ -110,6 +124,25 @@ def test_baixar_pecas_delega_para_esaj(monkeypatch):
     assert resultado == [{"status": "baixado"}]
     assert chamadas["movimentos"][0]["documentos"][0]["cd_documento"] == "123"
     assert chamadas["limite"] == 1
+
+
+def test_ler_pecas_delega_para_esaj(monkeypatch):
+    chamadas = {}
+    monkeypatch.setattr(api.esaj, "criar_session", lambda: object())
+
+    def fake_ler(session, movimentos, limite, max_chars):
+        chamadas["movimentos"] = movimentos
+        chamadas["limite"] = limite
+        chamadas["max_chars"] = max_chars
+        return [{"status": "texto_extraido"}]
+
+    monkeypatch.setattr(api.esaj, "ler_pecas_publicas", fake_ler)
+
+    resultado = api.ler_pecas(_extrato(), limite=2, max_chars=1200)
+
+    assert resultado == [{"status": "texto_extraido"}]
+    assert chamadas["movimentos"][0]["documentos"][0]["cd_documento"] == "123"
+    assert chamadas["max_chars"] == 1200
 
 
 def test_get_extrato_delega_parametros(monkeypatch):

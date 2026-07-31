@@ -9,6 +9,7 @@ from . import datajud, djen, esaj, extraction
 from .client import EsajDatajudClient
 from .config import EsajDatajudConfig
 from .models import Extrato, ResumoProcesso
+from .normalization import normalizar_data
 
 
 def search_processo(numero: str) -> ResumoProcesso:
@@ -82,6 +83,18 @@ def baixar_pecas(
     )
 
 
+def ler_pecas(
+    extrato: dict[str, Any],
+    limite: int = 3,
+    max_chars: int = 4000,
+) -> list[dict[str, Any]]:
+    """Le pecas publicas candidatas em memoria, sem salvar PDFs em disco."""
+    documentos = extrato.get("documentos", {}).get("publicos_candidatos_unicos", [])
+    movimentos = [{"documentos": documentos}] if documentos else extrato.get("movimentacoes", [])
+    session = esaj.criar_session()
+    return esaj.ler_pecas_publicas(session, movimentos, limite=limite, max_chars=max_chars)
+
+
 def resumo_rapido(numero: str) -> str:
     """Gera um resumo textual curto para briefing, e-mail ou triagem."""
     extrato = get_extrato(numero)
@@ -143,7 +156,7 @@ def create_client(config: EsajDatajudConfig | None = None) -> EsajDatajudClient:
 def _resumo_do_extrato(extrato: Extrato) -> ResumoProcesso:
     basicos = extrato.get("dados_basicos", {})
     movimentos = extrato.get("movimentacoes", [])
-    ultima = movimentos[-1] if movimentos else {}
+    ultima = _ultima_movimentacao(movimentos)
     return {
         "numero": basicos.get("numero", ""),
         "classe": basicos.get("classe", ""),
@@ -165,3 +178,16 @@ def _nomes_polo(partes: list[Any]) -> str:
         if isinstance(parte, dict):
             nomes.extend(parte.get("nomes", []))
     return ", ".join([nome for nome in nomes if nome])[:250]
+
+
+def _ultima_movimentacao(movimentos: list[dict[str, Any]]) -> dict[str, Any]:
+    if not movimentos:
+        return {}
+    com_data = []
+    for indice, movimento in enumerate(movimentos):
+        data_iso = normalizar_data(movimento.get("data"))["iso"]
+        if data_iso:
+            com_data.append((data_iso, -indice, movimento))
+    if com_data:
+        return max(com_data, key=lambda item: (item[0], item[1]))[2]
+    return movimentos[0]

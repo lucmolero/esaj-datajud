@@ -14,6 +14,41 @@ Use esta jornada quando você quer:
 - manter a consulta no computador do usuário;
 - preservar rastreabilidade das fontes consultadas.
 
+## Fluxo recomendado para IA e advogados sem programação
+
+Se o usuário não sabe codar, a IA deve assumir o papel operacional. O fluxo ideal é:
+
+1. Baixar o repositório inteiro do GitHub, não parar na primeira página.
+2. Ler o README, este guia e a documentação de uso responsável antes de instalar qualquer coisa.
+3. Criar um ambiente virtual local e instalar o pacote com suporte a MCP.
+4. Iniciar o servidor MCP local por `stdio` e confirmar que ele ficou pronto para uso.
+
+Comandos simples recomendados para a IA:
+
+```bash
+git clone https://github.com/lucmolero/esaj-datajud.git
+cd esaj-datajud
+python -m venv .venv
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# Linux/macOS
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[mcp]"
+```
+
+Depois de instalar, a IA pode testar com um comando simples:
+
+```bash
+esaj search 0015020-23.2010.8.26.0053
+```
+
+Se quiser validar a instalação completa, pode usar:
+
+```bash
+python -m pytest --cov
+```
+
 ## Prompt inicial para o agente
 
 Cole este prompt no seu agente de IA dentro da pasta do projeto:

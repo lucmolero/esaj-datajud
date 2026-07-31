@@ -46,6 +46,7 @@ def test_create_server_registra_ferramentas(monkeypatch):
         "consultar_djen",
         "extrair_processo",
         "gerar_timeline",
+        "ler_documentos_publicos",
     }
 
 
@@ -77,7 +78,12 @@ def test_ferramentas_mcp_delegam_para_api(monkeypatch):
     monkeypatch.setattr(
         mcp_server.api,
         "get_extrato",
-        lambda numero, salvar_html=False: {"numero": numero, "salvar_html": salvar_html},
+        lambda numero, salvar_html=False, **kwargs: {
+            "numero": numero,
+            "salvar_html": salvar_html,
+            "dados_basicos": {"numero": numero},
+            "documentos": {"publicos_candidatos_unicos": [{"cd_documento": "1"}]},
+        },
     )
     monkeypatch.setattr(
         mcp_server.api,
@@ -102,10 +108,22 @@ def test_ferramentas_mcp_delegam_para_api(monkeypatch):
             "status": "ok",
             "numero_cnj": numero,
             "sources": list(kwargs["sources"]),
-            "timeline": [{"fonte": "datajud"}],
+            "source_status": {"datajud": {"status": "ok", "records": 2}},
+            "timeline": [
+                {"data": "2020-01-01", "fonte": "datajud", "texto": "antigo"},
+                {"data": "2026-07-31", "fonte": "datajud", "texto": "recente"},
+            ],
+            "warnings": [],
             "errors": [],
             "kwargs": kwargs,
         },
+    )
+    monkeypatch.setattr(
+        mcp_server.api,
+        "ler_pecas",
+        lambda extrato, limite=3, max_chars=4000: [
+            {"cd_documento": "1", "status": "texto_extraido", "max_chars": max_chars}
+        ],
     )
     server = mcp_server.create_server()
 
@@ -126,11 +144,22 @@ def test_ferramentas_mcp_delegam_para_api(monkeypatch):
     linha = server.tools["gerar_timeline"](
         "1076539-20.2019.8.26.0100",
         sources=["datajud"],
+        limit=1,
+        recent_first=True,
+        include_text=False,
+    )
+    documentos = server.tools["ler_documentos_publicos"](
+        "1076539-20.2019.8.26.0100",
+        limite=1,
+        max_chars=700,
     )
 
     assert envelope["kwargs"]["sources"] == ("datajud", "djen")
     assert envelope["kwargs"]["include_raw"] is True
-    assert linha["timeline"] == [{"fonte": "datajud"}]
+    assert linha["source_status"]["datajud"]["records"] == 2
+    assert linha["timeline"] == [{"data": "2026-07-31", "fonte": "datajud"}]
+    assert documentos["count"] == 1
+    assert documentos["documentos"][0]["max_chars"] == 700
 
 
 def test_main_executa_servidor(monkeypatch):

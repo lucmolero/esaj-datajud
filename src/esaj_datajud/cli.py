@@ -9,6 +9,7 @@ from typing import Any, TypeAlias, cast
 
 from . import api
 from .exceptions import EsajDatajudError
+from .timeline import compactar_timeline
 
 JsonPayload: TypeAlias = dict[str, Any] | list[Any]
 
@@ -68,6 +69,16 @@ def main(argv: list[str] | None = None) -> int:
         "--sobrescrever", action="store_true", help="Sobrescrever arquivos existentes"
     )
 
+    ler_pecas = sub.add_parser(
+        "ler-pecas", help="Ler textos de pecas publicas em memoria, sem salvar PDF"
+    )
+    ler_pecas.add_argument("extrato_json", help="Arquivo JSON gerado pelo comando extrato")
+    ler_pecas.add_argument(
+        "--limite", type=int, default=3, help="Limite de pecas; 0 significa sem limite"
+    )
+    ler_pecas.add_argument("--max-chars", type=int, default=4000, help="Maximo de caracteres")
+    ler_pecas.add_argument("--out", default="pecas_texto.json", help="Arquivo de saida JSON")
+
     datajud_cmd = sub.add_parser("datajud", help="Consultar dados processuais no DataJud/CNJ")
     datajud_cmd.add_argument("numero", help="Número CNJ do processo")
     datajud_cmd.add_argument("--api-key", default=None, help="API key do DataJud/CNJ")
@@ -108,6 +119,15 @@ def main(argv: list[str] | None = None) -> int:
     timeline_cmd.add_argument(
         "--djen-data-inicio", default="", help="Data inicial DJEN ISO yyyy-mm-dd"
     )
+    timeline_cmd.add_argument("--envelope", action="store_true", help="Salvar envelope completo")
+    timeline_cmd.add_argument("--limit", type=int, default=0, help="Limitar eventos retornados")
+    timeline_cmd.add_argument(
+        "--recent-first", action="store_true", help="Retornar eventos mais recentes primeiro"
+    )
+    timeline_cmd.add_argument("--sem-texto", action="store_true", help="Remover campo texto")
+    timeline_cmd.add_argument(
+        "--max-text-chars", type=int, default=0, help="Truncar texto de cada evento"
+    )
     timeline_cmd.add_argument("--out", default="timeline.json", help="Arquivo de saída JSON")
 
     args = parser.parse_args(argv)
@@ -143,6 +163,17 @@ def main(argv: list[str] | None = None) -> int:
                 limite=args.limite,
             )
             _print_result(baixar_resultado)
+            return 0
+
+        if args.command == "ler-pecas":
+            extrato_data = json.loads(Path(args.extrato_json).read_text(encoding="utf-8"))
+            leitura_resultado = api.ler_pecas(
+                extrato_data,
+                limite=args.limite,
+                max_chars=args.max_chars,
+            )
+            Path(args.out).write_text(_format_json(leitura_resultado), encoding="utf-8")
+            print(f"Leitura de pecas salva em: {args.out}")
             return 0
 
         if args.command == "djen":
@@ -182,10 +213,19 @@ def main(argv: list[str] | None = None) -> int:
                 datajud_api_key=args.datajud_api_key,
                 djen_data_inicio=args.djen_data_inicio,
             )
-            timeline_resultado = cast(dict[str, Any], extracao).get("timeline", [])
-            Path(args.out).write_text(
-                _format_json(cast(JsonPayload, timeline_resultado)), encoding="utf-8"
+            timeline_resultado = compactar_timeline(
+                cast(list[Any], cast(dict[str, Any], extracao).get("timeline", [])),
+                limit=args.limit,
+                recent_first=args.recent_first,
+                include_text=not args.sem_texto,
+                max_text_chars=args.max_text_chars,
             )
+            if args.envelope:
+                extracao["timeline"] = timeline_resultado
+                saida: JsonPayload = cast(JsonPayload, extracao)
+            else:
+                saida = cast(JsonPayload, timeline_resultado)
+            Path(args.out).write_text(_format_json(saida), encoding="utf-8")
             print(f"Timeline salva em: {args.out}")
             return 0
 

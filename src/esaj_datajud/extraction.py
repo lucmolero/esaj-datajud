@@ -8,7 +8,13 @@ from typing import Any
 import requests
 
 from . import datajud, djen, esaj
-from .schemas import SCHEMA_VERSION, ExtractionEnvelope, ExtractionError, ExtractionStatus
+from .schemas import (
+    SCHEMA_VERSION,
+    ExtractionEnvelope,
+    ExtractionError,
+    ExtractionStatus,
+    SourceStatus,
+)
 from .sources import ALL_SOURCES, DATAJUD, DJEN, ESAJ, normalizar_fonte
 from .timeline import build_timeline
 from .utils import validar_numero_cnj
@@ -32,6 +38,7 @@ def extract_process(
     raw: dict[str, Any] = {}
     warnings: list[str] = []
     errors: list[ExtractionError] = []
+    source_status: dict[str, SourceStatus] = {}
 
     if ESAJ in fontes:
         try:
@@ -42,10 +49,19 @@ def extract_process(
                 timeout=timeout,
             )
             data[ESAJ] = esaj_extrato
+            source_status[ESAJ] = {
+                "status": "ok",
+                "records": len(esaj_extrato.get("movimentacoes") or []),
+            }
             if include_raw and (esaj_extrato.get("origem") or {}).get("html_bruto"):
                 raw[ESAJ] = (esaj_extrato.get("origem") or {}).get("html_bruto")
         except Exception as exc:  # noqa: BLE001 - envelope preserva falha isolada por fonte
             errors.append({"source": ESAJ, "message": str(exc), "type": type(exc).__name__})
+            source_status[ESAJ] = {
+                "status": "error",
+                "message": str(exc),
+                "type": type(exc).__name__,
+            }
 
     if DATAJUD in fontes:
         try:
@@ -57,10 +73,25 @@ def extract_process(
                 timeout=timeout,
             )
             data[DATAJUD] = datajud_extracao
+            datajud_status = str(datajud_extracao.get("status") or "ok")
+            movimentos_datajud = datajud_extracao.get("movimentos") or []
+            source_status[DATAJUD] = {
+                "status": datajud_status,
+                "records": len(movimentos_datajud),
+            }
+            if datajud_status == "nao_encontrado":
+                warnings.append(
+                    "DataJud/CNJ consultado, mas nao retornou processo para o CNJ informado."
+                )
             if include_raw and datajud_extracao.get("raw"):
                 raw[DATAJUD] = datajud_extracao["raw"]
         except Exception as exc:  # noqa: BLE001
             errors.append({"source": DATAJUD, "message": str(exc), "type": type(exc).__name__})
+            source_status[DATAJUD] = {
+                "status": "error",
+                "message": str(exc),
+                "type": type(exc).__name__,
+            }
 
     if DJEN in fontes:
         try:
@@ -70,8 +101,14 @@ def extract_process(
                 session=session,
             )
             data[DJEN] = djen_comunicacoes
+            source_status[DJEN] = {"status": "ok", "records": len(djen_comunicacoes)}
         except Exception as exc:  # noqa: BLE001
             errors.append({"source": DJEN, "message": str(exc), "type": type(exc).__name__})
+            source_status[DJEN] = {
+                "status": "error",
+                "message": str(exc),
+                "type": type(exc).__name__,
+            }
 
     timeline = build_timeline(
         esaj_extrato=data.get(ESAJ),
@@ -81,7 +118,7 @@ def extract_process(
     )
     if not data:
         status: ExtractionStatus = "error"
-    elif errors:
+    elif errors or warnings:
         status = "partial"
     else:
         status = "ok"
@@ -97,6 +134,7 @@ def extract_process(
         "timeline": timeline,
         "warnings": warnings,
         "errors": errors,
+        "source_status": source_status,
     }
     if include_raw:
         envelope["raw"] = raw

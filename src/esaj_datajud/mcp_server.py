@@ -7,6 +7,7 @@ from typing import Any
 
 from . import api, normalization
 from .sources import ALL_SOURCES, SourceName, normalizar_fonte
+from .timeline import compactar_timeline
 from .utils import validar_numero_cnj
 from .version import __version__
 
@@ -108,6 +109,10 @@ def create_server() -> Any:
         sources: list[str] | None = None,
         datajud_api_key: str | None = None,
         djen_data_inicio: str = "",
+        limit: int = 0,
+        recent_first: bool = False,
+        include_text: bool = True,
+        max_text_chars: int = 0,
     ) -> dict[str, Any]:
         """Gera timeline cronologica de registros extraidos, sem interpretacao juridica."""
         envelope = api.extract_process(
@@ -117,14 +122,42 @@ def create_server() -> Any:
             datajud_api_key=datajud_api_key,
             djen_data_inicio=djen_data_inicio,
         )
+        timeline = compactar_timeline(
+            envelope.get("timeline", []),
+            limit=limit,
+            recent_first=recent_first,
+            include_text=include_text,
+            max_text_chars=max_text_chars,
+        )
         return {
             "schema_version": envelope.get("schema_version"),
             "package_version": envelope.get("package_version"),
             "status": envelope.get("status"),
             "numero_cnj": envelope.get("numero_cnj"),
             "sources": envelope.get("sources", []),
-            "timeline": envelope.get("timeline", []),
+            "source_status": envelope.get("source_status", {}),
+            "timeline": timeline,
+            "warnings": envelope.get("warnings", []),
             "errors": envelope.get("errors", []),
+        }
+
+    @server.tool()
+    def ler_documentos_publicos(
+        numero: str,
+        limite: int = 3,
+        max_chars: int = 4000,
+    ) -> dict[str, Any]:
+        """Le documentos publicos candidatos em memoria, sem salvar PDF em disco."""
+        extrato = api.get_extrato(numero, inspecionar_pecas=True, limite_inspecao_pecas=limite)
+        documentos = api.ler_pecas(extrato, limite=limite, max_chars=max_chars)
+        return {
+            "numero_cnj": (extrato.get("dados_basicos") or {}).get("numero", numero),
+            "count": len(documentos),
+            "documentos": documentos,
+            "warnings": [
+                "A leitura nao salva PDFs em disco; conteudo remoto e processado em memoria.",
+                "Documentos restritos por senha, captcha ou sigilo nao sao acessados.",
+            ],
         }
 
     return server

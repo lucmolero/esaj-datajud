@@ -26,6 +26,13 @@ class ExtractionError(TypedDict):
     type: str
 
 
+class SourceStatus(TypedDict, total=False):
+    status: str
+    records: int
+    message: str
+    type: str
+
+
 class TimelineRecord(TypedDict, total=False):
     id: str
     numero_cnj: str
@@ -66,4 +73,5 @@ class ExtractionEnvelope(TypedDict):
     timeline: list[TimelineRecord]
     warnings: list[str]
     errors: list[ExtractionError]
+    source_status: dict[str, SourceStatus]
     raw: NotRequired[dict[str, Any]]

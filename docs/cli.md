@@ -73,6 +73,14 @@ esaj timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source dat
 
 Gera timeline cronológica de registros extraídos, sem classificação de fase, risco ou relevância.
 
+Flags úteis para agentes de IA:
+
+- `--recent-first`: retorna eventos mais recentes primeiro.
+- `--limit 20`: limita a quantidade de eventos retornados.
+- `--sem-texto`: remove textos longos dos eventos.
+- `--max-text-chars 500`: trunca textos longos por evento.
+- `--envelope`: salva o envelope completo, incluindo `warnings`, `errors` e `source_status`.
+
 ## Baixar peças públicas candidatas
 
 ```bash
@@ -80,6 +88,14 @@ esaj baixar extrato.json --out pecas --limite 3
 ```
 
 Usa um extrato já gerado para tentar baixar documentos públicos candidatos.
+
+## Ler peças públicas sem salvar PDF
+
+```bash
+esaj ler-pecas extrato.json --limite 3 --max-chars 4000 --out pecas_texto.json
+```
+
+Lê documentos públicos candidatos em memória. A ferramenta não grava PDFs em disco; quando o conteúdo é PDF público, extrai texto com `pypdf` se o parser estiver instalado. Documentos restritos por senha, captcha ou sigilo não são acessados.
 
 ## Erros
 

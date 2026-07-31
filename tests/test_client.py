@@ -52,6 +52,19 @@ def test_client_search_processo_resume_extrato(monkeypatch):
     assert resumo["ultima_movimentacao"] == "Mov"
 
 
+def test_client_search_processo_usa_movimentacao_mais_recente(monkeypatch):
+    extrato = _extrato()
+    extrato["movimentacoes"] = [
+        {"titulo": "Mais recente", "data": "31/07/2026"},
+        {"titulo": "Mais antiga", "data": "01/01/2020"},
+    ]
+    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", lambda *a, **k: extrato)
+
+    resumo = EsajDatajudClient().search_processo("1076539-20.2019.8.26.0100")
+
+    assert resumo["ultima_movimentacao"] == "Mais recente"
+
+
 def test_rate_limited_session_define_user_agent():
     session = RateLimitedSession(
         timeout=10,
@@ -149,6 +162,29 @@ def test_client_baixar_pecas_delega(monkeypatch):
     assert resultado == [{"status": "baixado"}]
     assert chamadas["movimentos"][0]["documentos"][0]["cd_documento"] == "1"
     assert chamadas["sobrescrever"] is True
+
+
+def test_client_ler_pecas_delega(monkeypatch):
+    chamadas = {}
+
+    def fake_ler(session, movimentos, limite, max_chars):
+        chamadas["movimentos"] = movimentos
+        chamadas["limite"] = limite
+        chamadas["max_chars"] = max_chars
+        return [{"status": "texto_extraido"}]
+
+    monkeypatch.setattr("esaj_datajud.client.esaj.ler_pecas_publicas", fake_ler)
+    client = EsajDatajudClient()
+
+    resultado = client.ler_pecas(
+        {"documentos": {"publicos_candidatos_unicos": [{"cd_documento": "1"}]}},
+        limite=2,
+        max_chars=500,
+    )
+
+    assert resultado == [{"status": "texto_extraido"}]
+    assert chamadas["movimentos"][0]["documentos"][0]["cd_documento"] == "1"
+    assert chamadas["max_chars"] == 500
 
 
 def test_rate_limited_session_request_usa_timeout(monkeypatch):

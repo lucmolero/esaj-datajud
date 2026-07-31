@@ -25,6 +25,12 @@ Retorna partes classificadas por polo quando a estrutura da página permite.
 
 Baixa documentos públicos candidatos presentes em um extrato.
 
+## `api.ler_pecas(extrato, limite=3, max_chars=4000)`
+
+Lê documentos públicos candidatos em memória, sem salvar PDFs em disco.
+
+Quando a fonte retorna PDF público, o conteúdo é transferido para memória e o texto é extraído com o parser opcional `pypdf`. Se o parser não estiver instalado, o retorno informa `pdf_parser_indisponivel`. Documentos restritos por senha, captcha ou sigilo não são acessados.
+
 ## `api.resumo_rapido(numero)`
 
 Retorna texto curto para triagem, briefing ou e-mail.
@@ -66,6 +72,7 @@ Métodos principais:
 - `consultar_djen(numero, data_inicio="")`: consulta comunicações DJEN.
 - `extract_process(numero, ...)`: retorna envelope de extração por fonte.
 - `baixar_pecas(extrato, destino, sobrescrever=False, limite=0)`: baixa peças públicas candidatas.
+- `ler_pecas(extrato, limite=3, max_chars=4000)`: lê documentos públicos candidatos em memória.
 
 ## `EsajDatajudConfig`
 

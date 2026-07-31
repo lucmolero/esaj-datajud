@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 import re
 from datetime import datetime, timezone
+from io import BytesIO
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote_plus, urlencode, urljoin, urlparse
@@ -735,6 +737,111 @@ def baixar_pecas_publicas(
             }
         )
     return baixados
+
+
+def ler_pecas_publicas(
+    session: requests.Session,
+    movimentos: list[dict[str, Any]],
+    limite: int = 3,
+    max_chars: int = 4000,
+) -> list[dict[str, Any]]:
+    """Le documentos publicos candidatos em memoria, sem salvar PDFs em disco.
+
+    PDFs remotos ainda precisam ser transferidos para memoria para que o texto seja
+    extraido. Documentos restritos por senha, captcha ou sigilo nao sao acessados.
+    """
+    documentos_lidos = []
+    for doc in iterar_docs_publicos(movimentos):
+        if limite and len(documentos_lidos) >= limite:
+            return documentos_lidos
+
+        registro: dict[str, Any] = {
+            "cd_documento": doc.get("cd_documento", ""),
+            "titulo": doc.get("titulo", ""),
+            "status": "pendente",
+        }
+        try:
+            pasta_digital = doc.get("pasta_digital") or obter_metadados_pasta_documento(
+                session, doc
+            )
+            doc["pasta_digital"] = pasta_digital
+            registro["pasta_digital"] = pasta_digital
+            if pasta_digital.get("status") != "ok":
+                registro["status"] = pasta_digital.get("status", "erro_pasta_digital")
+                documentos_lidos.append(registro)
+                continue
+
+            paginas = pasta_digital.get("paginas") or []
+            if not paginas:
+                registro["status"] = "sem_paginas"
+                documentos_lidos.append(registro)
+                continue
+
+            params = paginas[0].get("parametros_pdf", "")
+            response = _get(session, urljoin(PASTA_BASE, f"getPDF.do?{params}"), timeout=30)
+            conteudo = getattr(response, "content", b"") or b""
+            registro["bytes"] = len(conteudo)
+            registro["mime_type"] = _content_type(response)
+
+            if conteudo.startswith(b"%PDF"):
+                texto, status = extrair_texto_pdf_bytes(conteudo, max_chars=max_chars)
+                registro["status"] = status
+                registro["texto"] = texto
+                registro["texto_chars"] = len(texto)
+                registro["truncado"] = bool(max_chars and len(texto) >= max_chars)
+            else:
+                texto = _texto_resposta_nao_pdf(response, max_chars=max_chars)
+                registro["status"] = "texto_html_extraido" if texto else "nao_pdf"
+                registro["texto"] = texto
+                registro["texto_chars"] = len(texto)
+                registro["truncado"] = bool(max_chars and len(texto) >= max_chars)
+            documentos_lidos.append(registro)
+        except Exception as exc:  # pragma: no cover - depende de fonte externa
+            registro["status"] = "erro"
+            registro["mensagem"] = str(exc)
+            documentos_lidos.append(registro)
+    return documentos_lidos
+
+
+def extrair_texto_pdf_bytes(conteudo: bytes, max_chars: int = 4000) -> tuple[str, str]:
+    """Extrai texto de PDF em memoria quando o parser opcional esta instalado."""
+    try:
+        pdf_reader = importlib.import_module("pypdf").PdfReader
+    except ImportError:
+        return "", "pdf_parser_indisponivel"
+
+    try:
+        reader = pdf_reader(BytesIO(conteudo))
+        partes = []
+        for page in reader.pages:
+            texto = page.extract_text() or ""
+            if texto:
+                partes.append(texto)
+            parcial = limpar("\n".join(partes))
+            if max_chars and len(parcial) >= max_chars:
+                return parcial[:max_chars], "texto_extraido"
+        texto_final = limpar("\n".join(partes))
+        if max_chars:
+            texto_final = texto_final[:max_chars]
+        return texto_final, "texto_extraido" if texto_final else "pdf_sem_texto_extraido"
+    except Exception as exc:  # pragma: no cover - depende da estrutura interna do PDF
+        return "", f"erro_pdf:{type(exc).__name__}"
+
+
+def _texto_resposta_nao_pdf(response: Any, max_chars: int) -> str:
+    texto = getattr(response, "text", "") or ""
+    if not texto:
+        conteudo = getattr(response, "content", b"") or b""
+        texto = conteudo.decode("utf-8", errors="replace")
+    if BeautifulSoup is not None and "<" in texto and ">" in texto:
+        texto = BeautifulSoup(texto, "html.parser").get_text(" ", strip=True)
+    texto = limpar(texto)
+    return texto[:max_chars] if max_chars else texto
+
+
+def _content_type(response: Any) -> str:
+    headers = getattr(response, "headers", {}) or {}
+    return str(headers.get("Content-Type") or headers.get("content-type") or "")
 
 
 def montar_extrato(

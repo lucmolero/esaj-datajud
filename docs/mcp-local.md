@@ -14,6 +14,8 @@ Instale a biblioteca com o extra opcional `mcp`:
 python -m pip install -e ".[mcp]"
 ```
 
+O extra `mcp` tambem instala `pypdf`, usado para extrair texto de PDFs publicos em memoria quando a fonte permite.
+
 Para desenvolvimento completo:
 
 ```bash
@@ -98,7 +100,29 @@ Não invente teses e não dê aconselhamento jurídico.
 - `consultar_datajud`: consulta dados processuais estruturados no DataJud/CNJ.
 - `consultar_djen`: consulta comunicacoes do DJEN e retorna `count` e `comunicacoes`.
 - `extrair_processo`: retorna envelope versionado por fonte.
-- `gerar_timeline`: retorna timeline cronologica sem interpretacao juridica.
+- `gerar_timeline`: retorna timeline cronologica sem interpretacao juridica. Aceita `limit`, `recent_first`, `include_text` e `max_text_chars` para reduzir contexto.
+- `ler_documentos_publicos`: le documentos publicos candidatos em memoria, sem salvar PDF em disco.
+
+## Leitura de documentos sem salvar PDF
+
+A ferramenta `ler_documentos_publicos` foi pensada para agentes de IA que precisam ler pecas publicas sem gerar arquivos locais.
+
+Fluxo tecnico:
+
+1. consulta o extrato publico do eSAJ;
+2. identifica documentos publicos candidatos;
+3. abre metadados da pasta digital quando disponiveis;
+4. solicita o conteudo publico;
+5. processa bytes em memoria;
+6. retorna texto, status, quantidade de bytes e avisos.
+
+Limites importantes:
+
+- nenhum PDF e salvo em disco;
+- PDFs publicos ainda precisam ser transferidos para memoria para extracao de texto;
+- documentos com senha, captcha, sigilo ou restricao de acesso nao sao acessados;
+- se `pypdf` nao estiver instalado, PDFs retornam `pdf_parser_indisponivel`;
+- use `limite` e `max_chars` para evitar respostas longas demais em agentes.
 
 ## Escopo de Seguranca
 
@@ -106,7 +130,7 @@ O servidor MCP local e somente de extracao e normalizacao.
 
 Ele nao:
 
-- baixa pecas automaticamente;
+- salva pecas em disco automaticamente;
 - escreve arquivos;
 - publica dados;
 - burla autenticacao, captcha, senha ou segredo de justica;

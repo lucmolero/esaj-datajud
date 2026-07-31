@@ -13,6 +13,7 @@ from . import datajud, djen, esaj, extraction
 from .cache import JsonFileCache
 from .config import EsajDatajudConfig
 from .models import Extrato, ResumoProcesso
+from .normalization import normalizar_data
 from .version import __version__
 
 
@@ -215,11 +216,29 @@ class EsajDatajudClient:
             sobrescrever=sobrescrever,
         )
 
+    def ler_pecas(
+        self,
+        extrato: dict[str, Any],
+        limite: int = 3,
+        max_chars: int = 4000,
+    ) -> list[dict[str, Any]]:
+        """Le pecas publicas candidatas em memoria, sem salvar PDFs em disco."""
+        documentos = extrato.get("documentos", {}).get("publicos_candidatos_unicos", [])
+        movimentos = (
+            [{"documentos": documentos}] if documentos else extrato.get("movimentacoes", [])
+        )
+        return esaj.ler_pecas_publicas(
+            self.session,
+            movimentos,
+            limite=limite,
+            max_chars=max_chars,
+        )
+
 
 def _resumo_do_extrato(extrato: Extrato) -> ResumoProcesso:
     basicos = extrato.get("dados_basicos", {})
     movimentos = extrato.get("movimentacoes", [])
-    ultima = movimentos[-1] if movimentos else {}
+    ultima = _ultima_movimentacao(movimentos)
     return {
         "numero": basicos.get("numero", ""),
         "classe": basicos.get("classe", ""),
@@ -233,3 +252,16 @@ def _resumo_do_extrato(extrato: Extrato) -> ResumoProcesso:
         "status": extrato.get("status", "ok"),
         "mensagem": "Processo consultado com sucesso",
     }
+
+
+def _ultima_movimentacao(movimentos: list[dict[str, Any]]) -> dict[str, Any]:
+    if not movimentos:
+        return {}
+    com_data = []
+    for indice, movimento in enumerate(movimentos):
+        data_iso = normalizar_data(movimento.get("data"))["iso"]
+        if data_iso:
+            com_data.append((data_iso, -indice, movimento))
+    if com_data:
+        return max(com_data, key=lambda item: (item[0], item[1]))[2]
+    return movimentos[0]

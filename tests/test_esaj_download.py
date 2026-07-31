@@ -7,10 +7,17 @@ from esaj_datajud import esaj
 class FakeResponse:
     status_code = 200
 
-    def __init__(self, text="", content=b"", url="https://esaj.tjsp.jus.br/pastadigital/doc"):
+    def __init__(
+        self,
+        text="",
+        content=b"",
+        url="https://esaj.tjsp.jus.br/pastadigital/doc",
+        headers=None,
+    ):
         self.text = text
         self.content = content or text.encode("utf-8")
         self.url = url
+        self.headers = headers or {}
 
 
 class FakeSession:
@@ -223,3 +230,60 @@ def test_baixar_pecas_publicas_respeita_limite_zero_com_multiplos_docs(monkeypat
     resultado = esaj.baixar_pecas_publicas(session, [{"documentos": docs}], Path("pecas"), limite=0)
 
     assert [item["cd_documento"] for item in resultado] == ["1", "2"]
+
+
+def test_ler_pecas_publicas_pdf_em_memoria(monkeypatch):
+    monkeypatch.setattr(
+        esaj,
+        "extrair_texto_pdf_bytes",
+        lambda conteudo, max_chars: ("texto da decisao", "texto_extraido"),
+    )
+    session = FakeSession([FakeResponse(content=b"%PDF-1.4 fake")])
+    doc = {
+        "cd_documento": "123",
+        "titulo": "Decisao",
+        "href": "https://viewer",
+        "status_acesso": "publico_candidato",
+        "pasta_digital": {"status": "ok", "paginas": [{"parametros_pdf": "idDocumento=ABC"}]},
+    }
+
+    resultado = esaj.ler_pecas_publicas(session, _movimentos(doc), limite=1, max_chars=200)
+
+    assert resultado[0]["status"] == "texto_extraido"
+    assert resultado[0]["texto"] == "texto da decisao"
+    assert "arquivo" not in resultado[0]
+
+
+def test_ler_pecas_publicas_html_em_memoria():
+    session = FakeSession(
+        [
+            FakeResponse(
+                text="<html><body><p>Texto publico</p></body></html>",
+                headers={"Content-Type": "text/html"},
+            )
+        ]
+    )
+    doc = {
+        "cd_documento": "123",
+        "titulo": "Despacho",
+        "href": "https://viewer",
+        "status_acesso": "publico_candidato",
+        "pasta_digital": {"status": "ok", "paginas": [{"parametros_pdf": "idDocumento=ABC"}]},
+    }
+
+    resultado = esaj.ler_pecas_publicas(session, _movimentos(doc), limite=1, max_chars=200)
+
+    assert resultado[0]["status"] == "texto_html_extraido"
+    assert resultado[0]["texto"] == "Texto publico"
+
+
+def test_extrair_texto_pdf_bytes_sem_parser(monkeypatch):
+    def fail_import(name):
+        raise ImportError(name)
+
+    monkeypatch.setattr(esaj.importlib, "import_module", fail_import)
+
+    texto, status = esaj.extrair_texto_pdf_bytes(b"%PDF fake")
+
+    assert texto == ""
+    assert status == "pdf_parser_indisponivel"

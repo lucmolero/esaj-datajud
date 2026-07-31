@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Any
+from typing import Any, cast
 
 from .normalization import normalizar_data
 from .schemas import TimelineRecord
@@ -30,6 +30,31 @@ def build_timeline(
             item.get("id", ""),
         ),
     )
+
+
+def compactar_timeline(
+    registros: list[TimelineRecord],
+    *,
+    limit: int = 0,
+    recent_first: bool = False,
+    include_text: bool = True,
+    max_text_chars: int = 0,
+) -> list[TimelineRecord]:
+    """Reduz timeline para consumo por agentes sem alterar a timeline original."""
+    saida = [cast(TimelineRecord, dict(item)) for item in registros]
+    if recent_first:
+        saida = list(reversed(saida))
+    if limit > 0:
+        saida = saida[:limit]
+    for item in saida:
+        if not include_text:
+            item.pop("texto", None)
+            continue
+        texto = item.get("texto", "")
+        if max_text_chars > 0 and len(texto) > max_text_chars:
+            item["texto"] = texto[:max_text_chars]
+            item["texto_truncado"] = True
+    return saida
 
 
 def _timeline_esaj(extrato: dict[str, Any], *, include_payload: bool) -> list[TimelineRecord]:
