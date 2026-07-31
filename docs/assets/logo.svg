@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">esaj-datajud</title>
+  <desc id="desc">Marca do projeto esaj-datajud, unindo dados estruturados e tecnologia jurídica.</desc>
+  <rect width="256" height="256" rx="48" fill="#10233f"/>
+  <path d="M54 186h148" stroke="#e8eef7" stroke-width="14" stroke-linecap="round"/>
+  <path d="M82 157h92" stroke="#4cc9a6" stroke-width="14" stroke-linecap="round"/>
+  <path d="M102 128h72" stroke="#f4c95d" stroke-width="14" stroke-linecap="round"/>
+  <path d="M128 54v104" stroke="#e8eef7" stroke-width="14" stroke-linecap="round"/>
+  <path d="M82 88h92" stroke="#e8eef7" stroke-width="14" stroke-linecap="round"/>
+  <path d="M82 88 60 136h44L82 88Z" fill="none" stroke="#e8eef7" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M174 88 152 136h44L174 88Z" fill="none" stroke="#e8eef7" stroke-width="10" stroke-linejoin="round"/>
+  <circle cx="128" cy="54" r="12" fill="#4cc9a6"/>
+</svg>

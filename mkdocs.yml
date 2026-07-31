@@ -1,5 +1,5 @@
 site_name: esaj-datajud
-site_description: Biblioteca Python profissional para eSAJ/TJSP e DJEN/DataJud.
+site_description: Toolkit Python para consulta responsável e estruturação de dados públicos judiciais.
 site_url: https://lucmolero.github.io/esaj-datajud/
 repo_url: https://github.com/lucmolero/esaj-datajud
 repo_name: lucmolero/esaj-datajud
@@ -7,6 +7,11 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   language: pt-BR
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  palette:
+    primary: blue grey
+    accent: teal
   features:
     - navigation.sections
     - navigation.tabs
@@ -32,10 +37,11 @@ nav:
   - LGPD: lgpd.md
   - Modelo de Ameaças: threat-model.md
   - Fixtures: fixtures.md
-  - Validacao Real: validacao-real.md
+  - Validação Real: validacao-real.md
   - Uso Responsável: uso-responsavel.md
   - Governança: governanca.md
   - Release Notes:
+      - v0.3.6: release-notes-v0.3.6.md
       - v0.3.5: release-notes-v0.3.5.md
       - v0.3.4: release-notes-v0.3.4.md
       - v0.3.3: release-notes-v0.3.3.md

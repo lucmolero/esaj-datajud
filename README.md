@@ -1,17 +1,48 @@
-# esaj-datajud
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="esaj-datajud" width="120" />
+</p>
 
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-beta-orange.svg)](#status-do-projeto)
-[![CI](https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml/badge.svg)](https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml)
+<h1 align="center">esaj-datajud</h1>
 
-Biblioteca Python e CLI para consultar, organizar e exportar informações públicas de processos do eSAJ/TJSP e comunicações do DJEN/DataJud.
+<p align="center">
+  Toolkit Python para consulta responsável, estruturação e auditoria de dados públicos judiciais do eSAJ/TJSP e DJEN/DataJud.
+</p>
 
-O objetivo do projeto é oferecer uma base profissional para soluções jurídicas: simples para advogados, previsível para times técnicos e transparente sobre limites, riscos e uso responsável.
+<p align="center">
+  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml"><img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/docs.yml"><img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/docs.yml/badge.svg" alt="Docs" /></a>
+  <a href="https://github.com/lucmolero/esaj-datajud/actions/workflows/codeql.yml"><img src="https://github.com/lucmolero/esaj-datajud/actions/workflows/codeql.yml/badge.svg" alt="CodeQL" /></a>
+  <a href="https://github.com/lucmolero/esaj-datajud/releases"><img src="https://img.shields.io/github/v/release/lucmolero/esaj-datajud" alt="Release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT" /></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+" /></a>
+</p>
+
+<p align="center">
+  <a href="https://lucmolero.github.io/esaj-datajud/">Documentação</a> ·
+  <a href="https://github.com/lucmolero/esaj-datajud/releases">Releases</a> ·
+  <a href="docs/uso-responsavel.md">Uso responsável</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
+
+`esaj-datajud` oferece uma base profissional para soluções jurídicas: simples para advogados, previsível para times técnicos e transparente sobre limites, riscos e uso responsável.
+
+> Projeto independente: não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud. A biblioteca não burla autenticação, senha, captcha, segredo de justiça ou restrições técnicas das fontes consultadas.
 
 ## Por que este projeto existe
 
 Advogados e escritórios precisam transformar consultas repetitivas em dados estruturados, sem perder rastreabilidade. `esaj-datajud` nasceu para ser uma camada pequena, auditável e extensível entre fontes públicas judiciais e fluxos internos de análise, relatório e automação.
+
+O projeto também serve como vitrine técnica de engenharia legaltech: contratos tipados, testes automatizados, documentação de governança, cuidado com LGPD e releases verificáveis.
+
+## Por que confiar
+
+- CI em Python 3.10, 3.11 e 3.12.
+- Cobertura automatizada acima de 90%.
+- CodeQL, `pip-audit`, lint, type check, build e validação de pacote.
+- Testes sem rede com fixtures sanitizadas.
+- Testes `live` opcionais contra fonte real, fora do CI por estabilidade.
+- Documentação de LGPD, uso responsável, modelo de ameaças, governança e reprodutibilidade.
+- Releases versionadas com `wheel`, `sdist` e notas públicas.
 
 ## Recursos
 
@@ -23,6 +54,16 @@ Advogados e escritórios precisam transformar consultas repetitivas em dados est
 - Contratos tipados, exceções públicas e testes com fixtures sanitizadas.
 - Pacote marcado como tipado (`py.typed`), com checagem `mypy` no CI.
 - Foco em uso jurídico responsável, com atenção a LGPD, dados sensíveis e limites das fontes consultadas.
+
+## Casos reais de robustez
+
+O projeto é validado com fixtures sanitizadas e também com corpus privado local, sem publicar HTMLs, PDFs ou peças reais no repositório. A validação mais recente confirmou:
+
+- 17 processos públicos extraídos em corpus privado de 32 HTMLs reais.
+- 10.310 movimentações parseadas.
+- 42 partes principais e 2.451 partes em tabelas completas.
+- 204 documentos públicos candidatos e 816 documentos restritos por senha.
+- Cobertura para página pública do eSAJ com `popupSenha` oculto.
 
 ## Instalação
 
@@ -143,7 +184,7 @@ python -m ruff format --check src tests
 python -m mypy src
 ```
 
-Testes ao vivo ficam desativados por padrao. Para validar contra o eSAJ/TJSP real:
+Testes ao vivo ficam desativados por padrão. Para validar contra o eSAJ/TJSP real:
 
 ```bash
 $env:ESAJ_DATAJUD_RUN_LIVE = "1"
@@ -175,7 +216,7 @@ python -m twine check dist/*
 - [LGPD](docs/lgpd.md)
 - [Modelo de ameaças](docs/threat-model.md)
 - [Fixtures](docs/fixtures.md)
-- [Validacao real](docs/validacao-real.md)
+- [Validação real](docs/validacao-real.md)
 - [Uso responsável](docs/uso-responsavel.md)
 - [Governança](docs/governanca.md)
 - [Roadmap](docs/roadmap.md)

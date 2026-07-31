@@ -4,17 +4,28 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
+## [0.3.6] - 2026-07-31
+
+### Alterado
+
+- Reposiciona o README como toolkit Python para consulta responsável, estruturação e auditoria de dados públicos judiciais.
+- Adiciona logo, badges de CI/Docs/CodeQL/release e links rápidos no topo do README.
+- Reforça seções de confiança, casos reais de robustez e aviso de projeto independente.
+- Atualiza a página inicial da documentação com narrativa de confiança, público-alvo e casos suportados.
+- Configura logo, favicon e paleta do site MkDocs.
+- Melhora metadados do pacote com descrição e keywords mais alinhadas a legaltech/lawtech.
+
 ## [0.3.5] - 2026-07-31
 
 ### Corrigido
 
-- Evita falso positivo de `AcessoRestrito` quando uma pagina publica do eSAJ contem o popup oculto `popupSenha`.
+- Evita falso positivo de `AcessoRestrito` quando uma página pública do eSAJ contém o popup oculto `popupSenha`.
 
 ### Adicionado
 
-- Teste automatizado para pagina publica com popup oculto de senha.
-- Teste `live` opcional para validacao controlada contra o eSAJ/TJSP real.
-- Guia de validacao real com corpus privado, sanitizacao e cenarios obrigatorios.
+- Teste automatizado para página pública com popup oculto de senha.
+- Teste `live` opcional para validação controlada contra o eSAJ/TJSP real.
+- Guia de validação real com corpus privado, sanitização e cenários obrigatórios.
 - Release notes versionadas para `v0.3.5`.
 
 ### Alterado

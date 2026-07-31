@@ -24,16 +24,16 @@ Fixtures são amostras HTML ou JSON usadas para testar parsers sem depender de r
 
 ## Corpus real privado
 
-Use corpus real apenas como referencia privada. Quando um caso real revelar um bug, reduza o HTML
+Use corpus real apenas como referência privada. Quando um caso real revelar um bug, reduza o HTML
 ao menor trecho sanitizado que reproduz o problema.
 
-Cenarios adicionais obrigatorios:
+Cenários adicionais obrigatórios:
 
-- processo publico com `popupSenha` oculto;
-- processo realmente restrito sem `numeroProcesso` publico;
-- processo com muitas movimentacoes;
+- processo público com `popupSenha` oculto;
+- processo realmente restrito sem `numeroProcesso` público;
+- processo com muitas movimentações;
 - processo com muitas partes;
-- execucao fiscal;
-- falencia ou recuperacao judicial.
+- execução fiscal;
+- falência ou recuperação judicial.
 
-Para validacoes com fonte real e corpus privado, veja [Validacao Real](validacao-real.md).
+Para validações com fonte real e corpus privado, veja [Validação Real](validacao-real.md).
