@@ -6,7 +6,8 @@ from esaj_datajud import api
 
 
 def main() -> None:
-    numero = "1076539-20.2019.8.26.0100"
+    # Processo público institucional usado para demonstração.
+    numero = "0015020-23.2010.8.26.0053"
     envelope = api.extract_process(
         numero,
         sources=("datajud", "djen"),

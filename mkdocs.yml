@@ -29,6 +29,11 @@ extra_css:
 nav:
   - Início: index.md
   - Quickstart: quickstart.md
+  - Instalação Com IA: instalacao-com-ia.md
+  - Para Advogados: para-advogados.md
+  - Demonstração Pública: demonstracao-publica.md
+  - Aprendizados MCP: aprendizados-mcp.md
+  - Exemplos Seguros: exemplos-seguros.md
   - Fontes: fontes.md
   - Extração Agregada: extraction.md
   - MCP Local: mcp-local.md

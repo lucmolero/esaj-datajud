@@ -11,7 +11,7 @@ esaj --help
 ## Buscar resumo
 
 ```bash
-esaj search 1076539-20.2019.8.26.0100
+esaj search 0015020-23.2010.8.26.0053
 ```
 
 Imprime um JSON resumido com dados básicos e última movimentação encontrada.
@@ -19,7 +19,7 @@ Imprime um JSON resumido com dados básicos e última movimentação encontrada.
 ## Gerar extrato
 
 ```bash
-esaj extrato 1076539-20.2019.8.26.0100 --out extrato.json
+esaj extrato 0015020-23.2010.8.26.0053 --out extrato.json
 ```
 
 Salva o extrato completo em um arquivo JSON.
@@ -34,7 +34,7 @@ Flags úteis:
 ## Listar partes
 
 ```bash
-esaj partes 1076539-20.2019.8.26.0100
+esaj partes 0015020-23.2010.8.26.0053
 ```
 
 Imprime as partes classificadas por polo quando a estrutura da página permite.
@@ -42,7 +42,7 @@ Imprime as partes classificadas por polo quando a estrutura da página permite.
 ## Consultar DJEN
 
 ```bash
-esaj djen 1076539-20.2019.8.26.0100 --data-inicio 2026-01-01 --out djen.json
+esaj djen 0015020-23.2010.8.26.0053 --data-inicio 2026-01-01 --out djen.json
 ```
 
 Salva comunicações encontradas no DJEN em JSON.
@@ -50,7 +50,7 @@ Salva comunicações encontradas no DJEN em JSON.
 ## Consultar DataJud
 
 ```bash
-esaj datajud 1076539-20.2019.8.26.0100 --out datajud.json
+esaj datajud 0015020-23.2010.8.26.0053 --out datajud.json
 ```
 
 Salva dados processuais estruturados da API pública DataJud/CNJ em JSON.
@@ -60,7 +60,7 @@ A biblioteca usa a chave pública vigente documentada na Wiki oficial do DataJud
 ## Extração Agregada
 
 ```bash
-esaj extract 1076539-20.2019.8.26.0100 --source datajud --source djen --out extraction.json
+esaj extract 0015020-23.2010.8.26.0053 --source datajud --source djen --out extraction.json
 ```
 
 Gera envelope versionado por fonte.
@@ -68,7 +68,7 @@ Gera envelope versionado por fonte.
 ## Timeline
 
 ```bash
-esaj timeline 1076539-20.2019.8.26.0100 --source esaj --source djen --out timeline.json
+esaj timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
 ```
 
 Gera timeline cronológica de registros extraídos, sem classificação de fase, risco ou relevância.

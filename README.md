@@ -24,7 +24,7 @@
   <a href="CHANGELOG.md">Changelog</a>
 </p>
 
-`esaj-datajud` oferece uma base profissional para soluções jurídicas: simples para advogados, previsível para times técnicos e transparente sobre limites, riscos e uso responsável.
+`esaj-datajud` oferece uma base profissional para soluções jurídicas: simples para advogados, previsível para times técnicos e transparente sobre limites, riscos e uso responsável. O foco é transformar fontes públicas judiciais em dados estruturados, timelines e integrações locais para automação com agentes de IA.
 
 > Projeto independente: não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud. A biblioteca não burla autenticação, senha, captcha, segredo de justiça ou restrições técnicas das fontes consultadas.
 
@@ -36,7 +36,7 @@ O projeto também serve como vitrine técnica de engenharia legaltech: contratos
 
 ## Por que confiar
 
-- CI em Python 3.10, 3.11 e 3.12.
+- CI em Python 3.10, 3.11, 3.12 e 3.13.
 - Cobertura automatizada acima de 90%.
 - CodeQL, `pip-audit`, lint, type check, build e validação de pacote.
 - Testes sem rede com fixtures sanitizadas.
@@ -57,9 +57,31 @@ O projeto também serve como vitrine técnica de engenharia legaltech: contratos
 - Pacote marcado como tipado (`py.typed`), com checagem `mypy` no CI.
 - Foco em uso jurídico responsável, com atenção a LGPD, dados sensíveis e limites das fontes consultadas.
 
+## Para advogados e agentes de IA
+
+O projeto foi desenhado para uma jornada simples:
+
+1. O advogado escolhe um número CNJ público e define o objetivo da consulta.
+2. Um agente local, como Claude Code, Codex, Gemini CLI ou cliente MCP compatível, instala o pacote no ambiente Python.
+3. O agente configura o MCP local por `stdio`, sem expor endpoint público.
+4. A biblioteca consulta eSAJ/TJSP, DataJud/CNJ e DJEN conforme a fonte escolhida.
+5. O resultado retorna como JSON, envelope versionado ou timeline cronológica auditável.
+
+Veja a jornada guiada em [docs/instalacao-com-ia.md](docs/instalacao-com-ia.md) e a visão jurídica em [docs/para-advogados.md](docs/para-advogados.md).
+
+## Demonstração pública recomendada
+
+Para demonstrações, tutoriais e vídeos, o projeto usa um processo público institucional previamente testado pelo MCP local:
+
+```text
+0015020-23.2010.8.26.0053
+```
+
+Trata-se de um Mandado de Segurança Cível envolvendo sindicato e Administração Pública estadual. Em validação manual realizada em 31/07/2026, o MCP retornou dados do eSAJ/TJSP, DJEN e DataJud/CNJ, com timeline agregada e sem erros. A demonstração completa está em [docs/demonstracao-publica.md](docs/demonstracao-publica.md).
+
 ## Casos reais de robustez
 
-O projeto é validado com fixtures sanitizadas e também com corpus privado local, sem publicar HTMLs, PDFs ou peças reais no repositório. A validação mais recente confirmou:
+O projeto é validado com fixtures sanitizadas e também com corpus privado local, sem publicar HTMLs, PDFs, peças reais ou estudos de caso empresariais identificáveis no repositório. A validação mais recente confirmou:
 
 - 17 processos públicos extraídos em corpus privado de 32 HTMLs reais.
 - 10.310 movimentações parseadas.
@@ -94,7 +116,7 @@ python -m pip install -e .
 ```python
 from esaj_datajud import api
 
-numero = "1076539-20.2019.8.26.0100"
+numero = "0015020-23.2010.8.26.0053"  # demo pública institucional
 
 resumo = api.search_processo(numero)
 print(resumo["classe"])
@@ -125,26 +147,26 @@ client = EsajDatajudClient(
     )
 )
 
-resumo = client.search_processo("1076539-20.2019.8.26.0100")
+resumo = client.search_processo("0015020-23.2010.8.26.0053")
 print(resumo["classe"])
 ```
 
 ## CLI
 
 ```bash
-esaj search 1076539-20.2019.8.26.0100
-esaj extrato 1076539-20.2019.8.26.0100 --out extrato.json
-esaj partes 1076539-20.2019.8.26.0100
+esaj search 0015020-23.2010.8.26.0053
+esaj extrato 0015020-23.2010.8.26.0053 --out extrato.json
+esaj partes 0015020-23.2010.8.26.0053
 esaj baixar extrato.json --out pecas
-esaj djen 1076539-20.2019.8.26.0100 --out djen.json
-esaj datajud 1076539-20.2019.8.26.0100 --out datajud.json
-esaj timeline 1076539-20.2019.8.26.0100 --source esaj --source djen --out timeline.json
+esaj djen 0015020-23.2010.8.26.0053 --out djen.json
+esaj datajud 0015020-23.2010.8.26.0053 --out datajud.json
+esaj timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
 ```
 
 Também é possível executar via módulo:
 
 ```bash
-python -m esaj_datajud.cli search 1076539-20.2019.8.26.0100
+python -m esaj_datajud.cli search 0015020-23.2010.8.26.0053
 ```
 
 ## MCP Local
@@ -163,19 +185,20 @@ Consulte [docs/mcp-local.md](docs/mcp-local.md) para configuração em clientes 
 
 ```json
 {
-  "numero": "1076539-20.2019.8.26.0100",
-  "classe": "Ação Civil Pública",
-  "assunto": "",
-  "foro": "",
-  "vara": "",
-  "juiz": "",
-  "ultima_movimentacao": "Publicação de intimação",
-  "ultima_data": "30/07/2026",
+  "numero": "0015020-23.2010.8.26.0053",
+  "classe": "Mandado de Segurança Cível",
+  "assunto": "Organização Político-administrativa / Administração Pública",
+  "foro": "Foro Central - Fazenda Pública/Acidentes",
+  "vara": "7ª Vara de Fazenda Pública",
+  "ultima_movimentacao": "Extinta a Execução/Cumprimento da Sentença pela Satisfação da Obrigação",
+  "ultima_data": "2026-07-19",
   "url": "https://esaj.tjsp.jus.br/cpopg/...",
   "status": "ok",
   "mensagem": "Processo consultado com sucesso"
 }
 ```
+
+Em demonstrações públicas, mantenha outputs reduzidos e sanitize dados pessoais, nomes de advogados, documentos e trechos extensos. Para casos de clientes, use apenas processos escolhidos pelo próprio usuário.
 
 ## Arquitetura
 
@@ -238,6 +261,11 @@ python -m twine check dist/*
 ## Documentação
 
 - [Quickstart](docs/quickstart.md)
+- [Instalação com IA](docs/instalacao-com-ia.md)
+- [Para advogados](docs/para-advogados.md)
+- [Demonstração pública](docs/demonstracao-publica.md)
+- [Aprendizados MCP](docs/aprendizados-mcp.md)
+- [Exemplos seguros](docs/exemplos-seguros.md)
 - [MCP local](docs/mcp-local.md)
 - [Cliente configurável](docs/client.md)
 - [API Reference](docs/api-reference.md)
@@ -263,6 +291,6 @@ Para uso acadêmico, técnico ou institucional, cite o projeto pelo arquivo [CIT
 
 ## Autor
 
-Luciano Molero - [LinkedIn](https://www.linkedin.com/in/luciano-molero/)
+Luciano Molero (`lucmolero`) - [LinkedIn](https://www.linkedin.com/in/luciano-molero/)
 
-Projeto criado como base aberta para soluções jurídicas profissionais em Python.
+Luciano atua na intersecção entre Direito, tecnologia e automação jurídica. O projeto reflete essa combinação: rigor jurídico, engenharia reprodutível, experiência de usuário e responsabilidade no uso de dados públicos.

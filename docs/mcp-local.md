@@ -4,6 +4,8 @@
 
 Essa camada foi desenhada para clientes MCP que rodam na maquina do usuario. Ela nao hospeda endpoint publico, nao abre porta HTTP e nao muda o contrato principal da biblioteca Python.
 
+Para advogados, a lógica é simples: o agente de IA chama ferramentas locais para consultar fontes públicas, e o resultado volta estruturado com fonte, data e limites. A análise jurídica continua sendo humana.
+
 ## Instalacao
 
 Instale a biblioteca com o extra opcional `mcp`:
@@ -70,6 +72,23 @@ No Windows:
 }
 ```
 
+## Jornada com Claude Code, Codex, Gemini ou cliente MCP
+
+1. Instale `esaj-datajud` com o extra `mcp`.
+2. Configure o cliente MCP apontando para `python -m esaj_datajud.mcp_server`.
+3. Peça ao agente para validar o CNJ antes de consultar.
+4. Solicite respostas com separação entre fatos extraídos e hipóteses.
+5. Valide atos sensíveis na fonte oficial.
+
+Prompt sugerido:
+
+```text
+Use o MCP local esaj-datajud para consultar 0015020-23.2010.8.26.0053.
+Primeiro valide o CNJ. Depois consulte as fontes públicas disponíveis.
+Entregue dados básicos, últimas movimentações e timeline.
+Não invente teses e não dê aconselhamento jurídico.
+```
+
 ## Ferramentas
 
 - `server_info`: retorna metadados do servidor MCP local.
@@ -117,3 +136,5 @@ cliente MCP local
 ```
 
 Essa separacao mantem o nucleo da biblioteca independente do MCP. Quem usa apenas Python ou CLI nao precisa instalar o SDK MCP.
+
+Para uma instalação guiada por agente, veja [Instalação Com IA](instalacao-com-ia.md).

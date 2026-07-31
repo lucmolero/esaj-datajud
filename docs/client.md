@@ -16,7 +16,7 @@ config = EsajDatajudConfig(
 )
 
 client = EsajDatajudClient(config)
-resumo = client.search_processo("1076539-20.2019.8.26.0100")
+resumo = client.search_processo("0015020-23.2010.8.26.0053")
 print(resumo["classe"])
 ```
 

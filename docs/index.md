@@ -20,7 +20,8 @@ hide:
       </p>
       <div class="legal-actions" aria-label="Ações principais">
         <a class="legal-button legal-button--primary" href="quickstart/">Começar pelo quickstart</a>
-        <a class="legal-button" href="api-reference/">Explorar API</a>
+        <a class="legal-button" href="instalacao-com-ia/">Instalar com IA</a>
+        <a class="legal-button" href="demonstracao-publica/">Ver demo pública</a>
         <a class="legal-button legal-button--ghost" href="https://github.com/lucmolero/esaj-datajud">GitHub</a>
       </div>
     </div>
@@ -91,7 +92,7 @@ hide:
     <article>
       <span class="legal-card__label">Advocacia</span>
       <h3>Rotinas repetíveis</h3>
-      <p>Consulta, estruturação e extração de informações públicas para reduzir retrabalho operacional.</p>
+      <p>Consulta, estruturação e extração de informações públicas para reduzir retrabalho operacional com revisão humana.</p>
     </article>
     <article>
       <span class="legal-card__label">Legaltech</span>
@@ -102,6 +103,11 @@ hide:
       <span class="legal-card__label">Academia</span>
       <h3>Metodologia explícita</h3>
       <p>Documentação sobre reprodutibilidade, fixtures sanitizadas, limitações e validação controlada.</p>
+    </article>
+    <article>
+      <span class="legal-card__label">IA local</span>
+      <h3>Agentes com MCP</h3>
+      <p>Instalação guiada para Claude Code, Codex, Gemini e clientes compatíveis com MCP local por <code>stdio</code>.</p>
     </article>
   </section>
 
@@ -130,7 +136,8 @@ hide:
       <h2 id="legal-code-title">Instale, consulte e trabalhe com dados estruturados.</h2>
       <p>
         A API favorece fluxos claros: configurar limites, consultar uma fonte pública e receber um extrato pronto para
-        auditoria, persistência ou integração com agentes internos.
+        auditoria, persistência ou integração com agentes internos. Para uso assistido por IA, siga a jornada de
+        instalação com MCP local.
       </p>
     </div>
     <pre><code>from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
@@ -143,7 +150,7 @@ client = EsajDatajudClient(
     )
 )
 
-extrato = client.get_extrato("1076539-20.2019.8.26.0100")
+extrato = client.get_extrato("0015020-23.2010.8.26.0053")
 print(extrato["dados_basicos"]["classe"])
 print(len(extrato["movimentacoes"]))</code></pre>
   </section>
@@ -159,7 +166,8 @@ print(len(extrato["movimentacoes"]))</code></pre>
     </div>
     <div class="legal-actions">
       <a class="legal-button legal-button--primary" href="quickstart/">Abrir quickstart</a>
-      <a class="legal-button" href="governanca/">Ver governança</a>
+      <a class="legal-button" href="instalacao-com-ia/">Jornada com IA</a>
+      <a class="legal-button" href="exemplos-seguros/">Exemplos seguros</a>
     </div>
   </section>
 </main>

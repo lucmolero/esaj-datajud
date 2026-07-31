@@ -18,7 +18,7 @@ from esaj_datajud import api
 from esaj_datajud.exceptions import EsajDatajudError
 
 try:
-    extrato = api.get_extrato("1076539-20.2019.8.26.0100")
+    extrato = api.get_extrato("0015020-23.2010.8.26.0053")
 except EsajDatajudError as exc:
     print(type(exc).__name__, str(exc))
 ```

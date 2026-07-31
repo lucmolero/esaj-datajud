@@ -12,6 +12,8 @@ O mantenedor principal é Luciano Molero (`lucmolero`). Mudanças relevantes dev
 - respeito a dados pessoais e fontes públicas;
 - histórico claro em `CHANGELOG.md`.
 
+O posicionamento público do projeto deve refletir a trajetória do mantenedor na intersecção entre Direito, tecnologia, UX e automação jurídica. A comunicação deve ser profissional, verificável e sem prometer acesso privilegiado, aconselhamento jurídico automatizado ou resultados não suportados pelas fontes públicas.
+
 ## Versionamento
 
 O projeto usa versionamento semântico sempre que possível:
