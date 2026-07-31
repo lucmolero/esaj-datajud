@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "esaj-datajud"
-version = "0.3.3"
+version = "0.3.4"
 description = "Biblioteca Python para extração e consulta de processos eSAJ/TJSP e DJEN/DataJud."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -58,9 +58,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/lucmolero/esaj-datajud"
+Homepage = "https://lucmolero.github.io/esaj-datajud/"
 Source = "https://github.com/lucmolero/esaj-datajud"
-Documentation = "https://github.com/lucmolero/esaj-datajud/tree/main/docs"
+Documentation = "https://lucmolero.github.io/esaj-datajud/"
 Issues = "https://github.com/lucmolero/esaj-datajud/issues"
 Changelog = "https://github.com/lucmolero/esaj-datajud/blob/main/CHANGELOG.md"
 Release = "https://github.com/lucmolero/esaj-datajud/releases"

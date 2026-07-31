@@ -4,6 +4,13 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
+## [0.3.4] - 2026-07-31
+
+### Alterado
+
+- GitHub Pages habilitado em `https://lucmolero.github.io/esaj-datajud/`.
+- Metadados do pacote atualizados para apontar homepage e documentação para o site público.
+
 ## [0.3.3] - 2026-07-31
 
 ### Alterado
