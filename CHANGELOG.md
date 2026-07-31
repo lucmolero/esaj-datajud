@@ -4,7 +4,15 @@ Todas as mudanças relevantes deste projeto serão documentadas aqui.
 
 O formato segue a ideia de manter versões legíveis para usuários jurídicos e desenvolvedores.
 
-## [0.3.0] - Em desenvolvimento
+## [0.3.1] - 2026-07-31
+
+### Corrigido
+
+- Ajusta CI para atualizar `setuptools>=83.0.0` antes da auditoria de dependências.
+- Mantém workflow de documentação como build estrito enquanto GitHub Pages não estiver disponível no plano/configuração do repositório.
+- Ajusta CodeQL para executar análise sem depender de upload para Code Scanning quando a feature não estiver habilitada.
+
+## [0.3.0] - 2026-07-31
 
 ### Adicionado
 

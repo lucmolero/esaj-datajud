@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "Se este projeto ajudar sua pesquisa, produto ou rotina jurídica, cite o repositório."
 title: "esaj-datajud"
-version: "0.3.0"
+version: "0.3.1"
 date-released: "2026-07-31"
 abstract: "Biblioteca Python e CLI para consultar, organizar e exportar informações públicas de processos eSAJ/TJSP e comunicações DJEN/DataJud."
 authors:
