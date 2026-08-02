@@ -103,7 +103,7 @@ python -m twine check dist/*
 python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ "nanojud[mcp]"
 ```
 
-6. Publicar no PyPI pelo workflow `Publish PyPI`.
+6. Publicar no PyPI pelo workflow manual `Publish PyPI`.
 7. Testar instalacao final:
 
 ```bash
@@ -118,3 +118,4 @@ nanojud-mcp
 - Se um upload falhar depois de criar a versao, incremente a versao antes de tentar novamente.
 - O MCP nao e outro pacote separado nesta fase; ele e um extra opcional do pacote `nanojud`.
 - O servidor MCP local usa `stdio`, nao abre porta HTTP e nao hospeda dados em nuvem.
+- A GitHub Release deve ser criada por tag `v*`; o upload PyPI fica manual para evitar republicacao acidental da mesma versao.
