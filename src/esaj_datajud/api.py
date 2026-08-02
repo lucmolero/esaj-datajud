@@ -8,7 +8,7 @@ from typing import Any, cast
 from . import datajud, djen, esaj, extraction
 from .client import EsajDatajudClient
 from .config import EsajDatajudConfig
-from .models import Extrato, ResumoProcesso
+from .models import Extrato, Movimentacao, ResumoProcesso
 from .normalization import normalizar_data
 
 
@@ -180,7 +180,7 @@ def _nomes_polo(partes: list[Any]) -> str:
     return ", ".join([nome for nome in nomes if nome])[:250]
 
 
-def _ultima_movimentacao(movimentos: list[dict[str, Any]]) -> dict[str, Any]:
+def _ultima_movimentacao(movimentos: list[Movimentacao]) -> Movimentacao | dict[str, Any]:
     if not movimentos:
         return {}
     com_data = []

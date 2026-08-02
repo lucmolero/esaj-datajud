@@ -12,7 +12,7 @@ import requests
 from . import datajud, djen, esaj, extraction
 from .cache import JsonFileCache
 from .config import EsajDatajudConfig
-from .models import Extrato, ResumoProcesso
+from .models import Extrato, Movimentacao, ResumoProcesso
 from .normalization import normalizar_data
 from .version import __version__
 
@@ -254,7 +254,7 @@ def _resumo_do_extrato(extrato: Extrato) -> ResumoProcesso:
     }
 
 
-def _ultima_movimentacao(movimentos: list[dict[str, Any]]) -> dict[str, Any]:
+def _ultima_movimentacao(movimentos: list[Movimentacao]) -> Movimentacao | dict[str, Any]:
     if not movimentos:
         return {}
     com_data = []

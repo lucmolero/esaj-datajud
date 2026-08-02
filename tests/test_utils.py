@@ -1,4 +1,6 @@
 from esaj_datajud.exceptions import FormatoCNJInvalido
+from esaj_datajud.normalization import extrair_numeros_cnj
+from esaj_datajud.sources import normalizar_fonte
 from esaj_datajud.utils import (
     classificar_polo,
     limpar,
@@ -35,6 +37,21 @@ def test_normalizar_e_validar_numero_cnj():
     assert validar_numero_cnj(numero, segmento=None, tribunal=None) == numero
 
 
+def test_normalizar_numero_cnj_rejeita_tamanho_invalido():
+    try:
+        normalizar_numero_cnj("123")
+    except FormatoCNJInvalido as exc:
+        assert "20" in str(exc)
+    else:
+        raise AssertionError("CNJ com tamanho invalido deveria falhar")
+
+
+def test_extrair_numeros_cnj_ignora_candidato_invalido():
+    texto = "Processo 1076539-21.2019.8.26.0100"
+
+    assert extrair_numeros_cnj(texto) == []
+
+
 def test_validar_numero_cnj_rejeita_digito_invalido():
     try:
         validar_numero_cnj("1076539-21.2019.8.26.0100")
@@ -65,3 +82,12 @@ def test_adicionar_unico():
     adicionar_unico(valores, "")
 
     assert valores == ["um", "dois"]
+
+
+def test_normalizar_fonte_rejeita_desconhecida():
+    try:
+        normalizar_fonte("projudi")
+    except ValueError as exc:
+        assert "Fonte desconhecida" in str(exc)
+    else:
+        raise AssertionError("Fonte desconhecida deveria falhar")

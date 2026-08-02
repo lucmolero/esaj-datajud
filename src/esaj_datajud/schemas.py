@@ -43,6 +43,7 @@ class TimelineRecord(TypedDict, total=False):
     codigo_original: str
     titulo: str
     texto: str
+    texto_truncado: bool
     documentos: list[dict[str, Any]]
     payload_origem: dict[str, Any]
 

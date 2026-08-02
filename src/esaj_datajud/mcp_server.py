@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import importlib
-from typing import Any
+from typing import Any, cast
 
 from . import api, normalization
 from .sources import ALL_SOURCES, SourceName, normalizar_fonte
@@ -149,7 +149,11 @@ def create_server() -> Any:
     ) -> dict[str, Any]:
         """Le documentos publicos candidatos em memoria, sem salvar PDF em disco."""
         extrato = api.get_extrato(numero, inspecionar_pecas=True, limite_inspecao_pecas=limite)
-        documentos = api.ler_pecas(extrato, limite=limite, max_chars=max_chars)
+        documentos = api.ler_pecas(
+            cast(dict[str, Any], extrato),
+            limite=limite,
+            max_chars=max_chars,
+        )
         return {
             "numero_cnj": (extrato.get("dados_basicos") or {}).get("numero", numero),
             "count": len(documentos),

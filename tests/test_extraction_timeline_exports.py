@@ -89,6 +89,38 @@ def test_compactar_timeline_para_agentes():
     ]
 
 
+def test_timeline_fonte_desconhecida_fica_por_ultimo():
+    registros = timeline.build_timeline(
+        esaj_extrato={
+            "dados_basicos": {"numero": "1076539-20.2019.8.26.0100"},
+            "movimentacoes": [{"data": "31/07/2026", "titulo": "eSAJ"}],
+        },
+        datajud_extracao={
+            "numero_cnj": "1076539-20.2019.8.26.0100",
+            "movimentos": [{"data": "2026-07-31", "codigo": "1", "nome": "DataJud"}],
+        },
+    )
+    registros.append(
+        {
+            "id": "x",
+            "data": "2026-07-31",
+            "fonte": "externa",
+            "tipo_registro": "movimentacao",
+        }
+    )
+
+    ordenado = sorted(
+        registros,
+        key=lambda item: (
+            item.get("data") or "9999-99-99",
+            timeline._source_order(item.get("fonte")),
+            item.get("id", ""),
+        ),
+    )
+
+    assert ordenado[-1]["fonte"] == "externa"
+
+
 def test_extract_process_preserva_falha_isolada(monkeypatch):
     monkeypatch.setattr(
         extraction.esaj,
