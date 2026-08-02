@@ -37,6 +37,7 @@ nav:
   - Fontes: fontes.md
   - Extração Agregada: extraction.md
   - MCP Local: mcp-local.md
+  - PyPI e MCP: pypi.md
   - Cliente Configurável: client.md
   - CLI: cli.md
   - API Reference: api-reference.md

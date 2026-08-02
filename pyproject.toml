@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "nanojud"
 version = "0.5.0"
 description = "NanoJud: toolkit Python para extração responsável, normalização e exportação de dados públicos judiciais do eSAJ/TJSP, DataJud/CNJ e DJEN."
-readme = "README.md"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10"
 dependencies = [
   "requests>=2.28",
@@ -18,7 +18,7 @@ license-files = ["LICENSE"]
 authors = [
   {name = "Luciano Molero"}
 ]
-keywords = ["esaj", "tjsp", "datajud", "djen", "juridico", "legaltech", "lawtech", "processo"]
+keywords = ["esaj", "tjsp", "datajud", "djen", "mcp", "agentes", "juridico", "legaltech", "lawtech", "processo"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Legal Industry",
@@ -72,6 +72,7 @@ Issues = "https://github.com/lucmolero/nanojud/issues"
 Changelog = "https://github.com/lucmolero/nanojud/blob/main/CHANGELOG.md"
 Release = "https://github.com/lucmolero/nanojud/releases"
 LinkedIn = "https://www.linkedin.com/in/luciano-molero/"
+PyPI = "https://pypi.org/project/nanojud/"
 
 [project.scripts]
 nanojud = "nanojud.cli:main"

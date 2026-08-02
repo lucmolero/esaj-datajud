@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased]
+
+### Adicionado
+
+- Adiciona guia dedicado de distribuicao PyPI e MCP.
+- Adiciona workflow manual de publicacao no TestPyPI com Trusted Publishing.
+- Documenta instalacao de usuario via `python -m pip install "nanojud[mcp]"`.
+- Documenta execucao direta do MCP via `uvx --from "nanojud[mcp]" nanojud-mcp`.
+
+### Alterado
+
+- Ajusta metadados do pacote para README Markdown explicito no PyPI.
+- Atualiza o README para usar logo com URL absoluta compativel com PyPI.
+
 ## [0.5.0] - 2026-07-31
 
 ### Adicionado

@@ -1,9 +1,7 @@
-name: Publish PyPI
+name: Publish TestPyPI
 
 on:
   workflow_dispatch:
-  release:
-    types: [published]
 
 jobs:
   build:
@@ -41,12 +39,12 @@ jobs:
           retention-days: 7
 
   publish:
-    name: Publish package to PyPI
+    name: Publish package to TestPyPI
     needs: build
     runs-on: ubuntu-latest
     environment:
-      name: pypi
-      url: https://pypi.org/p/nanojud
+      name: testpypi
+      url: https://test.pypi.org/p/nanojud
     permissions:
       id-token: write
       contents: read
@@ -58,5 +56,7 @@ jobs:
           name: python-package-distributions
           path: dist/
 
-      - name: Publish package distributions to PyPI
+      - name: Publish package distributions to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/

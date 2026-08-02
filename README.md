@@ -1,6 +1,6 @@
 <p align="center">
   <img
-    src="docs/assets/nanojud-logo-primary.svg"
+    src="https://raw.githubusercontent.com/lucmolero/nanojud/main/docs/assets/nanojud-logo-primary.svg"
     alt="NanoJud"
     width="420"
   />
@@ -28,6 +28,9 @@
   </a>
   <a href="https://github.com/lucmolero/nanojud/releases">
     <img src="https://img.shields.io/github/v/release/lucmolero/nanojud" alt="Release" />
+  </a>
+  <a href="https://pypi.org/project/nanojud/">
+    <img src="https://img.shields.io/pypi/v/nanojud.svg" alt="PyPI" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT" />
@@ -287,7 +290,7 @@ Consulte a demonstração completa em:
 
 ---
 
-# Instalação técnica
+# Instalação
 
 ## Requisitos
 
@@ -295,14 +298,58 @@ Consulte a demonstração completa em:
 * Acesso à internet para instalação e consultas.
 * Terminal ou agente local com acesso ao terminal.
 
-## Clonar o repositório
+## Instalar pelo PyPI
+
+Para usar a biblioteca, CLI e consultas principais:
+
+```bash
+python -m pip install nanojud
+```
+
+Para instalar tambem o servidor MCP local e leitura de PDFs publicos em memoria:
+
+```bash
+python -m pip install "nanojud[mcp]"
+```
+
+Depois valide:
+
+```bash
+python -c "import nanojud; print(nanojud.__version__)"
+nanojud --help
+```
+
+## MCP direto com uvx
+
+Para clientes MCP que aceitam comando externo, a forma mais simples e nao manter projeto clonado:
+
+```bash
+uvx --from "nanojud[mcp]" nanojud-mcp
+```
+
+Exemplo de configuracao MCP:
+
+```json
+{
+  "mcpServers": {
+    "nanojud": {
+      "command": "uvx",
+      "args": ["--from", "nanojud[mcp]", "nanojud-mcp"]
+    }
+  }
+}
+```
+
+## Desenvolvimento local
+
+Use este caminho apenas se voce quer contribuir, rodar testes ou alterar o codigo.
 
 ```bash
 git clone https://github.com/lucmolero/nanojud.git
 cd nanojud
 ```
 
-Também é possível baixar o projeto por **Code → Download ZIP**.
+Tambem e possivel baixar o projeto por **Code -> Download ZIP**.
 
 ## Windows PowerShell
 
@@ -310,7 +357,7 @@ Também é possível baixar o projeto por **Code → Download ZIP**.
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python -m pip install -e ".[mcp]"
+python -m pip install -e ".[dev,mcp]"
 ```
 
 ## Linux ou macOS
@@ -319,7 +366,7 @@ python -m pip install -e ".[mcp]"
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e ".[mcp]"
+python -m pip install -e ".[dev,mcp]"
 ```
 
 ## Validar a instalação
@@ -463,7 +510,7 @@ Ele permite que agentes e clientes compatíveis consultem e estruturem dados jud
 ## Instalação
 
 ```bash
-python -m pip install -e ".[mcp]"
+python -m pip install "nanojud[mcp]"
 ```
 
 ## Execução direta

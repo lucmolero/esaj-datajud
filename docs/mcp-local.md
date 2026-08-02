@@ -11,7 +11,7 @@ Para advogados, a lógica é simples: o agente de IA chama ferramentas locais pa
 Instale a biblioteca com o extra opcional `mcp`:
 
 ```bash
-python -m pip install -e ".[mcp]"
+python -m pip install "nanojud[mcp]"
 ```
 
 O extra `mcp` tambem instala `pypdf`, usado para extrair texto de PDFs publicos em memoria quando a fonte permite.
@@ -20,6 +20,27 @@ Para desenvolvimento completo:
 
 ```bash
 python -m pip install -e ".[dev,mcp]"
+```
+
+## Executar sem clone com uvx
+
+Em clientes MCP que aceitam executar comandos externos, voce pode rodar o servidor diretamente do PyPI:
+
+```bash
+uvx --from "nanojud[mcp]" nanojud-mcp
+```
+
+Configuracao MCP enxuta:
+
+```json
+{
+  "mcpServers": {
+    "nanojud": {
+      "command": "uvx",
+      "args": ["--from", "nanojud[mcp]", "nanojud-mcp"]
+    }
+  }
+}
 ```
 
 ## Executar

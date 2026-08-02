@@ -4,6 +4,20 @@ Este guia mostra o caminho mais curto para instalar o projeto e fazer uma consul
 
 ## Instalar
 
+Para usar o pacote publicado:
+
+```bash
+python -m pip install nanojud
+```
+
+Para usar tambem o MCP local:
+
+```bash
+python -m pip install "nanojud[mcp]"
+```
+
+Para contribuir no repositorio clonado:
+
 ```bash
 python -m pip install -e ".[dev]"
 ```

@@ -47,16 +47,16 @@ Para testar sem escolher um caso próprio, use a [Demonstração Pública](demon
 Se você não sabe codar, peça à IA para fazer o trabalho operacional por você. O pedido pode ser assim:
 
 ```text
-Baixe o repositório nanojud do GitHub, instale o pacote localmente com suporte a MCP e configure o servidor MCP local em meu computador. Depois consulte o processo <NUMERO_CNJ_PUBLICO> e me entregue uma linha do tempo objetiva, com fonte, data e resumo de cada evento. Não invente informações e separe fatos extraídos de hipóteses.
+Instale o pacote nanojud pelo PyPI com suporte a MCP e configure o servidor MCP local em meu computador. Depois consulte o processo <NUMERO_CNJ_PUBLICO> e me entregue uma linha do tempo objetiva, com fonte, data e resumo de cada evento. Não invente informações e separe fatos extraídos de hipóteses.
 ```
 
 Em termos práticos, a IA precisa:
 
-1. clonar o repositório inteiro;
-2. criar um ambiente virtual local;
-3. instalar o pacote com um comando simples como `python -m pip install -e ".[mcp]"`;
-4. iniciar o servidor MCP local sem expor endpoint público;
-5. usar um comando simples para consultar o processo, como `nanojud search <NUMERO_CNJ_PUBLICO>`.
+1. instalar o pacote com `python -m pip install "nanojud[mcp]"`;
+2. configurar o MCP local por `stdio`;
+3. iniciar o servidor MCP local sem expor endpoint público;
+4. usar uma ferramenta como `validar_cnj`, `consultar_datajud`, `consultar_esaj` ou `gerar_timeline`;
+5. validar atos sensíveis na fonte oficial.
 
 Exemplo de CNJ público institucional para demonstração:
 

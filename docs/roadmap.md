@@ -45,10 +45,13 @@ Este roadmap organiza a evolução do projeto em entregas pequenas, verificávei
 - Entry point `nanojud-mcp`.
 - Ferramentas MCP somente leitura para validação CNJ, eSAJ, DataJud, DJEN, extração agregada e timeline.
 - Testes reais manuais com eSAJ, DataJud, DJEN e MCP local.
+- Guia de distribuição PyPI com instalação `nanojud[mcp]`.
+- Workflow de publicação em TestPyPI para ensaio de release.
+- Workflow de publicação em PyPI com Trusted Publishing.
 
 ## Próximas prioridades
 
-- Publicar pacote no PyPI com Trusted Publishing.
+- Configurar Trusted Publisher no PyPI/TestPyPI e executar a primeira publicação oficial.
 - Ampliar fixtures sanitizadas com cenários reais de falha do eSAJ.
 - Medir cobertura em badge público.
 - Adicionar matriz de compatibilidade por tribunal/fonte.
