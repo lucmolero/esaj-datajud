@@ -2,16 +2,16 @@ import os
 
 import pytest
 
-from esaj_datajud import esaj
+from nanojud import esaj
 
 pytestmark = pytest.mark.live
 
 
 def _live_enabled() -> bool:
-    return os.getenv("ESAJ_DATAJUD_RUN_LIVE") == "1"
+    return os.getenv("NANOJUD_RUN_LIVE") == "1"
 
 
-@pytest.mark.skipif(not _live_enabled(), reason="defina ESAJ_DATAJUD_RUN_LIVE=1")
+@pytest.mark.skipif(not _live_enabled(), reason="defina NANOJUD_RUN_LIVE=1")
 def test_live_esaj_public_process_with_hidden_password_popup():
     extrato = esaj.montar_extrato(
         "1076539-20.2019.8.26.0100",

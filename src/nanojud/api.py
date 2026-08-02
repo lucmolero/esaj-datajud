@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Any, cast
 
 from . import datajud, djen, esaj, extraction
-from .client import EsajDatajudClient
-from .config import EsajDatajudConfig
+from .client import NanoJudClient
+from .config import NanoJudConfig
 from .models import Extrato, Movimentacao, ResumoProcesso
 from .normalization import normalizar_data
 
@@ -148,9 +148,9 @@ def extract_process(
     )
 
 
-def create_client(config: EsajDatajudConfig | None = None) -> EsajDatajudClient:
+def create_client(config: NanoJudConfig | None = None) -> NanoJudClient:
     """Cria cliente configurável para automações profissionais."""
-    return EsajDatajudClient(config=config)
+    return NanoJudClient(config=config)
 
 
 def _resumo_do_extrato(extrato: Extrato) -> ResumoProcesso:

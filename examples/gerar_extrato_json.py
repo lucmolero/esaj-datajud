@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from esaj_datajud import api
+from nanojud import api
 
 
 def main() -> None:

@@ -1,21 +1,21 @@
 # Cliente Configurável
 
-O `EsajDatajudClient` é a interface recomendada para automações profissionais, serviços internos, jobs agendados e notebooks que precisam de controle operacional.
+O `NanoJudClient` é a interface recomendada para automações profissionais, serviços internos, jobs agendados e notebooks que precisam de controle operacional.
 
 ## Exemplo
 
 ```python
-from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
+from nanojud import NanoJudClient, NanoJudConfig
 
-config = EsajDatajudConfig(
+config = NanoJudConfig(
     timeout=20,
     rate_limit_interval=1.0,
     cache_enabled=True,
-    cache_dir=".esaj_datajud_cache",
+    cache_dir=".nanojud_cache",
     cache_ttl_seconds=6 * 60 * 60,
 )
 
-client = EsajDatajudClient(config)
+client = NanoJudClient(config)
 resumo = client.search_processo("0015020-23.2010.8.26.0053")
 print(resumo["classe"])
 ```

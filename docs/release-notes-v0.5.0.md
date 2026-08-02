@@ -4,8 +4,8 @@ Esta release adiciona o primeiro servidor MCP local do projeto.
 
 ## Destaques
 
-- Servidor MCP local por `stdio` em `esaj_datajud.mcp_server`.
-- Entrypoint `esaj-datajud-mcp`.
+- Servidor MCP local por `stdio` em `nanojud.mcp_server`.
+- Entrypoint `nanojud-mcp`.
 - Extra opcional `mcp` para instalar o SDK MCP apenas quando necessario.
 - Ferramentas MCP somente leitura para extracao, normalizacao e timeline.
 - Chave publica vigente do DataJud/CNJ como fallback documentado, com override por variavel de ambiente ou argumento.

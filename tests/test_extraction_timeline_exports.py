@@ -3,7 +3,7 @@ import sqlite3
 from pathlib import Path
 from uuid import uuid4
 
-from esaj_datajud import exports, extraction, normalization, timeline
+from nanojud import exports, extraction, normalization, timeline
 
 
 def test_normalization_extrai_cnj_unico():

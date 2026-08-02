@@ -1,8 +1,8 @@
 # Contratos de Dados
 
-Os retornos da API são dicionários Python simples, documentados por `TypedDict` em `esaj_datajud.models`.
+Os retornos da API são dicionários Python simples, documentados por `TypedDict` em `nanojud.models`.
 
-Contratos de extração agregada ficam em `esaj_datajud.schemas`.
+Contratos de extração agregada ficam em `nanojud.schemas`.
 
 ## `api.search_processo`
 

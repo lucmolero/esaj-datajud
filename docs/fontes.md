@@ -1,6 +1,6 @@
 # Fontes
 
-`esaj-datajud` separa as fontes de extração por responsabilidade.
+`nanojud` separa as fontes de extração por responsabilidade.
 
 ## eSAJ/TJSP
 
@@ -35,7 +35,7 @@ Extrações suportadas:
 - partes quando disponíveis;
 - payload bruto opcional.
 
-O DataJud usa API key pública, documentada na Wiki oficial do DataJud/CNJ. A biblioteca inclui a chave pública vigente como fallback e também lê `ESAJ_DATAJUD_DATAJUD_API_KEY`, `DATAJUD_API_KEY` ou `CNJ_DATAJUD_API_KEY`, ou aceita `api_key` explicitamente.
+O DataJud usa API key pública, documentada na Wiki oficial do DataJud/CNJ. A biblioteca inclui a chave pública vigente como fallback e também lê `NANOJUD_DATAJUD_API_KEY`, `DATAJUD_API_KEY` ou `CNJ_DATAJUD_API_KEY`, ou aceita `api_key` explicitamente.
 
 Como o CNJ pode alterar a chave pública a qualquer momento, em caso de falha de autenticação informe uma chave atualizada por variável de ambiente ou argumento.
 

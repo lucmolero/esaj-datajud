@@ -47,7 +47,7 @@ Use este roteiro:
 Exemplo:
 
 ```bash
-esaj timeline <NUMERO_CNJ_PUBLICO> --source esaj --source djen --out timeline.json
+nanojud timeline <NUMERO_CNJ_PUBLICO> --source esaj --source djen --out timeline.json
 ```
 
 Resultado demonstrativo:

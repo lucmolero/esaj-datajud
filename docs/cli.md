@@ -1,17 +1,17 @@
 # CLI
 
-A CLI `esaj` foi criada para consultas rápidas e geração de arquivos JSON sem escrever código Python.
+A CLI `nanojud` foi criada para consultas rápidas e geração de arquivos JSON sem escrever código Python.
 
 ## Ajuda
 
 ```bash
-esaj --help
+nanojud --help
 ```
 
 ## Buscar resumo
 
 ```bash
-esaj search 0015020-23.2010.8.26.0053
+nanojud search 0015020-23.2010.8.26.0053
 ```
 
 Imprime um JSON resumido com dados básicos e última movimentação encontrada.
@@ -19,7 +19,7 @@ Imprime um JSON resumido com dados básicos e última movimentação encontrada.
 ## Gerar extrato
 
 ```bash
-esaj extrato 0015020-23.2010.8.26.0053 --out extrato.json
+nanojud extrato 0015020-23.2010.8.26.0053 --out extrato.json
 ```
 
 Salva o extrato completo em um arquivo JSON.
@@ -34,7 +34,7 @@ Flags úteis:
 ## Listar partes
 
 ```bash
-esaj partes 0015020-23.2010.8.26.0053
+nanojud partes 0015020-23.2010.8.26.0053
 ```
 
 Imprime as partes classificadas por polo quando a estrutura da página permite.
@@ -42,7 +42,7 @@ Imprime as partes classificadas por polo quando a estrutura da página permite.
 ## Consultar DJEN
 
 ```bash
-esaj djen 0015020-23.2010.8.26.0053 --data-inicio 2026-01-01 --out djen.json
+nanojud djen 0015020-23.2010.8.26.0053 --data-inicio 2026-01-01 --out djen.json
 ```
 
 Salva comunicações encontradas no DJEN em JSON.
@@ -50,7 +50,7 @@ Salva comunicações encontradas no DJEN em JSON.
 ## Consultar DataJud
 
 ```bash
-esaj datajud 0015020-23.2010.8.26.0053 --out datajud.json
+nanojud datajud 0015020-23.2010.8.26.0053 --out datajud.json
 ```
 
 Salva dados processuais estruturados da API pública DataJud/CNJ em JSON.
@@ -60,7 +60,7 @@ A biblioteca usa a chave pública vigente documentada na Wiki oficial do DataJud
 ## Extração Agregada
 
 ```bash
-esaj extract 0015020-23.2010.8.26.0053 --source datajud --source djen --out extraction.json
+nanojud extract 0015020-23.2010.8.26.0053 --source datajud --source djen --out extraction.json
 ```
 
 Gera envelope versionado por fonte.
@@ -68,7 +68,7 @@ Gera envelope versionado por fonte.
 ## Timeline
 
 ```bash
-esaj timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
+nanojud timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
 ```
 
 Gera timeline cronológica de registros extraídos, sem classificação de fase, risco ou relevância.
@@ -84,7 +84,7 @@ Flags úteis para agentes de IA:
 ## Baixar peças públicas candidatas
 
 ```bash
-esaj baixar extrato.json --out pecas --limite 3
+nanojud baixar extrato.json --out pecas --limite 3
 ```
 
 Usa um extrato já gerado para tentar baixar documentos públicos candidatos.
@@ -92,7 +92,7 @@ Usa um extrato já gerado para tentar baixar documentos públicos candidatos.
 ## Ler peças públicas sem salvar PDF
 
 ```bash
-esaj ler-pecas extrato.json --limite 3 --max-chars 4000 --out pecas_texto.json
+nanojud ler-pecas extrato.json --limite 3 --max-chars 4000 --out pecas_texto.json
 ```
 
 Lê documentos públicos candidatos em memória. A ferramenta não grava PDFs em disco; quando o conteúdo é PDF público, extrai texto com `pypdf` se o parser estiver instalado. Documentos restritos por senha, captcha ou sigilo não são acessados.

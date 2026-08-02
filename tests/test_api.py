@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from esaj_datajud import api
+from nanojud import api
 
 
 def _extrato():

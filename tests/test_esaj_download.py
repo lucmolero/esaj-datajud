@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from esaj_datajud import esaj
+from nanojud import esaj
 
 
 class FakeResponse:

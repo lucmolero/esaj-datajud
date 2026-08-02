@@ -15,8 +15,8 @@ Este roadmap organiza a evolução do projeto em entregas pequenas, verificávei
 
 ## Entregue em 0.3
 
-- Cliente configurável `EsajDatajudClient`.
-- Configuração pública `EsajDatajudConfig`.
+- Cliente configurável `NanoJudClient`.
+- Configuração pública `NanoJudConfig`.
 - Timeout padrão aplicado às chamadas HTTP.
 - Rate limit simples por sessão.
 - Cache JSON local, opt-in e com TTL.
@@ -42,7 +42,7 @@ Este roadmap organiza a evolução do projeto em entregas pequenas, verificávei
 
 - Servidor MCP local por `stdio`.
 - Extra opcional `mcp`.
-- Entry point `esaj-datajud-mcp`.
+- Entry point `nanojud-mcp`.
 - Ferramentas MCP somente leitura para validação CNJ, eSAJ, DataJud, DJEN, extração agregada e timeline.
 - Testes reais manuais com eSAJ, DataJud, DJEN e MCP local.
 

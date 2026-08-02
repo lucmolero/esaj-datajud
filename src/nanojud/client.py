@@ -11,7 +11,7 @@ import requests
 
 from . import datajud, djen, esaj, extraction
 from .cache import JsonFileCache
-from .config import EsajDatajudConfig
+from .config import NanoJudConfig
 from .models import Extrato, Movimentacao, ResumoProcesso
 from .normalization import normalizar_data
 from .version import __version__
@@ -61,18 +61,18 @@ class RateLimitedSession(requests.Session):
             time.sleep(remaining)
 
 
-class EsajDatajudClient:
+class NanoJudClient:
     """Cliente configurável para uso profissional em integrações."""
 
     def __init__(
         self,
-        config: EsajDatajudConfig | None = None,
+        config: NanoJudConfig | None = None,
         *,
         logger: logging.Logger | None = None,
         session: requests.Session | None = None,
     ) -> None:
-        self.config = config or EsajDatajudConfig()
-        self.logger = logger or logging.getLogger("esaj_datajud")
+        self.config = config or NanoJudConfig()
+        self.logger = logger or logging.getLogger("nanojud")
         self.session = session or RateLimitedSession(
             timeout=self.config.timeout,
             rate_limit_interval=self.config.rate_limit_interval,

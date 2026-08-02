@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover
     pass
 
 
-SERVER_NAME = "esaj-datajud"
+SERVER_NAME = "nanojud"
 SERVER_TRANSPORT = "stdio"
 SERVER_SCOPE = "local_read_only_extraction"
 SERVER_INSTRUCTIONS = (
@@ -43,7 +43,7 @@ def create_server() -> Any:
         """Retorna metadados do servidor MCP local."""
         return {
             "name": SERVER_NAME,
-            "package": "esaj-datajud",
+            "package": "nanojud",
             "version": __version__,
             "transport": SERVER_TRANSPORT,
             "scope": SERVER_SCOPE,

@@ -1,6 +1,6 @@
 import pytest
 
-from esaj_datajud import mcp_server
+from nanojud import mcp_server
 
 
 class FakeFastMCP:
@@ -35,7 +35,7 @@ def test_create_server_registra_ferramentas(monkeypatch):
 
     server = mcp_server.create_server()
 
-    assert server.name == "esaj-datajud"
+    assert server.name == "nanojud"
     assert "extracao responsavel" in server.kwargs["instructions"]
     assert set(server.tools) == {
         "server_info",
@@ -163,7 +163,7 @@ def test_ferramentas_mcp_delegam_para_api(monkeypatch):
 
 
 def test_main_executa_servidor(monkeypatch):
-    server = FakeFastMCP("esaj-datajud")
+    server = FakeFastMCP("nanojud")
     monkeypatch.setattr(mcp_server, "create_server", lambda: server)
 
     mcp_server.main()

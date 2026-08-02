@@ -1,6 +1,6 @@
 # Demonstração Pública
 
-Esta página define o processo público recomendado para demonstrações do `esaj-datajud`.
+Esta página define o processo público recomendado para demonstrações do `nanojud`.
 
 O objetivo é ter uma demo completa, rápida e responsável: suficiente para mostrar extração, normalização, DJEN, DataJud/CNJ, timeline e MCP local, sem usar disputa empresarial sensível como vitrine.
 
@@ -49,37 +49,37 @@ Validação manual por MCP local em 31/07/2026:
 Consulta rápida:
 
 ```bash
-esaj search 0015020-23.2010.8.26.0053
+nanojud search 0015020-23.2010.8.26.0053
 ```
 
 Extrato público:
 
 ```bash
-esaj extrato 0015020-23.2010.8.26.0053 --out extrato.json
+nanojud extrato 0015020-23.2010.8.26.0053 --out extrato.json
 ```
 
 DJEN:
 
 ```bash
-esaj djen 0015020-23.2010.8.26.0053 --out djen.json
+nanojud djen 0015020-23.2010.8.26.0053 --out djen.json
 ```
 
 DataJud/CNJ:
 
 ```bash
-esaj datajud 0015020-23.2010.8.26.0053 --out datajud.json
+nanojud datajud 0015020-23.2010.8.26.0053 --out datajud.json
 ```
 
 Timeline:
 
 ```bash
-esaj timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
+nanojud timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
 ```
 
 ## Prompt MCP para demo
 
 ```text
-Use o MCP local esaj-datajud.
+Use o MCP local nanojud.
 Consulte o processo 0015020-23.2010.8.26.0053.
 Entregue dados básicos, fontes consultadas, últimos andamentos, DJEN, DataJud e uma timeline resumida.
 Separe fatos extraídos de inferências.

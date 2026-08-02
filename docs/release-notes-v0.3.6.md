@@ -1,4 +1,4 @@
-# esaj-datajud v0.3.6
+# NanoJud v0.3.6
 
 Release de branding, confiança e acabamento editorial.
 

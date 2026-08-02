@@ -1,4 +1,4 @@
-# esaj-datajud v0.3.3
+# NanoJud v0.3.3
 
 Release pública final para abertura do projeto no GitHub.
 
@@ -18,4 +18,4 @@ Release pública final para abertura do projeto no GitHub.
 
 ## Próximo Passo Operacional
 
-Configurar Trusted Publishing no PyPI para publicar `esaj-datajud` via workflow manual `Publish PyPI`.
+Configurar Trusted Publishing no PyPI para publicar `nanojud` via workflow manual `Publish PyPI`.

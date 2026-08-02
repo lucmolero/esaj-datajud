@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Obrigado por ajudar a melhorar o `esaj-datajud`.
+        Obrigado por ajudar a melhorar o `nanojud`.
         Não inclua dados pessoais, peças, HTML bruto ou informações sigilosas sem sanitização.
   - type: textarea
     id: problema
@@ -29,7 +29,7 @@ body:
       description: Liste comandos, versão e entrada sanitizada.
       placeholder: |
         1. python -m pip install -e ".[dev]"
-        2. esaj search 0000000-00.0000.0.00.0000
+        2. nanojud search 0000000-00.0000.0.00.0000
     validations:
       required: true
   - type: input

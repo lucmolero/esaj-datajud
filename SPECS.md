@@ -1,8 +1,8 @@
-# Especificações do Projeto `esaj-datajud`
+# Especificações do Projeto `nanojud`
 
 ## Visão
 
-`esaj-datajud` é uma biblioteca Python e CLI para consultar, estruturar e exportar informações públicas de processos do eSAJ/TJSP e comunicações do DJEN/DataJud.
+`nanojud` é uma biblioteca Python e CLI para consultar, estruturar e exportar informações públicas de processos do eSAJ/TJSP e comunicações do DJEN/DataJud.
 
 O projeto foi desenhado para servir como base aberta, auditável e profissional para tecnologia jurídica, equilibrando três mundos:
 
@@ -15,7 +15,7 @@ O projeto foi desenhado para servir como base aberta, auditável e profissional 
 O projeto oferece:
 
 - API Python de alto nível;
-- CLI `esaj`;
+- CLI `nanojud`;
 - parser eSAJ/TJSP para dados básicos, partes, movimentações, documentos, audiências, petições, incidentes e apensos;
 - cliente DJEN/DataJud com paginação, retry, backoff e deduplicação;
 - cliente configurável com timeout, rate limit, cache local opcional, logging e sessão injetável;
@@ -45,7 +45,7 @@ O projeto não fornece e não deve fornecer:
 ## Estrutura Atual
 
 ```text
-src/esaj_datajud/
+src/nanojud/
 ├── __init__.py
 ├── api.py
 ├── cache.py
@@ -63,7 +63,7 @@ src/esaj_datajud/
 
 ## Camadas
 
-### `esaj_datajud.api`
+### `nanojud.api`
 
 Fachada pública simples para scripts, notebooks, CLI e integrações:
 
@@ -75,11 +75,11 @@ Fachada pública simples para scripts, notebooks, CLI e integrações:
 - `consultar_djen(numero, data_inicio="")`
 - `create_client(config=None)`
 
-### `esaj_datajud.client`
+### `nanojud.client`
 
 Cliente configurável para uso profissional:
 
-- `EsajDatajudClient`
+- `NanoJudClient`
 - `RateLimitedSession`
 
 Responsabilidades:
@@ -90,7 +90,7 @@ Responsabilidades:
 - permitir logging;
 - permitir injeção de sessão em testes.
 
-### `esaj_datajud.config`
+### `nanojud.config`
 
 Configuração imutável:
 
@@ -102,13 +102,13 @@ Configuração imutável:
 - `salvar_html`
 - `user_agent`
 
-### `esaj_datajud.cache`
+### `nanojud.cache`
 
 Cache JSON local por namespace, com TTL.
 
 O cache é desativado por padrão e deve ser tratado como dado jurídico operacional quando ligado.
 
-### `esaj_datajud.esaj`
+### `nanojud.esaj`
 
 Cliente/parser eSAJ/TJSP:
 
@@ -121,7 +121,7 @@ Cliente/parser eSAJ/TJSP:
 - inspeciona metadados da pasta digital quando solicitado;
 - baixa peças públicas candidatas quando tecnicamente possível.
 
-### `esaj_datajud.djen`
+### `nanojud.djen`
 
 Cliente DJEN/DataJud:
 
@@ -131,19 +131,19 @@ Cliente DJEN/DataJud:
 - deduplica por `id`;
 - normaliza datas.
 
-### `esaj_datajud.cli`
+### `nanojud.cli`
 
 Interface de linha de comando:
 
-- `esaj search <numero>`
-- `esaj extrato <numero> --out extrato.json`
-- `esaj partes <numero>`
-- `esaj baixar <extrato.json> --out pecas`
-- `esaj djen <numero> --out djen.json`
+- `nanojud search <numero>`
+- `nanojud extrato <numero> --out extrato.json`
+- `nanojud partes <numero>`
+- `nanojud baixar <extrato.json> --out pecas`
+- `nanojud djen <numero> --out djen.json`
 
 ## Contratos
 
-Os retornos públicos são documentados em `docs/contracts.md` e tipados em `esaj_datajud.models`.
+Os retornos públicos são documentados em `docs/contracts.md` e tipados em `nanojud.models`.
 
 Contratos principais:
 
@@ -157,9 +157,9 @@ Contratos principais:
 
 ## Exceções Públicas
 
-Erros previsíveis devem usar exceções próprias de `esaj_datajud.exceptions`:
+Erros previsíveis devem usar exceções próprias de `nanojud.exceptions`:
 
-- `EsajDatajudError`
+- `NanoJudError`
 - `FormatoCNJInvalido`
 - `URLInvalida`
 - `AcessoRestrito`

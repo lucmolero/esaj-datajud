@@ -1,6 +1,6 @@
 # Erros
 
-Erros previstos usam exceções públicas de `esaj_datajud.exceptions`.
+Erros previstos usam exceções públicas de `nanojud.exceptions`.
 
 ## Exceções
 
@@ -14,12 +14,12 @@ Erros previstos usam exceções públicas de `esaj_datajud.exceptions`.
 ## Exemplo
 
 ```python
-from esaj_datajud import api
-from esaj_datajud.exceptions import EsajDatajudError
+from nanojud import api
+from nanojud.exceptions import NanoJudError
 
 try:
     extrato = api.get_extrato("0015020-23.2010.8.26.0053")
-except EsajDatajudError as exc:
+except NanoJudError as exc:
     print(type(exc).__name__, str(exc))
 ```
 

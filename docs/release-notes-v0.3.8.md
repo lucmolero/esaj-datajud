@@ -1,4 +1,4 @@
-# esaj-datajud v0.3.8
+# NanoJud v0.3.8
 
 Release de correção visual e reposicionamento da página inicial pública.
 

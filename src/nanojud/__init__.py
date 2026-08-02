@@ -1,4 +1,4 @@
-"""esaj_datajud package
+"""nanojud package
 
 Expose main modules:
 - `api` : highest-level operations for lawyers and systems
@@ -26,13 +26,13 @@ from . import (
     timeline,
     utils,
 )
-from .client import EsajDatajudClient
-from .config import EsajDatajudConfig
+from .client import NanoJudClient
+from .config import NanoJudConfig
 from .version import __version__
 
 __all__ = [
-    "EsajDatajudClient",
-    "EsajDatajudConfig",
+    "NanoJudClient",
+    "NanoJudConfig",
     "api",
     "cache",
     "client",

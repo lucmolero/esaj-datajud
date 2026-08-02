@@ -3,9 +3,9 @@ requires = ["setuptools>=83.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "esaj-datajud"
+name = "nanojud"
 version = "0.5.0"
-description = "Toolkit Python para extração responsável, normalização e exportação de dados públicos judiciais do eSAJ/TJSP, DataJud/CNJ e DJEN."
+description = "NanoJud: toolkit Python para extração responsável, normalização e exportação de dados públicos judiciais do eSAJ/TJSP, DataJud/CNJ e DJEN."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -36,10 +36,10 @@ classifiers = [
 ]
 
 [tool.setuptools]
-packages = {find = {where = ["src"], include = ["esaj_datajud*"]}}
+packages = {find = {where = ["src"], include = ["nanojud*"]}}
 
 [tool.setuptools.package-data]
-esaj_datajud = ["py.typed"]
+nanojud = ["py.typed"]
 
 [project.optional-dependencies]
 dev = [
@@ -65,17 +65,17 @@ pdf = [
 ]
 
 [project.urls]
-Homepage = "https://lucmolero.github.io/esaj-datajud/"
-Source = "https://github.com/lucmolero/esaj-datajud"
-Documentation = "https://lucmolero.github.io/esaj-datajud/"
-Issues = "https://github.com/lucmolero/esaj-datajud/issues"
-Changelog = "https://github.com/lucmolero/esaj-datajud/blob/main/CHANGELOG.md"
-Release = "https://github.com/lucmolero/esaj-datajud/releases"
+Homepage = "https://lucmolero.github.io/nanojud/"
+Source = "https://github.com/lucmolero/nanojud"
+Documentation = "https://lucmolero.github.io/nanojud/"
+Issues = "https://github.com/lucmolero/nanojud/issues"
+Changelog = "https://github.com/lucmolero/nanojud/blob/main/CHANGELOG.md"
+Release = "https://github.com/lucmolero/nanojud/releases"
 LinkedIn = "https://www.linkedin.com/in/luciano-molero/"
 
 [project.scripts]
-esaj = "esaj_datajud.cli:main"
-esaj-datajud-mcp = "esaj_datajud.mcp_server:main"
+nanojud = "nanojud.cli:main"
+nanojud-mcp = "nanojud.mcp_server:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -93,8 +93,8 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.coverage.run]
 branch = true
-source = ["esaj_datajud"]
-omit = ["src/esaj_datajud/cli.py"]
+source = ["nanojud"]
+omit = ["src/nanojud/cli.py"]
 
 [tool.coverage.report]
 show_missing = true
@@ -109,5 +109,5 @@ no_implicit_optional = true
 check_untyped_defs = true
 
 [[tool.mypy.overrides]]
-module = "esaj_datajud.esaj"
+module = "nanojud.esaj"
 ignore_errors = true

@@ -1,4 +1,4 @@
-# esaj-datajud v0.3.5
+# NanoJud v0.3.5
 
 Release de robustez baseada em validação com corpus real privado de eSAJ/TJSP.
 

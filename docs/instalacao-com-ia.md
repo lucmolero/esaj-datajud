@@ -1,6 +1,6 @@
 # Instalação Com IA
 
-Este guia foi escrito para quem quer instalar e usar `esaj-datajud` com ajuda de um agente de IA local, como Claude Code, Codex, Gemini CLI ou outro cliente compatível com MCP.
+Este guia foi escrito para quem quer instalar e usar `nanojud` com ajuda de um agente de IA local, como Claude Code, Codex, Gemini CLI ou outro cliente compatível com MCP.
 
 O objetivo é simples: o advogado descreve o resultado esperado, e o agente executa a instalação, valida o ambiente e configura o MCP local sem expor dados em endpoint público.
 
@@ -30,15 +30,15 @@ Se o usuário for advogado ou não tiver familiaridade com Git, o agente pode se
 
 1. abrir o repositório no navegador;
 2. clicar em "Code" → "Download ZIP";
-3. extrair a pasta em um diretório simples, como `C:\esaj-datajud` ou `/Users/usuario/esaj-datajud`;
+3. extrair a pasta em um diretório simples, como `C:\nanojud` ou `/Users/usuario/nanojud`;
 4. abrir o terminal nessa pasta;
 5. seguir os comandos abaixo.
 
 Comandos simples recomendados para a IA:
 
 ```bash
-git clone https://github.com/lucmolero/esaj-datajud.git
-cd esaj-datajud
+git clone https://github.com/lucmolero/nanojud.git
+cd nanojud
 python -m venv .venv
 # Windows PowerShell
 .\.venv\Scripts\Activate.ps1
@@ -51,7 +51,7 @@ python -m pip install -e ".[mcp]"
 Depois de instalar, a IA pode testar com um comando simples:
 
 ```bash
-esaj search 0015020-23.2010.8.26.0053
+nanojud search 0015020-23.2010.8.26.0053
 ```
 
 Se quiser validar a instalação completa, pode usar:
@@ -65,7 +65,7 @@ python -m pytest --cov
 Cole este prompt no seu agente de IA dentro da pasta do projeto:
 
 ```text
-Você está em um projeto Python chamado esaj-datajud.
+Você está em um projeto Python chamado nanojud.
 Instale o ambiente local com as dependências de desenvolvimento e MCP.
 Depois rode os checks principais e me diga se o projeto está pronto para uso local.
 
@@ -103,9 +103,9 @@ Configuração genérica:
 ```json
 {
   "mcpServers": {
-    "esaj-datajud": {
+    "nanojud": {
       "command": "python",
-      "args": ["-m", "esaj_datajud.mcp_server"]
+      "args": ["-m", "nanojud.mcp_server"]
     }
   }
 }
@@ -116,9 +116,9 @@ No Windows, prefira o Python absoluto da `.venv`:
 ```json
 {
   "mcpServers": {
-    "esaj-datajud": {
+    "nanojud": {
       "command": "C:\\caminho\\do\\projeto\\.venv\\Scripts\\python.exe",
-      "args": ["-m", "esaj_datajud.mcp_server"]
+      "args": ["-m", "nanojud.mcp_server"]
     }
   }
 }
@@ -133,7 +133,7 @@ Use um número CNJ público escolhido por você. Para demonstração, o projeto 
 ```
 
 ```text
-Use o MCP local esaj-datajud.
+Use o MCP local nanojud.
 Valide o número CNJ 0015020-23.2010.8.26.0053.
 Depois consulte as fontes públicas disponíveis e me entregue:
 - dados básicos;
@@ -179,7 +179,7 @@ Antes de usar em rotina profissional:
 Ao final da jornada, o advogado deve conseguir pedir ao agente:
 
 ```text
-Consulte este CNJ pelo esaj-datajud e me entregue uma timeline auditável.
+Consulte este CNJ pelo nanojud e me entregue uma timeline auditável.
 ```
 
 E o agente deve usar a biblioteca local, retornando dados estruturados com fonte, data e limites claros.

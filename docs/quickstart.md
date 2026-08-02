@@ -11,7 +11,7 @@ python -m pip install -e ".[dev]"
 ## Consultar um processo
 
 ```python
-from esaj_datajud import api
+from nanojud import api
 
 numero = "0015020-23.2010.8.26.0053"
 resumo = api.search_processo(numero)
@@ -24,7 +24,7 @@ print(resumo["ultima_movimentacao"])
 ## Gerar extrato
 
 ```python
-from esaj_datajud import api
+from nanojud import api
 
 extrato = api.get_extrato("0015020-23.2010.8.26.0053")
 print(extrato["dados_basicos"])
@@ -34,10 +34,10 @@ print(len(extrato["movimentacoes"]))
 ## Usar cliente configurável
 
 ```python
-from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
+from nanojud import NanoJudClient, NanoJudConfig
 
-client = EsajDatajudClient(
-    EsajDatajudConfig(
+client = NanoJudClient(
+    NanoJudConfig(
         timeout=20,
         rate_limit_interval=1.0,
         cache_enabled=True,
@@ -51,20 +51,20 @@ print(resumo["classe"])
 ## Tratar erros previstos
 
 ```python
-from esaj_datajud import api
-from esaj_datajud.exceptions import EsajDatajudError
+from nanojud import api
+from nanojud.exceptions import NanoJudError
 
 try:
     extrato = api.get_extrato("0015020-23.2010.8.26.0053")
-except EsajDatajudError as exc:
+except NanoJudError as exc:
     print(type(exc).__name__, str(exc))
 ```
 
 ## Consultar pelo terminal
 
 ```bash
-esaj search 0015020-23.2010.8.26.0053
-esaj extrato 0015020-23.2010.8.26.0053 --inspecionar-pecas --out extrato.json
+nanojud search 0015020-23.2010.8.26.0053
+nanojud extrato 0015020-23.2010.8.26.0053 --inspecionar-pecas --out extrato.json
 ```
 
 ## Próximo passo

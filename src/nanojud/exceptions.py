@@ -1,33 +1,33 @@
-"""Exceções públicas do esaj-datajud."""
+"""Exceções públicas do nanojud."""
 
 
-class EsajDatajudError(Exception):
+class NanoJudError(Exception):
     """Classe base para erros previstos da biblioteca."""
 
 
-class FormatoCNJInvalido(EsajDatajudError, ValueError):
+class FormatoCNJInvalido(NanoJudError, ValueError):
     """Número CNJ ausente, mal formatado ou com dígito verificador inválido."""
 
 
-class URLInvalida(EsajDatajudError, ValueError):
+class URLInvalida(NanoJudError, ValueError):
     """URL fora do domínio e caminho esperados pelo cliente."""
 
 
-class ConsultaIndisponivel(EsajDatajudError):
+class ConsultaIndisponivel(NanoJudError):
     """Fonte remota indisponível, resposta inválida ou falha de comunicação."""
 
 
-class ProcessoNaoEncontrado(EsajDatajudError):
+class ProcessoNaoEncontrado(NanoJudError):
     """A fonte consultada não retornou uma página de processo válida."""
 
 
-class AcessoRestrito(EsajDatajudError):
+class AcessoRestrito(NanoJudError):
     """A fonte indicou bloqueio, captcha, autenticação, senha ou restrição de acesso."""
 
 
-class CredencialAusente(EsajDatajudError):
+class CredencialAusente(NanoJudError):
     """Credencial necessária para uma fonte pública não foi informada."""
 
 
-class DownloadIndisponivel(EsajDatajudError):
+class DownloadIndisponivel(NanoJudError):
     """Não foi possível baixar a peça pública solicitada."""

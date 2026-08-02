@@ -1,4 +1,4 @@
-"""Interface de linha de comando para esaj-datajud."""
+"""Interface de linha de comando para nanojud."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, TypeAlias, cast
 
 from . import api
-from .exceptions import EsajDatajudError
+from .exceptions import NanoJudError
 from .timeline import compactar_timeline
 
 JsonPayload: TypeAlias = dict[str, Any] | list[Any]
@@ -28,7 +28,7 @@ def _erro_json(exc: Exception) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="esaj",
+        prog="nanojud",
         description=(
             "Ferramenta profissional de linha de comando para eSAJ/TJSP, DataJud/CNJ e DJEN."
         ),
@@ -231,7 +231,7 @@ def main(argv: list[str] | None = None) -> int:
 
         parser.print_help()
         return 1
-    except EsajDatajudError as exc:
+    except NanoJudError as exc:
         print(_erro_json(exc))
         return 2
 

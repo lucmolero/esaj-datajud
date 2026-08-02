@@ -1,13 +1,13 @@
-from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
+from nanojud import NanoJudClient, NanoJudConfig
 
 
 def main() -> None:
-    client = EsajDatajudClient(
-        EsajDatajudConfig(
+    client = NanoJudClient(
+        NanoJudConfig(
             timeout=20,
             rate_limit_interval=1.0,
             cache_enabled=True,
-            cache_dir=".esaj_datajud_cache",
+            cache_dir=".nanojud_cache",
             cache_ttl_seconds=6 * 60 * 60,
         )
     )

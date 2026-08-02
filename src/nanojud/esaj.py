@@ -39,8 +39,7 @@ ESAJ_BASE = "https://esaj.tjsp.jus.br/cpopg"
 PASTA_BASE = "https://esaj.tjsp.jus.br/pastadigital/"
 RAW_HTML_DIR = Path.cwd() / "esaj_raw" / "tjsp" / "cpopg"
 USER_AGENT = (
-    f"Mozilla/5.0 (compatible; esaj-datajud/{__version__}; "
-    "+https://github.com/lucmolero/esaj-datajud)"
+    f"Mozilla/5.0 (compatible; nanojud/{__version__}; +https://github.com/lucmolero/nanojud)"
 )
 
 

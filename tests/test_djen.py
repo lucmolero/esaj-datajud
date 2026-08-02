@@ -1,6 +1,6 @@
-from esaj_datajud import djen
-from esaj_datajud.djen import _extrair_items, _normalizar_item, _parse_data
-from esaj_datajud.exceptions import AcessoRestrito, ConsultaIndisponivel
+from nanojud import djen
+from nanojud.djen import _extrair_items, _normalizar_item, _parse_data
+from nanojud.exceptions import AcessoRestrito, ConsultaIndisponivel
 
 
 def test_parse_data_iso():

@@ -1,4 +1,4 @@
-# esaj-datajud v0.3.7
+# NanoJud v0.3.7
 
 Release visual da documentação pública.
 

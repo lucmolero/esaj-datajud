@@ -1,4 +1,4 @@
-"""Utility helpers for esaj_datajud."""
+"""Utility helpers for nanojud."""
 
 import re
 import unicodedata

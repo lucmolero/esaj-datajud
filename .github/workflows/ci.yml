@@ -45,7 +45,7 @@ jobs:
       - name: Check MCP server import
         run: |
           python - <<'PY'
-          from esaj_datajud.mcp_server import create_server
+          from nanojud.mcp_server import create_server
 
           server = create_server()
           print(type(server).__name__)

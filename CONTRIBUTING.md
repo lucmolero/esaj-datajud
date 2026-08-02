@@ -1,6 +1,6 @@
 # Contribuindo
 
-Obrigado por considerar contribuir com o `esaj-datajud`.
+Obrigado por considerar contribuir com o `nanojud`.
 
 Este projeto busca ser uma biblioteca aberta, profissional e confiável para soluções jurídicas. Contribuições são bem-vindas, especialmente em documentação, testes com fixtures sanitizadas, parsing robusto e experiência de uso por advogados.
 

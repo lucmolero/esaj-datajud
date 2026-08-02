@@ -1,7 +1,7 @@
-from esaj_datajud.exceptions import FormatoCNJInvalido
-from esaj_datajud.normalization import extrair_numeros_cnj
-from esaj_datajud.sources import normalizar_fonte
-from esaj_datajud.utils import (
+from nanojud.exceptions import FormatoCNJInvalido
+from nanojud.normalization import extrair_numeros_cnj
+from nanojud.sources import normalizar_fonte
+from nanojud.utils import (
     classificar_polo,
     limpar,
     nome_arquivo_seguro,
@@ -74,7 +74,7 @@ def test_validar_numero_cnj_rejeita_segmento_e_tribunal():
 
 
 def test_adicionar_unico():
-    from esaj_datajud.utils import adicionar_unico
+    from nanojud.utils import adicionar_unico
 
     valores = ["um"]
     adicionar_unico(valores, "um")

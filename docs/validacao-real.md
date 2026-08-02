@@ -34,14 +34,14 @@ Testes ao vivo consultam fontes externas e podem falhar por rede, indisponibilid
 Para rodar no PowerShell:
 
 ```bash
-$env:ESAJ_DATAJUD_RUN_LIVE = "1"
+$env:NANOJUD_RUN_LIVE = "1"
 python -m pytest -m live
 ```
 
 Em Linux/macOS:
 
 ```bash
-ESAJ_DATAJUD_RUN_LIVE=1 python -m pytest -m live
+NANOJUD_RUN_LIVE=1 python -m pytest -m live
 ```
 
 Use poucos processos, intervalos conservadores e nunca baixe peças em testes automatizados sem autorização explícita.

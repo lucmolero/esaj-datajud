@@ -51,17 +51,17 @@ Extrai dados das fontes solicitadas em envelope versionado, preservando resultad
 
 ## `api.create_client(config=None)`
 
-Cria um `EsajDatajudClient` configurável para automações profissionais.
+Cria um `NanoJudClient` configurável para automações profissionais.
 
 ```python
-from esaj_datajud import api, EsajDatajudConfig
+from nanojud import api, NanoJudConfig
 
 client = api.create_client(
-    EsajDatajudConfig(timeout=20, rate_limit_interval=1.0, cache_enabled=True)
+    NanoJudConfig(timeout=20, rate_limit_interval=1.0, cache_enabled=True)
 )
 ```
 
-## `EsajDatajudClient`
+## `NanoJudClient`
 
 Métodos principais:
 
@@ -74,7 +74,7 @@ Métodos principais:
 - `baixar_pecas(extrato, destino, sobrescrever=False, limite=0)`: baixa peças públicas candidatas.
 - `ler_pecas(extrato, limite=3, max_chars=4000)`: lê documentos públicos candidatos em memória.
 
-## `EsajDatajudConfig`
+## `NanoJudConfig`
 
 Campos principais:
 

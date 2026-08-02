@@ -1,14 +1,14 @@
-site_name: esaj-datajud
-site_description: Toolkit Python para consulta responsável e estruturação de dados públicos judiciais.
-site_url: https://lucmolero.github.io/esaj-datajud/
-repo_url: https://github.com/lucmolero/esaj-datajud
-repo_name: lucmolero/esaj-datajud
+site_name: NanoJud
+site_description: "NanoJud: dados judiciais públicos para agentes de IA, advogados e pesquisa jurídica."
+site_url: https://lucmolero.github.io/nanojud/
+repo_url: https://github.com/lucmolero/nanojud
+repo_name: lucmolero/nanojud
 edit_uri: edit/main/docs/
 theme:
   name: material
   language: pt-BR
-  logo: assets/esaj-datajud-logo-primary.svg
-  favicon: assets/esaj-datajud-icon.svg
+  logo: assets/nanojud-logo-primary.svg
+  favicon: assets/nanojud-icon.svg
   palette:
     primary: blue grey
     accent: teal

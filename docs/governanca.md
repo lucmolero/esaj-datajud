@@ -1,6 +1,6 @@
 # Governança
 
-`esaj-datajud` segue uma governança simples, adequada a uma biblioteca aberta em evolução.
+`nanojud` segue uma governança simples, adequada a uma biblioteca aberta em evolução.
 
 ## Manutenção
 

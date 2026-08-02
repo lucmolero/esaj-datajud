@@ -4,8 +4,8 @@
 
 ### Adicionado
 
-- Adiciona servidor MCP local por `stdio` em `esaj_datajud.mcp_server`.
-- Adiciona entrypoint `esaj-datajud-mcp` para clientes MCP locais.
+- Adiciona servidor MCP local por `stdio` em `nanojud.mcp_server`.
+- Adiciona entrypoint `nanojud-mcp` para clientes MCP locais.
 - Adiciona extra opcional `mcp` com dependência `mcp>=1.0,<2`.
 - Expõe ferramentas MCP somente leitura para validação CNJ, extração de CNJ em texto, consultas eSAJ/DataJud/DJEN, envelope agregado e timeline.
 - Adiciona documentação de instalação e configuração local do MCP.
@@ -15,9 +15,9 @@
 ### Adicionado
 
 - Adiciona cliente DataJud/CNJ como fonte separada do DJEN, com API key, retry, backoff, normalização e raw opcional.
-- Adiciona envelope versionado de extração por fonte em `esaj_datajud.extraction`.
-- Adiciona timeline cronológica em `esaj_datajud.timeline`, sem fase, relevância, risco ou interpretação jurídica.
-- Adiciona exportadores JSON, JSONL, CSV e SQLite em `esaj_datajud.exports`.
+- Adiciona envelope versionado de extração por fonte em `nanojud.extraction`.
+- Adiciona timeline cronológica em `nanojud.timeline`, sem fase, relevância, risco ou interpretação jurídica.
+- Adiciona exportadores JSON, JSONL, CSV e SQLite em `nanojud.exports`.
 - Adiciona módulos `sources`, `schemas` e `normalization` para contratos e normalização técnica.
 - Adiciona comandos CLI `datajud`, `extract` e `timeline`.
 - Adiciona documentação de fontes e extração agregada.
@@ -84,7 +84,7 @@ O formato segue a ideia de manter versões legíveis para usuários jurídicos e
 
 ### Alterado
 
-- GitHub Pages habilitado em `https://lucmolero.github.io/esaj-datajud/`.
+- GitHub Pages habilitado em `https://lucmolero.github.io/nanojud/`.
 - Metadados do pacote atualizados para apontar homepage e documentação para o site público.
 
 ## [0.3.3] - 2026-07-31
@@ -123,8 +123,8 @@ O formato segue a ideia de manter versões legíveis para usuários jurídicos e
 
 ### Adicionado
 
-- Cliente `EsajDatajudClient` para uso profissional com timeout, rate limit, cache opcional, logging e sessão injetável.
-- Configuração pública `EsajDatajudConfig`.
+- Cliente `NanoJudClient` para uso profissional com timeout, rate limit, cache opcional, logging e sessão injetável.
+- Configuração pública `NanoJudConfig`.
 - Cache JSON local e opt-in.
 - Marcador `py.typed` e checagem `mypy` no CI.
 - Workflow de release para tags `v*`, com build, validação de metadados e artefatos anexados ao GitHub Release.
@@ -144,7 +144,7 @@ O formato segue a ideia de manter versões legíveis para usuários jurídicos e
 ### Adicionado
 
 - Exceções públicas para erros previstos: CNJ inválido, URL inválida, acesso restrito, consulta indisponível, processo não encontrado e download indisponível.
-- Contratos tipados em `esaj_datajud.models` com `TypedDict`.
+- Contratos tipados em `nanojud.models` com `TypedDict`.
 - Validação de CNJ com normalização e conferência de dígito verificador.
 - Parser eSAJ ampliado para dados básicos, partes, movimentações, documentos vinculados, metadados de publicação, audiências, petições, incidentes e apensos.
 - Cliente DJEN com sessão injetável, retry configurável, backoff e testes sem rede.
@@ -175,9 +175,9 @@ O formato segue a ideia de manter versões legíveis para usuários jurídicos e
 
 ### Adicionado
 
-- Estrutura inicial do pacote `esaj_datajud`.
+- Estrutura inicial do pacote `nanojud`.
 - API pública com funções para resumo, extrato, partes e DJEN.
-- CLI `esaj` com comandos iniciais.
+- CLI `nanojud` com comandos iniciais.
 - Especificação de produto em `SPECS.md`.
 - Documentação inicial de uso, contribuição, segurança e roadmap.
 

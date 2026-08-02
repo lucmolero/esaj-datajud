@@ -3,7 +3,7 @@
 A API de extração agregada combina eSAJ, DataJud e DJEN em um envelope versionado.
 
 ```python
-from esaj_datajud import api
+from nanojud import api
 
 resultado = api.extract_process(
     "0015020-23.2010.8.26.0053",
@@ -56,7 +56,7 @@ Cada registro preserva:
 ## CLI
 
 ```bash
-esaj datajud 0015020-23.2010.8.26.0053 --out datajud.json
-esaj extract 0015020-23.2010.8.26.0053 --source datajud --source djen --out extraction.json
-esaj timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
+nanojud datajud 0015020-23.2010.8.26.0053 --out datajud.json
+nanojud extract 0015020-23.2010.8.26.0053 --source datajud --source djen --out extraction.json
+nanojud timeline 0015020-23.2010.8.26.0053 --source esaj --source djen --source datajud --out timeline.json
 ```

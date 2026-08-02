@@ -1,6 +1,6 @@
 """Consulta dados processuais estruturados no DataJud/CNJ."""
 
-from esaj_datajud import api
+from nanojud import api
 
 
 def main() -> None:

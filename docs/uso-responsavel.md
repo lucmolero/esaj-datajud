@@ -1,6 +1,6 @@
 # Uso Responsável
 
-`esaj-datajud` é uma ferramenta para organizar informações públicas ou legitimamente acessíveis pelo usuário. O projeto deve ser usado com cuidado jurídico, técnico e ético.
+`nanojud` é uma ferramenta para organizar informações públicas ou legitimamente acessíveis pelo usuário. O projeto deve ser usado com cuidado jurídico, técnico e ético.
 
 ## O que o projeto não faz
 

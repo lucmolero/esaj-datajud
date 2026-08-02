@@ -1,11 +1,11 @@
-# esaj-datajud v0.3.4
+# NanoJud v0.3.4
 
 Release de alinhamento pós-abertura pública.
 
 ## Destaques
 
 - GitHub Pages habilitado para a documentação pública.
-- Homepage do repositório atualizada para `https://lucmolero.github.io/esaj-datajud/`.
+- Homepage do repositório atualizada para `https://lucmolero.github.io/nanojud/`.
 - Metadados do pacote atualizados para apontar documentação e homepage para o site público.
 
 ## Validação Esperada

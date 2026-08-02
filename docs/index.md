@@ -8,8 +8,8 @@ hide:
   <section class="legal-hero" aria-labelledby="legal-home-title">
     <div class="legal-hero__copy">
       <div class="legal-brandline">
-        <img src="assets/esaj-datajud-logo-primary.svg" alt="" />
-        <span>esaj-datajud</span>
+        <img src="assets/nanojud-logo-primary.svg" alt="" />
+        <span>NanoJud</span>
       </div>
       <p class="legal-kicker">Open source legal data infrastructure</p>
       <h1 id="legal-home-title">Dados judiciais públicos para agentes, automações e pesquisa jurídica confiável.</h1>
@@ -22,7 +22,7 @@ hide:
         <a class="legal-button legal-button--primary" href="quickstart/">Começar pelo quickstart</a>
         <a class="legal-button" href="instalacao-com-ia/">Instalar com IA</a>
         <a class="legal-button" href="demonstracao-publica/">Ver demo pública</a>
-        <a class="legal-button legal-button--ghost" href="https://github.com/lucmolero/esaj-datajud">GitHub</a>
+        <a class="legal-button legal-button--ghost" href="https://github.com/lucmolero/nanojud">GitHub</a>
       </div>
     </div>
 
@@ -140,10 +140,10 @@ hide:
         instalação com MCP local.
       </p>
     </div>
-    <pre><code>from esaj_datajud import EsajDatajudClient, EsajDatajudConfig
+    <pre><code>from nanojud import NanoJudClient, NanoJudConfig
 
-client = EsajDatajudClient(
-    EsajDatajudConfig(
+client = NanoJudClient(
+    NanoJudConfig(
         timeout=20,
         rate_limit_interval=1.0,
         cache_enabled=True,
@@ -160,7 +160,7 @@ print(len(extrato["movimentacoes"]))</code></pre>
       <p class="legal-section__eyebrow">Projeto independente</p>
       <h2>Pronto para avaliação técnica, uso responsável e evolução pública.</h2>
       <p>
-        <strong>esaj-datajud</strong> não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud. A biblioteca organiza
+        <strong>NanoJud</strong> não é um produto oficial do TJSP, CNJ, eSAJ ou DataJud. A biblioteca organiza
         consultas a fontes públicas ou legitimamente acessíveis pelo usuário.
       </p>
     </div>

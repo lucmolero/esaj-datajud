@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from esaj_datajud import cli
+from nanojud import cli
 
 ROOT = Path(__file__).parent.parent
 SRC = ROOT / "src"
@@ -13,7 +13,7 @@ def test_cli_help():
     env = os.environ.copy()
     env.setdefault("PYTHONPATH", str(SRC))
     result = subprocess.run(
-        [sys.executable, "-m", "esaj_datajud.cli", "--help"],
+        [sys.executable, "-m", "nanojud.cli", "--help"],
         env=env,
         capture_output=True,
         text=True,

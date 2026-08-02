@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from esaj_datajud.cache import JsonFileCache
+from nanojud.cache import JsonFileCache
 
 
 def test_json_file_cache_roundtrip():

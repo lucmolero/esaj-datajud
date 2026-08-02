@@ -1,24 +1,24 @@
 # Arquitetura
 
-`esaj-datajud` é organizado em camadas pequenas para separar experiência pública, parsing, clientes HTTP e utilidades de domínio jurídico.
+`nanojud` é organizado em camadas pequenas para separar experiência pública, parsing, clientes HTTP e utilidades de domínio jurídico.
 
 ## Camadas
 
-- `esaj_datajud.api`: fachada pública para scripts, notebooks, CLIs e integrações.
-- `esaj_datajud.client`: cliente configurável para automações profissionais.
-- `esaj_datajud.config`: configuração imutável de timeout, cache, rate limit e User-Agent.
-- `esaj_datajud.cache`: cache JSON local e opcional.
-- `esaj_datajud.esaj`: cliente e parser do eSAJ/TJSP.
-- `esaj_datajud.datajud`: cliente da API pública DataJud/CNJ para dados processuais.
-- `esaj_datajud.djen`: cliente do DJEN para comunicações e publicações.
-- `esaj_datajud.extraction`: envelope versionado de extração por fonte.
-- `esaj_datajud.timeline`: timeline cronológica sem interpretação jurídica.
-- `esaj_datajud.exports`: exportadores JSON, JSONL, CSV e SQLite.
-- `esaj_datajud.mcp_server`: servidor MCP local opcional por `stdio`.
-- `esaj_datajud.models`: contratos tipados dos retornos.
-- `esaj_datajud.exceptions`: exceções públicas e previsíveis.
-- `esaj_datajud.utils`: normalização de texto, CNJ e classificação auxiliar.
-- `esaj_datajud.cli`: interface de linha de comando.
+- `nanojud.api`: fachada pública para scripts, notebooks, CLIs e integrações.
+- `nanojud.client`: cliente configurável para automações profissionais.
+- `nanojud.config`: configuração imutável de timeout, cache, rate limit e User-Agent.
+- `nanojud.cache`: cache JSON local e opcional.
+- `nanojud.esaj`: cliente e parser do eSAJ/TJSP.
+- `nanojud.datajud`: cliente da API pública DataJud/CNJ para dados processuais.
+- `nanojud.djen`: cliente do DJEN para comunicações e publicações.
+- `nanojud.extraction`: envelope versionado de extração por fonte.
+- `nanojud.timeline`: timeline cronológica sem interpretação jurídica.
+- `nanojud.exports`: exportadores JSON, JSONL, CSV e SQLite.
+- `nanojud.mcp_server`: servidor MCP local opcional por `stdio`.
+- `nanojud.models`: contratos tipados dos retornos.
+- `nanojud.exceptions`: exceções públicas e previsíveis.
+- `nanojud.utils`: normalização de texto, CNJ e classificação auxiliar.
+- `nanojud.cli`: interface de linha de comando.
 
 ## Princípios
 
@@ -40,7 +40,7 @@
 
 ## Cliente configurável
 
-O `EsajDatajudClient` encapsula a sessão HTTP e aplica configuração operacional sem mudar os contratos principais:
+O `NanoJudClient` encapsula a sessão HTTP e aplica configuração operacional sem mudar os contratos principais:
 
 1. cria sessão com `User-Agent` versionado;
 2. aplica timeout padrão;

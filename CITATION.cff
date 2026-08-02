@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "Se este projeto ajudar sua pesquisa, produto ou rotina jurídica, cite o repositório."
-title: "esaj-datajud"
+title: "nanojud"
 version: "0.5.0"
 date-released: "2026-07-31"
 abstract: "Biblioteca Python e CLI para extrair, normalizar e exportar dados públicos judiciais do eSAJ/TJSP, DataJud/CNJ e DJEN."
@@ -9,8 +9,8 @@ authors:
     given-names: "Luciano"
     alias: "lucmolero"
 license: "MIT"
-repository-code: "https://github.com/lucmolero/esaj-datajud"
-url: "https://github.com/lucmolero/esaj-datajud"
+repository-code: "https://github.com/lucmolero/nanojud"
+url: "https://github.com/lucmolero/nanojud"
 keywords:
   - legaltech
   - esaj

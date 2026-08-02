@@ -2,8 +2,8 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from esaj_datajud import esaj
-from esaj_datajud.exceptions import AcessoRestrito, ProcessoNaoEncontrado
+from nanojud import esaj
+from nanojud.exceptions import AcessoRestrito, ProcessoNaoEncontrado
 
 FIXTURE = Path(__file__).parent / "fixtures" / "esaj_processo_basico.html"
 

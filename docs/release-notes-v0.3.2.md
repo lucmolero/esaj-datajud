@@ -1,4 +1,4 @@
-# esaj-datajud v0.3.2
+# NanoJud v0.3.2
 
 Release final de preparação pública do projeto, focada em sinais de confiança para GitHub, documentação viva e qualidade mensurável.
 
@@ -27,4 +27,4 @@ Release final de preparação pública do projeto, focada em sinais de confianç
 - O repositório ainda precisa ser tornado público manualmente quando você decidir abrir.
 - GitHub Pages depende do plano/configuração do repositório.
 - Upload CodeQL para Code Scanning depende da feature estar habilitada.
-- Publicação efetiva no PyPI requer criar/configurar o projeto `esaj-datajud` no PyPI com Trusted Publisher.
+- Publicação efetiva no PyPI requer criar/configurar o projeto `nanojud` no PyPI com Trusted Publisher.

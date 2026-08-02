@@ -96,7 +96,7 @@ def datajud_api_key(api_key: str | None = None) -> str:
     """
     chave = (
         api_key
-        or os.getenv("ESAJ_DATAJUD_DATAJUD_API_KEY")
+        or os.getenv("NANOJUD_DATAJUD_API_KEY")
         or os.getenv("DATAJUD_API_KEY")
         or os.getenv("CNJ_DATAJUD_API_KEY")
         or PUBLIC_DATAJUD_API_KEY

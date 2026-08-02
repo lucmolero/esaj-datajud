@@ -1,8 +1,8 @@
 import pytest
 import requests
 
-from esaj_datajud import datajud
-from esaj_datajud.exceptions import AcessoRestrito, ConsultaIndisponivel
+from nanojud import datajud
+from nanojud.exceptions import AcessoRestrito, ConsultaIndisponivel
 
 
 class FakeResponse:
@@ -75,7 +75,7 @@ def test_indice_datajud_outros_segmentos(monkeypatch):
 
 
 def test_api_key_usa_chave_publica_oficial(monkeypatch):
-    monkeypatch.delenv("ESAJ_DATAJUD_DATAJUD_API_KEY", raising=False)
+    monkeypatch.delenv("NANOJUD_DATAJUD_API_KEY", raising=False)
     monkeypatch.delenv("DATAJUD_API_KEY", raising=False)
     monkeypatch.delenv("CNJ_DATAJUD_API_KEY", raising=False)
 
@@ -83,7 +83,7 @@ def test_api_key_usa_chave_publica_oficial(monkeypatch):
 
 
 def test_api_key_usa_env(monkeypatch):
-    monkeypatch.setenv("ESAJ_DATAJUD_DATAJUD_API_KEY", "xyz")
+    monkeypatch.setenv("NANOJUD_DATAJUD_API_KEY", "xyz")
 
     assert datajud.datajud_api_key() == "APIKey xyz"
 

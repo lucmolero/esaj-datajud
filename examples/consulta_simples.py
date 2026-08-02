@@ -1,6 +1,6 @@
 """Consulta simples usando a API pública."""
 
-from esaj_datajud import api
+from nanojud import api
 
 
 def main() -> None:

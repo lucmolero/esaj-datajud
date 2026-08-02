@@ -2,8 +2,8 @@ from uuid import uuid4
 
 import requests
 
-from esaj_datajud import esaj
-from esaj_datajud.exceptions import (
+from nanojud import esaj
+from nanojud.exceptions import (
     AcessoRestrito,
     ConsultaIndisponivel,
     ProcessoNaoEncontrado,
@@ -103,7 +103,7 @@ def test_criar_session_configura_headers_e_timeout():
     session = esaj.criar_session(timeout=12)
 
     assert session.timeout == 12
-    assert "esaj-datajud" in session.headers["User-Agent"]
+    assert "nanojud" in session.headers["User-Agent"]
     assert session.headers["Referer"].endswith("/open.do")
 
 

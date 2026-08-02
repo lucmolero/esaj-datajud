@@ -3,8 +3,8 @@ from uuid import uuid4
 
 import pytest
 
-from esaj_datajud.client import EsajDatajudClient, RateLimitedSession
-from esaj_datajud.config import EsajDatajudConfig
+from nanojud.client import NanoJudClient, RateLimitedSession
+from nanojud.config import NanoJudConfig
 
 
 def _extrato():
@@ -31,9 +31,9 @@ def test_client_get_extrato_usa_cache(monkeypatch):
         chamadas["count"] += 1
         return _extrato()
 
-    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", fake_montar)
-    client = EsajDatajudClient(
-        EsajDatajudConfig(cache_enabled=True, cache_dir=f".tmp/test-client-cache-{uuid4()}")
+    monkeypatch.setattr("nanojud.client.esaj.montar_extrato", fake_montar)
+    client = NanoJudClient(
+        NanoJudConfig(cache_enabled=True, cache_dir=f".tmp/test-client-cache-{uuid4()}")
     )
 
     primeiro = client.get_extrato("1076539-20.2019.8.26.0100")
@@ -44,9 +44,9 @@ def test_client_get_extrato_usa_cache(monkeypatch):
 
 
 def test_client_search_processo_resume_extrato(monkeypatch):
-    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", lambda *a, **k: _extrato())
+    monkeypatch.setattr("nanojud.client.esaj.montar_extrato", lambda *a, **k: _extrato())
 
-    resumo = EsajDatajudClient().search_processo("1076539-20.2019.8.26.0100")
+    resumo = NanoJudClient().search_processo("1076539-20.2019.8.26.0100")
 
     assert resumo["classe"] == "Classe"
     assert resumo["ultima_movimentacao"] == "Mov"
@@ -58,9 +58,9 @@ def test_client_search_processo_usa_movimentacao_mais_recente(monkeypatch):
         {"titulo": "Mais recente", "data": "31/07/2026"},
         {"titulo": "Mais antiga", "data": "01/01/2020"},
     ]
-    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", lambda *a, **k: extrato)
+    monkeypatch.setattr("nanojud.client.esaj.montar_extrato", lambda *a, **k: extrato)
 
-    resumo = EsajDatajudClient().search_processo("1076539-20.2019.8.26.0100")
+    resumo = NanoJudClient().search_processo("1076539-20.2019.8.26.0100")
 
     assert resumo["ultima_movimentacao"] == "Mais recente"
 
@@ -78,9 +78,9 @@ def test_rate_limited_session_define_user_agent():
 
 
 def test_client_get_partes(monkeypatch):
-    monkeypatch.setattr("esaj_datajud.client.esaj.montar_extrato", lambda *a, **k: _extrato())
+    monkeypatch.setattr("nanojud.client.esaj.montar_extrato", lambda *a, **k: _extrato())
 
-    partes = EsajDatajudClient().get_partes("1076539-20.2019.8.26.0100")
+    partes = NanoJudClient().get_partes("1076539-20.2019.8.26.0100")
 
     assert partes["principais"] == []
 
@@ -92,9 +92,9 @@ def test_client_consultar_djen_usa_cache(monkeypatch):
         chamadas["count"] += 1
         return [{"id": "1"}]
 
-    monkeypatch.setattr("esaj_datajud.client.djen.consultar_processo", fake_consultar)
-    client = EsajDatajudClient(
-        EsajDatajudConfig(cache_enabled=True, cache_dir=f".tmp/test-djen-cache-{uuid4()}")
+    monkeypatch.setattr("nanojud.client.djen.consultar_processo", fake_consultar)
+    client = NanoJudClient(
+        NanoJudConfig(cache_enabled=True, cache_dir=f".tmp/test-djen-cache-{uuid4()}")
     )
 
     primeiro = client.consultar_djen("1076539-20.2019.8.26.0100")
@@ -111,9 +111,9 @@ def test_client_consultar_datajud_usa_cache(monkeypatch):
         chamadas["count"] += 1
         return {"status": "ok", "numero_cnj": args[0]}
 
-    monkeypatch.setattr("esaj_datajud.client.datajud.consultar_processo", fake_consultar)
-    client = EsajDatajudClient(
-        EsajDatajudConfig(cache_enabled=True, cache_dir=f".tmp/test-datajud-cache-{uuid4()}")
+    monkeypatch.setattr("nanojud.client.datajud.consultar_processo", fake_consultar)
+    client = NanoJudClient(
+        NanoJudConfig(cache_enabled=True, cache_dir=f".tmp/test-datajud-cache-{uuid4()}")
     )
 
     primeiro = client.consultar_datajud("1076539-20.2019.8.26.0100", api_key="abc")
@@ -131,8 +131,8 @@ def test_client_extract_process_delega(monkeypatch):
         chamadas.update(kwargs)
         return {"status": "ok", "timeline": []}
 
-    monkeypatch.setattr("esaj_datajud.client.extraction.extract_process", fake_extract)
-    client = EsajDatajudClient(EsajDatajudConfig(datajud_api_key="abc"))
+    monkeypatch.setattr("nanojud.client.extraction.extract_process", fake_extract)
+    client = NanoJudClient(NanoJudConfig(datajud_api_key="abc"))
 
     resultado = client.extract_process("1076539-20.2019.8.26.0100", sources=("datajud",))
 
@@ -149,8 +149,8 @@ def test_client_baixar_pecas_delega(monkeypatch):
         chamadas["sobrescrever"] = sobrescrever
         return [{"status": "baixado"}]
 
-    monkeypatch.setattr("esaj_datajud.client.esaj.baixar_pecas_publicas", fake_baixar)
-    client = EsajDatajudClient()
+    monkeypatch.setattr("nanojud.client.esaj.baixar_pecas_publicas", fake_baixar)
+    client = NanoJudClient()
 
     resultado = client.baixar_pecas(
         {"documentos": {"publicos_candidatos_unicos": [{"cd_documento": "1"}]}},
@@ -173,8 +173,8 @@ def test_client_ler_pecas_delega(monkeypatch):
         chamadas["max_chars"] = max_chars
         return [{"status": "texto_extraido"}]
 
-    monkeypatch.setattr("esaj_datajud.client.esaj.ler_pecas_publicas", fake_ler)
-    client = EsajDatajudClient()
+    monkeypatch.setattr("nanojud.client.esaj.ler_pecas_publicas", fake_ler)
+    client = NanoJudClient()
 
     resultado = client.ler_pecas(
         {"documentos": {"publicos_candidatos_unicos": [{"cd_documento": "1"}]}},
@@ -213,8 +213,8 @@ def test_rate_limited_session_request_usa_timeout(monkeypatch):
 def test_rate_limited_session_aguarda_intervalo(monkeypatch):
     sleeps = []
     tempos = iter([10.2])
-    monkeypatch.setattr("esaj_datajud.client.time.monotonic", lambda: next(tempos))
-    monkeypatch.setattr("esaj_datajud.client.time.sleep", lambda segundos: sleeps.append(segundos))
+    monkeypatch.setattr("nanojud.client.time.monotonic", lambda: next(tempos))
+    monkeypatch.setattr("nanojud.client.time.sleep", lambda segundos: sleeps.append(segundos))
     session = RateLimitedSession(
         timeout=7,
         rate_limit_interval=1.0,
@@ -235,9 +235,9 @@ def test_client_baixar_pecas_usa_movimentacoes_quando_sem_documentos(monkeypatch
         chamadas["movimentos"] = movimentos
         return []
 
-    monkeypatch.setattr("esaj_datajud.client.esaj.baixar_pecas_publicas", fake_baixar)
+    monkeypatch.setattr("nanojud.client.esaj.baixar_pecas_publicas", fake_baixar)
     extrato = {"documentos": {}, "movimentacoes": [{"documentos": []}]}
 
-    EsajDatajudClient().baixar_pecas(extrato, destino=__import__("pathlib").Path("pecas"))
+    NanoJudClient().baixar_pecas(extrato, destino=__import__("pathlib").Path("pecas"))
 
     assert chamadas["movimentos"] == [{"documentos": []}]

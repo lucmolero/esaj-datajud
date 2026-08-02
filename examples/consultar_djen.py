@@ -1,6 +1,6 @@
 """Consulta comunicações do DJEN."""
 
-from esaj_datajud import api
+from nanojud import api
 
 
 def main() -> None:
