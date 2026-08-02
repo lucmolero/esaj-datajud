@@ -8,7 +8,7 @@ hide:
   <section class="legal-hero" aria-labelledby="legal-home-title">
     <div class="legal-hero__copy">
       <div class="legal-brandline">
-        <img src="assets/nanojud-logo-primary.svg" alt="" />
+        <img src="assets/nanojud-icon.svg" alt="" />
         <span>NanoJud</span>
       </div>
       <p class="legal-kicker">Open source legal data infrastructure</p>

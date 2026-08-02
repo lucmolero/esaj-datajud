@@ -7,7 +7,7 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   language: pt-BR
-  logo: assets/nanojud-logo-primary.svg
+  logo: assets/nanojud-icon.svg
   favicon: assets/nanojud-icon.svg
   palette:
     primary: blue grey

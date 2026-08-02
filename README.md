@@ -2,7 +2,7 @@
   <img
     src="docs/assets/nanojud-logo-primary.svg"
     alt="NanoJud"
-    width="260"
+    width="420"
   />
 </p>
 
